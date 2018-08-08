@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'workgen.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'workgen',
+        'USER': os.environ['WORKGEN_USER'],
+        'PASSWORD': os.environ['WORKGEN_PASSWORD'],
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 

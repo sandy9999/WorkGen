@@ -1,0 +1,8 @@
+*.pyc
+*.swp
+*.vscode
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+tags
+!tags/
