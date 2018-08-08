@@ -1,3 +1,42 @@
 from django.db import models
 
-# Create your models here.
+
+class Mentor(models.Model):
+    REGULAR = 1
+    SUPERADMIN = 2
+    MENTOR_TYPE_CHOICES = (
+        (REGULAR, 'REGULAR'),
+        (SUPERADMIN, 'SUPERADMIN'),
+    )
+    username = models.CharField(max_length=40, unique=True, blank=False, null=False)
+    password = models.CharField(max_length=40, blank=False, null=False)
+    phone = models.CharField(max_length=40, blank=True, null=True)
+    email = models.CharField(max_length=40, unique=True, blank=False, null=False)
+    mentor_type = models.IntegerField(choices=MENTOR_TYPE_CHOICES, default=REGULAR)
+    full_name = models.CharField(max_length=40)
+    created_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
+
+class Questions(models.Model):
+    ONE = 1
+    TWO = 2
+    THREE = 3
+    FOUR = 4
+    FIVE = 5
+    QUESTION_WEIGHTAGE_CHOICES = (
+        (ONE, 'ONE'),
+        (TWO, 'TWO'),
+        (THREE, 'THREE'),
+        (FOUR, 'FOUR'),
+        (FIVE, 'FIVE'),
+    )
+    subject = models.CharField(max_length=100)
+    chapter = models.CharField(max_length=100)
+    question_weightage = models.IntegerField(choices=QUESTION_WEIGHTAGE_CHOICES)
+    uploaded_by = models.ForeignKey('Mentor', on_delete=models.CASCADE)
+    text = models.TextField(null=False, blank=False)
+
+
+class MCQOptions(models.Model):
+    question_id = models.ForeignKey('Questions', on_delete=models.CASCADE)
+    option_value = models.CharField(max_length=100)
