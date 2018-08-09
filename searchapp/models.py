@@ -30,9 +30,18 @@ class Questions(models.Model):
         (FOUR, 'FOUR'),
         (FIVE, 'FIVE'),
     )
+    TEXT = 1
+    FILL_IN_THE_BLANKS = 2
+    MCQ = 3
+    QUESTION_TYPE_CHOICES = (
+        (TEXT, 'TEXT'),
+        (FILL_IN_THE_BLANKS, 'FILL IN THE BLANKS'),
+        (MCQ, 'MCQ'),
+    )
     subject = models.CharField(max_length=100)
     chapter = models.CharField(max_length=100)
-    question_weightage = models.IntegerField(choices=QUESTION_WEIGHTAGE_CHOICES)
+    question_weightage = models.IntegerField(choices=QUESTION_WEIGHTAGE_CHOICES, null=True)
+    question_type = models.IntegerField(choices=QUESTION_TYPE_CHOICES, null=True)
     uploaded_by = models.ForeignKey('Mentor', on_delete=models.CASCADE)
     text = models.TextField(null=False, blank=False)
 
