@@ -44,6 +44,5 @@ for i in df1.index:
 
 print( error)
 
-#for i in df1[2]:
- #  print(df1[2][i])
+
 print(df1)
