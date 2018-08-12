@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Student View</title>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.css"/>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'student_view_style.css' %}"/>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+
+  $('#worksheetType').dropdown({
+    onChange: function (value, text, $selectedItem) {
+      //console.log(value);
+      if(value == 'testPaper')
+      {
+	console.log(value);
+	$('#subject').css('display','block');
+	$('#chapter').css('display','block');
+        $('#qtype').css('display','none');
+	$('#noOfQ').css('display','none');
+	$('#noofQ').css('display','none');
+      }
+      else if(value == 'genericWorksheet')
+      {
+	console.log(value);
+	$('#subject').css('display','block');
+	$('#chapter').css('display','block');
+	$('#qtype').css('display','block');
+	$('#noOfQ').css('display','block');
+	$('#stud_name').css('display','none');
+      }
+      else if(value == 'customizedWorksheet')
+      {
+	$('#stud_name').css('display','block');
+	$('#chapter').css('display','block');
+	$('#subject').css('display','none');
+	$('#qtype').css('display','block');
+	$('#noOfQ').css('display','block');
+      }
+    },
+    forceSelection: false, 
+    selectOnKeydown: false, 
+    showOnFocus: false,
+    on: "hover" 
+  
+});
+ $('#subject').dropdown({
+    onChange: function (value, text, $selectedItem) {
+      console.log(value);
+    },
+    forceSelection: false, 
+    selectOnKeydown: false, 
+    showOnFocus: false,
+    on: "hover" 
+  
+});
+
+  $('#chapter').dropdown({
+    onChange: function (value, text, $selectedItem) {
+      console.log(value.split(/\s*,\s*/));
+    },
+    forceSelection: false, 
+    selectOnKeydown: false, 
+    showOnFocus: false,
+    on: "hover" 
+  });
+ $('#qtype').dropdown({
+    onChange: function (value, text, $selectedItem) {
+      console.log(value.split(/\s*,\s*/));
+    },
+    forceSelection: false, 
+    selectOnKeydown: false, 
+    showOnFocus: false,
+    on: "hover" 
+  });
+	
+	
+});
+</script>
+</head>
+<body>
+<!-- Select worksheet type -->
+
+<div id="worksheetType" class="ui selection dropdown">
+  <input name="worksheetType" type="hidden">
+  <i class="dropdown icon"></i>
+  <div class="default text">Select Worksheet Type</div>
+  <div class="menu">
+    <div class="item" data-value="testPaper">Test Paper</div>
+    <div class="item" data-value="genericWorksheet">Generic Worksheet</div>
+    <div class="item" data-value="customizedWorksheet">Customized Worksheet</div>
+ </div>
+</div>
+<br/>
+<br/>
+<input type="text" id="stud_name" name="stud_name" placeholder="Enter Student name">
+<br/>
+
+<!-- Choose one subject -->
+<div id="subject" class="ui selection dropdown">
+  <input name="subject" type="hidden">
+  <i class="dropdown icon"></i>
+  <div class="default text">Select Subject</div>
+  <div class="menu">
+    <!-- {% for item in subject %}
+    <div class="item" data-value="{{ item.subject }}">{{ item.subject }}</div>
+    {% endfor %} -->
+    <div class="item" data-value="Science">Science</div>
+  </div>
+</div>
+<br/>
+<br/>
+<!-- Choose chapters under given subject -->
+<div id="chapter" class="ui fluid multiple search selection dropdown">
+  <input name="chapter" type="hidden">
+  <i class="dropdown icon"></i>
+  <div class="default text">Select chapter</div>
+  <div class="menu">
+  {% for item in chap %}
+  <div class="item" data-value="{{ item.chapter }}">{{ item.chapter }}</div>
+  {% endfor %}
+</div>
+  </div>
+<br/>
+<br/>
+<!-- Choose Question types -->
+<div id="qtype" class="ui fluid multiple search selection dropdown">
+  <input name="qtype" type="hidden">
+  <i class="dropdown icon"></i>
+  <div class="default text">Select Question Type</div>
+  <div class="menu">
+  <div class="item" data-value="1">1 mark</div>
+  <div class="item" data-value="2">2 marks</div>
+  <div class="item" data-value="3">3 marks</div>
+  <div class="item" data-value="4">4 marks</div>
+  <div class="item" data-value="5">5 marks</div>
+</div>
+  </div>
+<br/>
+<br/>
+<!-- Choose Number of Questions -->
+<input id="noOfQ"type="number" name="noOfQ" placeholder="No. of Questions">
+
+</body>
+</html>
