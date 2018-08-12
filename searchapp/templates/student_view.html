@@ -50,6 +50,16 @@ $(document).ready(function(){
  $('#subject').dropdown({
     onChange: function (value, text, $selectedItem) {
       console.log(value);
+      if(value == "Science")
+      {
+	$('#chapter .menu div').remove();
+	$('<div class="item" data-value="Motion">Motion</div>').appendTo('#chapter .menu');
+      }
+      else if(value == "Math")
+      {
+	$('#chapter div div').remove();
+	$('<div class="item" data-value="Rational Nos">Rational Nos</div>').appendTo('#chapter .menu');
+      }
     },
     forceSelection: false, 
     selectOnKeydown: false, 
@@ -109,6 +119,7 @@ $(document).ready(function(){
     <div class="item" data-value="{{ item.subject }}">{{ item.subject }}</div>
     {% endfor %} -->
     <div class="item" data-value="Science">Science</div>
+    <div class="item" data-value="Math">Math</div>
   </div>
 </div>
 <br/>
@@ -119,8 +130,8 @@ $(document).ready(function(){
   <i class="dropdown icon"></i>
   <div class="default text">Select chapter</div>
   <div class="menu">
-  {% for item in chap %}
-  <div class="item" data-value="{{ item.chapter }}">{{ item.chapter }}</div>
+  {% for thing in chap %}
+  <div class="item" data-value="{{ thing.chapter }}">{{ thing.chapter }}</div>
   {% endfor %}
 </div>
   </div>
@@ -146,3 +157,4 @@ $(document).ready(function(){
 
 </body>
 </html>
+
