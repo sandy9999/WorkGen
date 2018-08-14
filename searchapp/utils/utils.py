@@ -2,6 +2,14 @@ import openpyxl as op
 from collections import defaultdict
 
 def default_to_regular(d):
+    """
+        This function converts a nested defaultdict to a dict
+
+        :param d: defaultdict
+        :type d: defaultdict
+        :returns: equivalent dict
+        :rtype: dict
+    """
     if isinstance(d, defaultdict):
         d = {k: default_to_regular(v) for k, v in d.items()}
     return d
@@ -74,6 +82,32 @@ def convert_marker_data(marker_path, subject_breakup):
                 question_type = header_row[question_type_start_row].value
     return student_to_answer
 
+def get_customized_paper(marker_data):
+    """
+        This function returns a student wise split up of the customized paper given a particular marker data.
+        Given the marks of a student, this function finds the ratio of marks_secured_for_a_question/total_marks_for_that_question
+        We then take the three least scored chapters and generate questions based on those three chapters.
+
+        :param marker_data: Dict of the converted marker data
+        :type marker_data: dict
+        :returns: dict
+        :rtype: dict
+    """
+    student_to_chapter = {}
+    for student in marker_data:
+        student_data = marker_data[student]
+        lowest_scored_chapters = []
+        for question_type in student_data:
+            results_per_questiontype = student_data[question_type]
+            ratio_array = [(x[0]/float(question_type[0]), x[2]) for x in results_per_questiontype]
+            for result in ratio_array:
+                # if he/she scored less that 70% for that question, add that to the list of chapters to prepare
+                if result[0] < 0.70:
+                    lowest_scored_chapters.append(result)
+        lowest_scored_chapters.sort(key=lambda x: x[0])
+        student_to_chapter[student] = [x[1] for x in lowest_scored_chapters]
+    return student_to_chapter
+
 def convert_question_bank(question_bank_path):
     """
         This function converts the excel file of the question bank to a mapping between chapter name to questions.
@@ -137,3 +171,16 @@ def convert_question_bank(question_bank_path):
         question_type = question_type_col[question_type_start_row].value
     chapter_to_question = default_to_regular(chapter_to_question)
     return chapter_to_question
+
+if __name__ == "__main__":
+    science_breakup = {
+        '1A': [5, 5],
+        '1B': [5, 5],
+        '2': [7, 5],
+        '3': [7, 5],
+        '5': [2, 2]
+    }
+    data = convert_marker_data("data.xlsx", science_breakup)
+    print(data)
+    customized_data = get_customized_paper(data)
+    print(customized_data)
