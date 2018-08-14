@@ -1,5 +1,6 @@
 import openpyxl as op
 from collections import defaultdict
+from random import sample
 
 def default_to_regular(d):
     """
@@ -62,6 +63,8 @@ def convert_marker_data(marker_path, subject_breakup):
         # this is for every other row that contains data
         else:
             student = row[0].value
+            if not student:
+                break
             student_to_answer[student] = {}
             question_type_start_row = 1
             question_type = header_row[question_type_start_row].value
@@ -73,7 +76,7 @@ def convert_marker_data(marker_path, subject_breakup):
                 for i in range(question_type_start_row, question_type_start_row + total_questions):
                     question_number = i - question_type_start_row + 1
                     chapter_number = int(chapter_row[i].value)
-                    marks_secured = row[i].value
+                    marks_secured = row[i].value or 0.0
                     questions_of_given_type.append((marks_secured, question_number, chapter_number))
                 questions_of_given_type.sort(key=lambda x: x[0], reverse=True)
                 questions_of_given_type = questions_of_given_type[:questions_to_attempt]
@@ -113,7 +116,7 @@ def get_customized_paper(marker_data):
 
         :param marker_data: Dictionary of student_name => (Dictionary of question_type => [(marks_secured, question_number, chapter_number)])
         :type marker_data: dict
-        :returns: dict
+        :returns: dictionary of student names to chapter numbers they need more practice in
         :rtype: dict
     """
     student_to_chapter = {}
@@ -128,7 +131,8 @@ def get_customized_paper(marker_data):
                 if result[0] < 0.70:
                     lowest_scored_chapters.append(result)
         lowest_scored_chapters.sort(key=lambda x: x[0])
-        student_to_chapter[student] = [x[1] for x in lowest_scored_chapters]
+        student_to_chapter[student] = list(set([x[1] for x in lowest_scored_chapters]))
+        student_to_chapter[student] = sample(student_to_chapter[student], min(3, len(student_to_chapter[student])))
     return student_to_chapter
 
 def convert_question_bank(question_bank_path):
@@ -204,6 +208,6 @@ if __name__ == "__main__":
         '5': [2, 2]
     }
     data = convert_marker_data("data.xlsx", science_breakup)
-    customized_data = get_customized_paper(data)
-    filtered_data = get_allowed_questions(data, ['1A', '1B'], [3])
-    print(filtered_data)
+    filtered_data = get_allowed_questions(data, ['1A', '1B', '2'], [3])
+    customized_data = get_customized_paper(filtered_data)
+    print(customized_data)
