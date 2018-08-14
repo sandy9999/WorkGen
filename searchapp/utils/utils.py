@@ -82,13 +82,36 @@ def convert_marker_data(marker_path, subject_breakup):
                 question_type = header_row[question_type_start_row].value
     return student_to_answer
 
+def get_allowed_questions(data, allowed_qtypes, allowed_chapters):
+    """
+        This function gets the parsed marker data as input and filters out chapters and question types according
+        to the selection made
+
+        :param data: Dictionary of student_name => (Dictionary of question_type => [(marks_secured, question_number, chapter_number)])
+        :param allowed_qtypes: list of allowed question types
+        :param allowed_chapters: list of allowed chapters
+        :type data: dict
+        :type allowed_qtypes: list
+        :type allowed_chapters: list
+        :returns: Updated data which has allowed_qtypes and allowed_chapters only
+        :rtype: Dictionary of student_name => (Dictionary of question_type => [(marks_secured, question_number, chapter_number)])
+    """
+    updated_data = defaultdict(lambda: defaultdict(lambda: list))
+    for student in data:
+        qtypes = data[student]
+        for qtype in qtypes:
+            if qtype in allowed_qtypes:
+                updated_data[student][qtype] = [x for x in qtypes[qtype] if x[2] in allowed_chapters]
+    updated_data = default_to_regular(updated_data)
+    return updated_data
+
 def get_customized_paper(marker_data):
     """
         This function returns a student wise split up of the customized paper given a particular marker data.
         Given the marks of a student, this function finds the ratio of marks_secured_for_a_question/total_marks_for_that_question
         We then take the three least scored chapters and generate questions based on those three chapters.
 
-        :param marker_data: Dict of the converted marker data
+        :param marker_data: Dictionary of student_name => (Dictionary of question_type => [(marks_secured, question_number, chapter_number)])
         :type marker_data: dict
         :returns: dict
         :rtype: dict
@@ -181,6 +204,6 @@ if __name__ == "__main__":
         '5': [2, 2]
     }
     data = convert_marker_data("data.xlsx", science_breakup)
-    print(data)
     customized_data = get_customized_paper(data)
-    print(customized_data)
+    filtered_data = get_allowed_questions(data, ['1A', '1B'], [3])
+    print(filtered_data)
