@@ -17,8 +17,13 @@ $(document).ready(function(){
       if(value == 'testPaper')
       {
 	console.log(value);
+	$('#upload').css('display','none');
+	$('#randomize').css('display','none');
+	$('#segregate').css('display','none');
+	$('#stud_name').css('display','none');
 	$('#subject').css('display','block');
 	$('#chapter').css('display','block');
+	$('#submit').css('display','block');
         $('#qtype').css('display','none');
 	$('#noOfQ').css('display','none');
 	$('#noofQ').css('display','none');
@@ -26,16 +31,25 @@ $(document).ready(function(){
       else if(value == 'genericWorksheet')
       {
 	console.log(value);
+	$('#upload').css('display','none');
+	$('#randomize').css('display','block');
+	$('#segregate').css('display','block');
+	$('#stud_name').css('display','none');
 	$('#subject').css('display','block');
 	$('#chapter').css('display','block');
 	$('#qtype').css('display','block');
 	$('#noOfQ').css('display','block');
+	$('#submit').css('display','block');
 	$('#stud_name').css('display','none');
       }
       else if(value == 'customizedWorksheet')
       {
+	$('#upload').css('display','block');
+	$('#randomize').css('display','none');
+	$('#segregate').css('display','none');
 	$('#stud_name').css('display','block');
 	$('#chapter').css('display','block');
+	$('#submit').css('display','block');
 	$('#subject').css('display','none');
 	$('#qtype').css('display','block');
 	$('#noOfQ').css('display','block');
@@ -86,6 +100,17 @@ $(document).ready(function(){
     showOnFocus: false,
     on: "hover" 
   });
+  $('#stud_name').dropdown({
+    onChange: function (value, text, $selectedItem) {
+      console.log(value.split(/\s*,\s*/));
+    },
+    forceSelection: false,
+    selectOnKeydown: false,
+    showOnFocus: false,
+    on: "hover"
+  });
+
+
 	
 	
 });
@@ -106,8 +131,21 @@ $(document).ready(function(){
 </div>
 <br/>
 <br/>
-<input type="text" id="stud_name" name="stud_name" placeholder="Enter Student name">
+<!-- Upload button -->
+<button id="upload">Upload</button>
 <br/>
+<!-- Student name -->
+<div id="stud_name" class="ui fluid multiple search selection dropdown">
+  <input name="stud_name" type="hidden">
+  <i class="dropdown icon"></i>
+  <div class="default text">Select Student Name</div>
+  <div class="menu">
+  <div class="item" data-value="Sandhya">Sandhya</div>
+  <div class="item" data-value="Ishani">Ishani</div>
+  <div class="item" data-value="Akshay">Akshay</div>
+  <div class="item" data-value="Naven">Naven</div>
+</div>
+  </div>
 
 <!-- Choose one subject -->
 <div id="subject" class="ui selection dropdown">
@@ -152,9 +190,15 @@ $(document).ready(function(){
   </div>
 <br/>
 <br/>
+<!-- Randomize and Segregate buttons -->
+<button class="randSeg" id="randomize">Randomize</button>
+<button class="randSeg" id="segregate">Segregate</button>
 <!-- Choose Number of Questions -->
+<br/><br/><br/>
 <input id="noOfQ"type="number" name="noOfQ" placeholder="No. of Questions">
-
+<br/>
+<br/>
+<button id="submit" type="submit">Submit</submit>
 </body>
 </html>
 

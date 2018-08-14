@@ -1,3 +1,17 @@
+html, body {
+    height: 100%;
+}
+
+html {
+    display: table;
+    margin: auto;
+}
+
+body {
+    display: table-cell;
+    vertical-align: middle;
+}
+
 #subject {
 	display:none;
 
@@ -20,4 +34,22 @@
 #stud_name{
 	display:none;
 
+}
+
+#submit{
+	display:none;
+}
+
+#randomize{
+	display:none;
+	float:left;
+}
+
+#segregate{
+	display:none;
+	float:right;
+}
+
+#upload{
+	display:none;
 }
