@@ -1,10 +1,48 @@
-<form action="upload" method="POST" enctype="multipart/form-data">
-  {% csrf_token %}
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hello</title>
+<link rel="stylesheet" type="text/css" href="../static/question_upload_style.css"
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.css"/>
 
-<label>Choose file to upload...
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.js"></script>
+<script>
+
+  $('#idDropDown').dropdown({
+onChange: function (value, text, $selectedItem) {
+  console.log(value);
+}});
+</script>
+
+</head>
+<body>
+<div class="container">
+<form action="upload" method="POST" enctype="multipart/form-data" class="ui form">
+
+  <div class="subject">
+  Choose a subject:
+  <br>
+  <br>
+  <select class="ui dropdown">
+    <option value="">Subject</option>
+    <option value="maths">Maths</option>
+    <option value="science">Science</option>
+  </select>
+
+</div>
+<br>
+<br>
+<div>
+  Select a file to upload:
 <input type="file" name="datafile" accept=".xlx,.xlsx">
-
+<br>
+<br>
+<br>
 <div>
 <input type="submit" value="Upload Questions">
-</div>
+</div></div>
 </form>
+</div>
+</body>
+</html>
