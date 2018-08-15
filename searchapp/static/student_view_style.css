@@ -11,10 +11,15 @@ body {
     display: table-cell;
     vertical-align: middle;
 }
+#worksheetType{
+	display:block;
+	margin-top:20%;
+	margin-left:auto;
+	margin-right:auto;
+}
 
 #subject {
 	display:none;
-
 }
 
 #chapter {
@@ -54,52 +59,46 @@ body {
 	display:none;
 }
 
-ul
-{
-list-style:none;
-margin: 0;
-padding: 0;
-font-size:20px;
+ul{
+	list-style:none;
+	margin: 0;
+	padding: 0;
+	font-size:20px;
 }
 
-#nav
-{
-    position:absolute;
-    width:100%;
-    top:0px;
-    right:0px;
-    background-color:grey;
+#nav{
+	width:100%;
+	margin-top:5%;
+	margin-right:auto;
+	margin-left:auto;
+	background-color:grey;
 }
 
-#logo
-{
-    position:absolute;
-    top:0px;
-    left:0px;
+#logo{
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+	width:50%;
 }
 
-ul li
-{
+ul li{
     float:left;
-    width:216px;
-    height:60px;
+    width:20%;
+    height:20%;
     text-align:center;
 }
 
-ul li a
-{
-    text-decoration:none;
-    color:black;
-    line-height:60px;
+ul li a{
+	text-decoration:none;
+	color:black;
+	line-height:60px;
 }
 
-ul li a:hover
-{
-    text-decoration:none;
-    color:black;
+ul li a:hover{
+	text-decoration:none;
+	color:black;
 }
 
-ul li:hover
-{
-    background-color:brown;
+ul li:hover{
+	background-color:brown;
 }
