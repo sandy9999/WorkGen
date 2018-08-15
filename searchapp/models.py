@@ -23,12 +23,16 @@ class Questions(models.Model):
     THREE = 3
     FOUR = 4
     FIVE = 5
+    SIX = 6
+    SEVEN = 7
     QUESTION_WEIGHTAGE_CHOICES = (
         (ONE, 'ONE'),
         (TWO, 'TWO'),
         (THREE, 'THREE'),
         (FOUR, 'FOUR'),
         (FIVE, 'FIVE'),
+        (SIX, 'SIX'),
+        (SEVEN, 'SEVEN'),
     )
     TEXT = 1
     FILL_IN_THE_BLANKS = 2
@@ -49,3 +53,11 @@ class Questions(models.Model):
 class MCQOptions(models.Model):
     question_id = models.ForeignKey('Questions', on_delete=models.CASCADE)
     option_value = models.CharField(max_length=100)
+
+
+class SubjectSplit(models.Model):
+    name = models.CharField(max_length=100)
+    question_weightage = models.IntegerField(choices=Questions.QUESTION_WEIGHTAGE_CHOICES, null=True)
+    question_type = models.IntegerField(choices=Questions.QUESTION_TYPE_CHOICES, null=True)
+    total_questions = models.IntegerField(default=0)
+    questions_to_attempt = models.IntegerField(default=0)

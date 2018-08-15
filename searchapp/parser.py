@@ -22,19 +22,20 @@ def parser_of_excel(file):
     error=""
     question_df=pd.read_csv('question_csv_file.csv')
 
-    if(question_df.iloc[0,0]!='Q Type:')
+    if(question_df.iloc[0,0]!='Q Type:'):
       error_count=1
       error="Error in cell 2A"
       return error,error_count
 
     for i in question_df.index:
         if(question_df.iat[i, 1]=='1A' or question_df.iat[i, 1]=='1B' or question_df.iat[i, 1]=='2.0' or question_df.iat[i, 1]=='3.0'or question_df.iat[i, 1]=='4.0' or question_df.isnull().iat[i, 1]):
+            error=""
         else:
            error="wrong question type"
            error_count=1
            return error,error_count
 
-    dict=[]
+    parsed_result=[]
     text=""
     question_type=""
     chapters_list=list(question_df.columns.values)
@@ -51,6 +52,6 @@ def parser_of_excel(file):
                            'Question_type':question_type
 
                        }
-                        dict.append(input_list)
+                        parsed_result.append(input_list)
                         break
-    return dict,error_count
+    return parsed_result,error_count
