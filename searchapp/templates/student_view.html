@@ -7,14 +7,14 @@ Student View
 {% block student_view %}
 <!-- Select worksheet type -->
 <div id="worksheetType" class="ui selection dropdown">
-  <input name="worksheetType" type="hidden">
-  <i class="dropdown icon"></i>
-  <div class="default text">Select Worksheet Type</div>
-  <div class="menu">
-    <div class="item" data-value="testPaper">Test Paper</div>
-    <div class="item" data-value="genericWorksheet">Generic Worksheet</div>
-    <div class="item" data-value="customizedWorksheet">Customized Worksheet</div>
- </div>
+	<input name="worksheetType" type="hidden">
+	<i class="dropdown icon"></i>
+	<div class="default text">Select Worksheet Type</div>
+	<div class="menu">
+		<div class="item" data-value="testPaper">Test Paper</div>
+		<div class="item" data-value="genericWorksheet">Generic Worksheet</div>
+		<div class="item" data-value="customizedWorksheet">Customized Worksheet</div>
+	</div>
 </div>
 <br/>
 <br/>
@@ -22,72 +22,75 @@ Student View
 <button id="upload">Upload</button>
 <br/>
 <!-- Student name -->
-
 <div id="stud_name" class="ui fluid multiple search selection dropdown">
-  <input name="stud_name" type="hidden">
-  <i class="dropdown icon"></i>
-  <div class="default text">Select Student Name</div>
-  <div class="menu">
-  <div class="item" data-value="Sandhya">Sandhya</div>
-  <div class="item" data-value="Ishani">Ishani</div>
-  <div class="item" data-value="Akshay">Akshay</div>
-  <div class="item" data-value="Naven">Naven</div>
-</div>
+	<input name="stud_name" type="hidden">
+	<i class="dropdown icon"></i>
+	<div class="default text">Select Student Name</div>
+	<div class="menu">
+		<div class="item" data-value="Sandhya">Sandhya</div>
+		<div class="item" data-value="Ishani">Ishani</div>
+		<div class="item" data-value="Akshay">Akshay</div>
+		<div class="item" data-value="Naven">Naven</div>
+	</div>
 </div>
 
 <!-- Choose one subject -->
 <div id="subject" class="ui selection dropdown">
-  <input name="subject" type="hidden">
-  <i class="dropdown icon"></i>
-  <div class="default text">Select Subject</div>
-  <div class="menu">
-    <!-- {% for item in subject %}
-    <div class="item" data-value="{{ item.subject }}">{{ item.subject }}</div>
-    {% endfor %} -->
-    <div class="item" data-value="Science">Science</div>
-    <div class="item" data-value="Math">Math</div>
-  </div>
+	<input name="subject" type="hidden">
+	<i class="dropdown icon"></i>
+	<div class="default text">Select Subject</div>
+	<div class="menu">
+	<!-- {% for item in subject %}
+	<div class="item" data-value="{{ item.subject }}">{{ item.subject }}</div>
+	{% endfor %} -->
+		<div class="item" data-value="Science">Science</div>
+		<div class="item" data-value="Math">Math</div>
+  	</div>
 </div>
 <br/>
 <br/>
 <!-- Choose chapters under given subject -->
 <div id="chapter" class="ui fluid multiple search selection dropdown">
-  <input name="chapter" type="hidden">
-  <i class="dropdown icon"></i>
-  <div class="default text">Select chapter</div>
-  <div class="menu">
-  {% for thing in chap %}
-  <div class="item" data-value="{{ thing.chapter }}">{{ thing.chapter }}</div>
-  {% endfor %}
+	<input name="chapter" type="hidden">
+	<i class="dropdown icon"></i>
+	<div class="default text">Select chapter</div>
+	<div class="menu">
+		{% for thing in chap %}
+		<div class="item" data-value="{{ thing.chapter }}">{{ thing.chapter }}</div>
+  		{% endfor %}
+	</div>
 </div>
-  </div>
 <br/>
 <br/>
 <!-- Choose Question types -->
 <div id="qtype" class="ui fluid multiple search selection dropdown">
-  <input name="qtype" type="hidden">
-  <i class="dropdown icon"></i>
-  <div class="default text">Select Question Type</div>
-  <div class="menu">
-  <div class="item" data-value="1">1 mark</div>
-  <div class="item" data-value="2">2 marks</div>
-  <div class="item" data-value="3">3 marks</div>
-  <div class="item" data-value="4">4 marks</div>
-  <div class="item" data-value="5">5 marks</div>
+	<input name="qtype" type="hidden">
+	<i class="dropdown icon"></i>
+	<div class="default text">Select Question Type</div>
+	<div class="menu">
+		<div class="item" data-value="1">1 mark</div>
+		<div class="item" data-value="2">2 marks</div>
+		<div class="item" data-value="3">3 marks</div>
+		<div class="item" data-value="4">4 marks</div>
+		<div class="item" data-value="5">5 marks</div>
+	</div>
 </div>
-  </div>
-<br/>
-<br/>
+<br/><br/>
 <!-- Randomize and Segregate buttons -->
 <button class="randSeg" id="randomize">Randomize</button>
 <button class="randSeg" id="segregate">Segregate</button>
 <!-- Choose Number of Questions -->
 <br/><br/><br/>
-<input id="noOfQ"type="number" name="noOfQ" placeholder="No. of Questions">
+<input id="noOfQ1" type="number" min="0" max="100" step="1" name="noOfQ1" placeholder="No. of 1 mark Questions">
+<br/>
+<input id="noOfQ2" type="number" min="0" max="100" step="1" name="noOfQ2" placeholder="No. of 2 mark Questions">
+<br/>
+<input id="noOfQ3" type="number" min="0" max="100" step="1" name="noOfQ3" placeholder="No. of 3 mark Questions">
+<br/>
+<input id="noOfQ4" type="number" min="0" max="100" step="1" name="noOfQ4" placeholder="No. of 4 mark Questions">
+<br/>
+<input id="noOfQ5" type="number" min="0" max="100" step="1" name="noOfQ5" placeholder="No. of 5 mark Questions">
 <br/>
 <br/>
-<button id="submit" type="submit">Submit</submit>
+<button id="submit" type="submit">DOWNLOAD</submit>
 {% endblock %}
-
-
-

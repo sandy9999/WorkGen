@@ -11,8 +11,13 @@ $(document).ready(function(){
 			$('#chapter').css('display','block');
 			$('#submit').css('display','block');
 		        $('#qtype').css('display','none');
-			$('#noOfQ').css('display','none');
-			$('#noofQ').css('display','none');
+			$('#noOfQ1').css('display','none');
+			$('#noOfQ2').css('display','none');
+			$('#noOfQ3').css('display','none');
+			$('#noOfQ4').css('display','none');
+			$('#noOfQ5').css('display','none');
+
+
       		}
 		else if(value == 'genericWorksheet')
 		{
@@ -23,7 +28,11 @@ $(document).ready(function(){
 			$('#subject').css('display','block');
 			$('#chapter').css('display','block');
 			$('#qtype').css('display','block');
-			$('#noOfQ').css('display','block');
+			$('#noOfQ1').css('display','block');
+			$('#noOfQ2').css('display','block');
+			$('#noOfQ3').css('display','block');
+			$('#noOfQ4').css('display','block');
+			$('#noOfQ5').css('display','block');
 			$('#submit').css('display','block');
 			$('#stud_name').css('display','none');
 		}
@@ -37,7 +46,11 @@ $(document).ready(function(){
 			$('#submit').css('display','block');
 			$('#subject').css('display','none');
 			$('#qtype').css('display','block');
-			$('#noOfQ').css('display','block');
+			$('#noOfQ1').css('display','block');
+			$('#noOfQ2').css('display','block');
+			$('#noOfQ3').css('display','block');
+			$('#noOfQ4').css('display','block');
+			$('#noOfQ5').css('display','block');
 		}
 	},
 	forceSelection: false,
