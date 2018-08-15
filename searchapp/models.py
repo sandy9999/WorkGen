@@ -44,6 +44,7 @@ class Questions(models.Model):
     )
     subject = models.CharField(max_length=100)
     chapter = models.CharField(max_length=100)
+    chapter_number = models.IntegerField(blank=False, null=False)
     question_weightage = models.IntegerField(choices=QUESTION_WEIGHTAGE_CHOICES, null=True)
     question_type = models.IntegerField(choices=QUESTION_TYPE_CHOICES, null=True)
     uploaded_by = models.ForeignKey('Mentor', on_delete=models.CASCADE)
