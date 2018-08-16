@@ -2,6 +2,13 @@
   margin: 0 auto;
   text-align:center;
 }
+.subject{
+  align-text:center;
+  width:50%;
+  margin-left: 25%;
+  margin-right: 25%;
+}
+
 input[type=submit] {
    background-color:#d5f6b9;
    border: none;
