@@ -6,39 +6,34 @@
 	display:block;
 }
 #subject {
-	display:none;
 	margin-left:auto;
 	margin-right:auto;
 	width:50%;
+	display: block;
 }
 #chapter {
-	display:none;
 	margin-left:auto;
 	margin-right:auto;
 	width:50%;
 }
 #qtype{
-	display:none;
 	margin-left:auto;
 	margin-right:auto;
 	width:50%;
 }
 
 #noOfQ1,#noOfQ2,#noOfQ3,#noOfQ4,#noOfQ5{
-	display:none;
 	margin-left:auto;
 	margin-right:auto;
 	font-size:20px;
 }
 #stud_name{
-	display:none;
 	margin-left:auto;
 	margin-right:auto;
 	width:50%;
 
 }
 #submit{
-	display:none;
 	margin-left:auto;
 	margin-right:auto;
 	background-color:#d5f6b9;
@@ -50,48 +45,48 @@
 	border-radius:10px;
 	font-weight:bold;
 	margin-bottom:1%;
+	display: block;
 }
 #randomize{
-	display:none;
 	float:left;
 	margin-left:20%;
 	background-color:#d5f6b9;
-        border:none;
-        color:black;
-        padding: 8px 32px;
-        text-decoration:none;
-        cursor:pointer;
-        border-radius:10px;
-        margin-bottom:1%;
+	border:none;
+	color:black;
+	padding: 8px 32px;
+	text-decoration:none;
+	cursor:pointer;
+	border-radius:10px;
+	margin-bottom:1%;
 	font-size:12px;
 }
 #segregate{
-	display:none;
 	float:right;
 	margin-right:20%;
 	background-color:#d5f6b9;
-        border:none;
-        color:black;
-        padding: 8px 32px;
-        text-decoration:none;
-        cursor:pointer;
-        border-radius:10px;
-        margin-bottom:1%;
+	border:none;
+	color:black;
+	padding: 8px 32px;
+	text-decoration:none;
+	cursor:pointer;
+	border-radius:10px;
+	margin-bottom:1%;
 	font-size:12px;
 }
 #upload{
-	display:none;
 	margin-left:auto;
 	margin-right:auto;
 	background-color:#d5f6b9;
-        border:none;
-        color:black;
-        padding: 8px 32px;
-        text-decoration:none;
-        cursor:pointer;
-        border-radius:10px;
-        margin-bottom:1%;
-        font-size:12px;
+	border:none;
+	color:black;
+	padding: 8px 32px;
+	text-decoration:none;
+	cursor:pointer;
+	border-radius:10px;
+	margin-bottom:1%;
+	font-size:12px;
+	display: block;
+	font-weight: bold;
 }
 ul{
 	list-style:none;
@@ -102,7 +97,7 @@ ul{
 	width:100%;
 }
 #nav{
-	margin-top:2%;
+	margin-top:30px;
 	background-color:#AAADAC;
 }
 #logo{
@@ -119,7 +114,9 @@ ul li{
 ul li a{
 	text-decoration:none;
 	color:white;
-	line-height:60px;
+	line-height:40px;
+	font-size:15px;
+	font-family: 'Baloo Bhai', cursive;	
 }
 ul li a:hover{
 	text-decoration:none;
@@ -147,4 +144,26 @@ input[type=number] {
 ::placeholder{
 	font-size:13px;
 	color:#c2c2a3;
+}
+
+.workgen-title {
+	color: #898d8c;
+	text-align: center;
+	margin-top:30px !important;
+	margin-bottom: 0px !important;
+}
+
+.question-type-div {
+	text-align: center;
+}
+
+.question-type-div > input {
+	margin-right: 10px !important;
+}
+
+#random-setting {
+	display: block;
+	width: 50%;
+	margin-left: auto;
+	margin-right: auto;
 }
