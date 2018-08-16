@@ -9,7 +9,7 @@ class Mentor(models.Model):
         (SUPERADMIN, 'SUPERADMIN'),
     )
     username = models.CharField(max_length=40, unique=True, blank=False, null=False)
-    password = models.CharField(max_length=500, blank=False, null=False)
+    password = models.CharField(max_length=40, blank=False, null=False)
     phone = models.CharField(max_length=40, blank=True, null=True)
     email = models.CharField(max_length=40, unique=True, blank=False, null=False)
     mentor_type = models.IntegerField(choices=MENTOR_TYPE_CHOICES, default=REGULAR)
