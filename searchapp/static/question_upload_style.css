@@ -5,21 +5,20 @@
 
 }
 .subject{
+  align-text:center;
   width:50%;
+  margin-left: 25%;
+  margin-right: 25%;
+  }
 
-  margin-left:30%;
-  margin-right:30%;
-
-}
-
-
- input[type=submit] {
-    background-color:black;
-    border: none;
-    color: white;
-    padding: 16px 32px;
-    text-decoration: none;
-    margin: 10px 20px;
-    cursor: pointer;
-    border-radius:5px;
-}
+  input[type=submit] {
+   background-color:#d5f6b9;
+   border: none;
+   color:black;
+   padding: 8px 32px;
+   text-decoration: none;
+   margin: 10px 20px;
+   cursor: pointer;
+   border-radius:10px;
+   font-weight:bold;
+  }
