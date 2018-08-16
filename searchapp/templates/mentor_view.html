@@ -1,20 +1,20 @@
-<html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hello</title>
-<link rel="stylesheet" type="text/css" href="../static/mentor_view_style.css"/>
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.css"/>
 
-
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.js"></script>
-</head>
-<body>
-<div class="ui grid">
-    <div class="three wide column"><div class="button"><a href="question_upload_mentor.html" class="button">Upload Questions</a></div></div>
+{% extends "layout.html" %}
+{% block title %}
+Hello
+{% endblock %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'mentor_view_style.css' %}"/>
+{% endblock %}
+{% block student_view %}
+<br>
+<br>
+<br>
+  <div class="ui grid">
+    <div class="three wide column"><div class="button"><a href="questions_upload" class="button">Upload Questions</a></div></div>
     <div class="three wide column">2</div>
     <div class="three wide column">3</div>
     <div class="three wide column">4</div>
-</div>
-</body>
-</html>
+  </div>
+{% endblock %}
