@@ -23,7 +23,7 @@ Upload
   <div class="container">
     <form action="upload" method="POST" enctype="multipart/form-data" class="ui form">
         {% csrf_token %}
-        Choose a subject:
+      <div class="text">  Choose a subject:
         <br>
         <br>
         <div class="subject">
@@ -37,13 +37,16 @@ Upload
         <br>
         <div>
           Select a file to upload:
-          <div class="subject">
+          <br>
+          <br>
+          <label class="file">
+            Browse..
               <input type="file" name="datafile" accept=".xlx,.xlsx">
-              <br>
-              <br>
-              <br>
-            </div>
+          </label>
+          </div>
           <div>
+            <br>
+            <br>
             <input type="submit" value="UPLOAD QUESTIONS">
           </div>
         </div>

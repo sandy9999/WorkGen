@@ -1,10 +1,11 @@
 from django.shortcuts import render,redirect,render_to_response
-from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 import xlrd
+from .test_paper import generate_test_paper
 from .models import Questions, Mentor
 #from .parser import parser_of_excel
 
@@ -45,8 +46,17 @@ def add_questions(request):
             return render(request,'question_upload_mentor.html',{'error':"no subject selected",'flag':'1'})
         if len(request.FILES)!=0:
             file_obj = request.FILES['datafile']
-            work_book = xlrd.open_workbook(file_contents=file_obj.read())
+            #work_book = xlrd.open_workbook(file_contents=file_obj.read())
             #handle_uploaded_file(work_book,subject)
+            generate_test_paper("science",['Sun','Gravitation'],{
+                '1A': [5, 5],
+                '1B': [5, 5],
+                '2': [7, 5],
+                '3': [7, 5],
+                '5': [2, 2]
+            }
+
+            )
             return HttpResponse("added successfully")
         else:
             return render(request,'question_upload_mentor.html',{'error':"no file selected",'flag':'1'})
