@@ -18,10 +18,7 @@ from django.contrib.auth import login,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-import xlrd
-
 from .models import Questions, Mentor
-
 
 
 def login_view(request):
