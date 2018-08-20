@@ -4,10 +4,11 @@ from django.contrib.auth import login,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-import xlrd
+from .test_paper import generate_test_paper
+from .utils.utils import convert_question_bank,get_type_and_weightage
 from .test_paper import generate_test_paper
 from .models import Questions, Mentor
-#from .parser import parser_of_excel
+
 
 
 def login_view(request):
@@ -46,54 +47,40 @@ def add_questions(request):
             return render(request,'question_upload_mentor.html',{'error':"no subject selected",'flag':'1'})
         if len(request.FILES)!=0:
             file_obj = request.FILES['datafile']
-            #work_book = xlrd.open_workbook(file_contents=file_obj.read())
-            #handle_uploaded_file(work_book,subject)
-            generate_test_paper("science",['Sun','Gravitation'],{
-                '1A': [5, 5],
-                '1B': [5, 5],
-                '2': [7, 5],
-                '3': [7, 5],
-                '5': [2, 2]
-            }
-
-            )
+            chapter_to_question=convert_question_bank(file_obj)
+            print("after calling function")
+            print(chapter_to_question)
+            add_to_database(chapter_to_question,subject)
             return HttpResponse("added successfully")
         else:
             return render(request,'question_upload_mentor.html',{'error':"no file selected",'flag':'1'})
 
 
-#def handle_uploaded_file(file,subject):
-#    user_data = User.objects.filter(is_superuser=True)
-#    _user = user_data.values_list('username', flat=True)
-#    _email = user_data.values_list('email', flat=True)
-#    _password = user_data.values_list('password', flat=True)
 
-#    check = Mentor.objects.filter(username=_user[0]).count()
-#    if check==0:
-#        u = Mentor(username=_user[0], email=_email[0], password=_password[0], mentor_type=1, full_name="john a george", phone="987654321")
-#        u.save()
-#    id = Mentor.objects.filter(username=_user[0]).values_list('id',flat=True)[0]
-#    dict, count = parser_of_excel(file)
-#    if(count>0):
-#        return HttpResponse(dict)
-#    type = ""
-#    question_weightage = ""
-#    for row in dict:
-#        if row['Question_type']=='1A'or row['Question_type']=='1B':
-#            question_weightage = 1;
-#        if(row['Question_type']=='2'):
-#            question_weightage = 2
-#        if(row['Question_type']=='3'):
-#            question_weightage = 3
-#        if(row['Question_type']=='4'):
-#            question_weightage = 4
-#        if(row['Question_type']=='5'):
-#            question_weightage = 5
-#        if(row['Question_type']=='1A'):
-#            type = 2
-#        else:
-#            type = 1
-#        q = Questions(subject=subject, chapter=row['Chapter'], question_type=type, uploaded_by=Mentor.objects.get(pk=id),
-#                       text=row['Text'], question_weightage=question_weightage)
+def add_to_database(chapter_to_question,subject):
+    user_data = User.objects.filter(is_superuser=True)
+    _user = user_data.values_list('username', flat=True)
+    _email = user_data.values_list('email', flat=True)
+    _password = user_data.values_list('password', flat=True)
 
-#        q.save()
+    check = Mentor.objects.filter(username=_user[0]).count()
+    if check==0:
+        u = Mentor(username=_user[0], email=_email[0], password=_password[0][:40], mentor_type=1, full_name="john a george", phone="987654321")
+        u.save()
+    id = Mentor.objects.filter(username=_user[0]).values_list('id',flat=True)[0]
+
+    chapter_no=0
+    for chapter in chapter_to_question:
+        chapter_no=chapter_no+1
+        questions_dict=chapter_to_question[chapter]
+
+        for question_type in questions_dict:
+                    questions_list=questions_dict[question_type]
+                    type,weightage=get_type_and_weightage(question_type)
+                    for i in range(len(questions_list)):
+                        chapter_name=chapter.strip()
+                        print(chapter_name)
+                        print(weightage)
+                        q=Questions(chapter_number=chapter_no,subject=subject,chapter=chapter_name,question_type=type,question_weightage=weightage,text=questions_list[i],uploaded_by=Mentor.objects.get(pk=id))
+                        q.save()
+                        print("data saved")

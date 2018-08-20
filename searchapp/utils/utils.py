@@ -110,6 +110,7 @@ def get_allowed_questions(data, allowed_qtypes, allowed_chapters):
             if qtype in allowed_qtypes:
                 updated_data[student][qtype] = [x for x in qtypes[qtype] if x[2] in allowed_chapters]
     updated_data = default_to_regular(updated_data)
+    print(updated_data)
     return updated_data
 
 def get_customized_paper(marker_data):
@@ -138,6 +139,25 @@ def get_customized_paper(marker_data):
         student_to_chapter[student] = list(set([x[1] for x in lowest_scored_chapters]))
         student_to_chapter[student] = sample(student_to_chapter[student], min(3, len(student_to_chapter[student])))
     return student_to_chapter
+
+def get_type_and_weightage(question_type):
+    type=0
+    weightage=0
+    if question_type=='1A':
+        type=1
+        weightage=1
+    if question_type=='1B':
+       type=2
+       weightage=1
+    if question_type=='2':
+        type=1
+        weightage=2
+    if question_type=='3':
+        type=1
+        weightage=3
+        type=1
+        weightage=4
+    return type,weightage
 
 def convert_question_bank(question_bank_path):
     """
