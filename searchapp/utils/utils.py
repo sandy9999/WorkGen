@@ -141,23 +141,23 @@ def get_customized_paper(marker_data):
     return student_to_chapter
 
 def get_type_and_weightage(question_type):
-    type=0
+    q_type=0
     weightage=0
     if question_type=='1A':
-        type=1
+        q_type=1
         weightage=1
     if question_type=='1B':
-       type=2
+       q_type=2
        weightage=1
     if question_type=='2':
-        type=1
+        q_type=1
         weightage=2
     if question_type=='3':
-        type=1
+        q_type=1
         weightage=3
-        type=1
+        q_type=1
         weightage=4
-    return type,weightage
+    return q_type,weightage
 
 def convert_question_bank(question_bank_path):
     """

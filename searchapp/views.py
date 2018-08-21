@@ -42,15 +42,13 @@ def add_questions(request):
     error=""
     if request.method=='POST':
         subject=request.POST['dropdownSubject']
-        print(subject)
         if(subject ==""):
             return render(request,'question_upload_mentor.html',{'error':"no subject selected",'flag':'1'})
         if len(request.FILES)!=0:
             file_obj = request.FILES['datafile']
             chapter_to_question=convert_question_bank(file_obj)
-            print("after calling function")
-            print(chapter_to_question)
             add_to_database(chapter_to_question,subject)
+            
             return HttpResponse("added successfully")
         else:
             return render(request,'question_upload_mentor.html',{'error':"no file selected",'flag':'1'})
@@ -76,11 +74,8 @@ def add_to_database(chapter_to_question,subject):
 
         for question_type in questions_dict:
                     questions_list=questions_dict[question_type]
-                    type,weightage=get_type_and_weightage(question_type)
+                    q_type,weightage=get_type_and_weightage(question_type)
                     for i in range(len(questions_list)):
                         chapter_name=chapter.strip()
-                        print(chapter_name)
-                        print(weightage)
-                        q=Questions(chapter_number=chapter_no,subject=subject,chapter=chapter_name,question_type=type,question_weightage=weightage,text=questions_list[i],uploaded_by=Mentor.objects.get(pk=id))
+                        q=Questions(chapter_number=chapter_no,subject=subject,chapter=chapter_name,question_type=q_type,question_weightage=weightage,text=questions_list[i],uploaded_by=Mentor.objects.get(pk=id))
                         q.save()
-                        print("data saved")

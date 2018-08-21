@@ -1,7 +1,8 @@
 from docx import Document
+import os
 
 
-def convert_to_doc(dict):
+def convert_to_doc(dict,subject):
     document = Document()
     document.add_heading("Questions sheet")
     p=document.add_paragraph()
@@ -63,5 +64,6 @@ def convert_to_doc(dict):
                 p1=document.add_paragraph(str(i)+" : ")
                 p1.add_run(question)
 
-
-    document.save("test_worsheet.docx")
+    filename="test_worksheet_"+subject+".docx"
+    filepath=os.path.join('searchapp/static', filename)
+    document.save(filepath)
