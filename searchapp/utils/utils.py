@@ -146,17 +146,18 @@ def get_type_and_weightage(question_type):
     if question_type=='1A':
         q_type=1
         weightage=1
-    if question_type=='1B':
+    else if question_type=='1B':
        q_type=2
        weightage=1
-    if question_type=='2':
+   else if question_type=='2':
         q_type=1
         weightage=2
-    if question_type=='3':
+    else if question_type=='3':
         q_type=1
         weightage=3
+    else if question_type=='5'
         q_type=1
-        weightage=4
+        weightage=5
     return q_type,weightage
 
 def convert_question_bank(question_bank_path):
