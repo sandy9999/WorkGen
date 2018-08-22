@@ -19,7 +19,7 @@ Student View
 <br>
 <div id="test-div" style="display: none;">
 	<div id="subjectTest" class="ui selection dropdown">
-		<input name="subject" type="hidden">
+		<input name="subjectTest" type="hidden">
 		<i class="dropdown icon"></i>
 		<div class="default text">Select Subject</div>
 		<div class="menu">
@@ -32,7 +32,7 @@ Student View
 	</div>
 	<br>
 	<div id="chapterTest" class="ui fluid multiple search selection dropdown">
-		<input name="chapter" type="hidden">
+		<input name="chapterTest" type="hidden">
 		<i class="dropdown icon"></i>
 		<div class="default text">Select chapter</div>
 		<div class="menu">
@@ -44,7 +44,7 @@ Student View
 </div>
 <div id="generic-div" style="display: none;">
 	<div id="subjectGeneric" class="ui selection dropdown">
-		<input name="subject" type="hidden">
+		<input name="subjectGeneric" type="hidden">
 		<i class="dropdown icon"></i>
 		<div class="default text">Select Subject</div>
 		<div class="menu">
@@ -57,7 +57,7 @@ Student View
 	</div>
 	<br>
 	<div id="chapterGeneric" class="ui fluid multiple search selection dropdown">
-		<input name="chapter" type="hidden">
+		<input name="chapterGeneric" type="hidden">
 		<i class="dropdown icon"></i>
 		<div class="default text">Select chapter</div>
 		<div class="menu">
@@ -68,39 +68,39 @@ Student View
 	</div>
 	<br>
 	<div id="qtypeGeneric" class="ui fluid multiple search selection dropdown">
-		<input name="qtype" type="hidden">
+		<input name="qtypeGeneric" type="hidden">
 		<i class="dropdown icon"></i>
 		<div class="default text">Select Question Type</div>
 		<div class="menu">
-			<div class="item" data-value="1">1 mark</div>
+			<div class="item" data-value="1A">1 mark - Fill up</div>
+			<div class="item" data-value="1B">1 mark - MCQ</div>
 			<div class="item" data-value="2">2 marks</div>
 			<div class="item" data-value="3">3 marks</div>
-			<div class="item" data-value="4">4 marks</div>
 			<div class="item" data-value="5">5 marks</div>
 		</div>
 	</div>
 	<br>
 	<div class="question-type-div">
-		<input id="noOfQ1" size="15" type="number" min="0" max="100" step="1" name="noOfQ1" placeholder="No. of 1 mark Questions">
-		<input id="noOfQ2" size="15" type="number" min="0" max="100" step="1" name="noOfQ2" placeholder="No. of 2 mark Questions">
-		<input id="noOfQ3" size="15" type="number" min="0" max="100" step="1" name="noOfQ3" placeholder="No. of 3 mark Questions">
-		<input id="noOfQ4" size="15" type="number" min="0" max="100" step="1" name="noOfQ4" placeholder="No. of 4 mark Questions">
-		<input id="noOfQ5" size="15" type="number" min="0" max="100" step="1" name="noOfQ5" placeholder="No. of 5 mark Questions">
+		<input id="noOfQ1Generic" size="15" type="number" min="0" max="100" step="1" name="noOfQ1Generic" placeholder="No. of 1 mark Fill up">
+		<input id="noOfQ2Generic" size="15" type="number" min="0" max="100" step="1" name="noOfQ2Generic" placeholder="No. of 1 mark MCQ">
+		<input id="noOfQ3Generic" size="15" type="number" min="0" max="100" step="1" name="noOfQ3Generic" placeholder="No. of 2 mark Questions">
+		<input id="noOfQ4Generic" size="15" type="number" min="0" max="100" step="1" name="noOfQ4Generic" placeholder="No. of 3 mark Questions">
+		<input id="noOfQ5Generic" size="15" type="number" min="0" max="100" step="1" name="noOfQ5Generic" placeholder="No. of 5 mark Questions">
 	</div>
 	<br>
-	<div id="random-setting" class="ui selection dropdown">
-			<input name="random-setting" type="hidden">
+	<div id="random_setting" class="ui selection dropdown">
+			<input name="random_setting" type="hidden">
 			<i class="dropdown icon"></i>
 			<div class="default text">Select Shuffling Order</div>
 			<div class="menu">
 				<div class="item" data-value="random">Random</div>
 				<div class="item" data-value="segregated">Segregated</div>
-		</div>
+			</div>
 	</div>
 </div>
 <div id="customized-div" style="display: none;">
 	<div id="subjectCustomized" class="ui selection dropdown">
-		<input name="subject" type="hidden">
+		<input name="subjectCustomized" type="hidden">
 		<i class="dropdown icon"></i>
 		<div class="default text">Select Subject</div>
 		<div class="menu">
@@ -112,8 +112,10 @@ Student View
 		</div>
 	</div>
 	<br>
-	<form action="upload" method="POST" enctype="multipart/form-data" class="ui form">
-	<label id="upload">Upload<input type="file" name="datafile" accept=".xlx,.xlsx"></label>
+	<form method="POST" enctype="multipart/form-data" class="ui form" id="upload_form">
+		{% csrf_token %}
+	<div id="fileinput"><input type="file" name="datafile" accept=".xlx,.xlsx"></div>
+	<button id="upload" type="submit">Upload</button>
 	</form>
 	<br>
 	<div id="stud_name" class="ui fluid multiple search selection dropdown">
@@ -129,7 +131,7 @@ Student View
 	</div>
 	<br>
 	<div id="chapterCustomized" class="ui fluid multiple search selection dropdown">
-		<input name="chapter" type="hidden">
+		<input name="chapterCustomized" type="hidden">
 		<i class="dropdown icon"></i>
 		<div class="default text">Select chapter</div>
 		<div class="menu">
@@ -140,42 +142,26 @@ Student View
 	</div>
 	<br>
 	<div id="qtypeCustomized" class="ui fluid multiple search selection dropdown">
-		<input name="qtype" type="hidden">
+		<input name="qtypeCustomized" type="hidden">
 		<i class="dropdown icon"></i>
 		<div class="default text">Select Question Type</div>
 		<div class="menu">
-			<div class="item" data-value="1">1 mark</div>
+			<div class="item" data-value="1A">1 mark - Fill up</div>
+			<div class="item" data-value="1B">1 mark - MCQ</div>
 			<div class="item" data-value="2">2 marks</div>
 			<div class="item" data-value="3">3 marks</div>
-			<div class="item" data-value="4">4 marks</div>
 			<div class="item" data-value="5">5 marks</div>
 		</div>
 	</div>
 	<br>
 	<div class="question-type-div">
-		<input id="noOfQ1" size="15" type="number" min="0" max="100" step="1" name="noOfQ1" placeholder="No. of 1 mark Questions">
-		<input id="noOfQ2" size="15" type="number" min="0" max="100" step="1" name="noOfQ2" placeholder="No. of 2 mark Questions">
-		<input id="noOfQ3" size="15" type="number" min="0" max="100" step="1" name="noOfQ3" placeholder="No. of 3 mark Questions">
-		<input id="noOfQ4" size="15" type="number" min="0" max="100" step="1" name="noOfQ4" placeholder="No. of 4 mark Questions">
-		<input id="noOfQ5" size="15" type="number" min="0" max="100" step="1" name="noOfQ5" placeholder="No. of 5 mark Questions">
+		<input id="noOfQ1Customized" size="15" type="number" min="0" max="100" step="1" name="noOfQ1Customized" placeholder="No. of 1 mark Fill up">
+		<input id="noOfQ2Customized" size="15" type="number" min="0" max="100" step="1" name="noOfQ2Customized" placeholder="No. of 1 mark MCQ">
+		<input id="noOfQ3Customized" size="15" type="number" min="0" max="100" step="1" name="noOfQ3Customized" placeholder="No. of 2 mark Questions">
+		<input id="noOfQ4Customized" size="15" type="number" min="0" max="100" step="1" name="noOfQ4Customized" placeholder="No. of 3 mark Questions">
+		<input id="noOfQ5Customized" size="15" type="number" min="0" max="100" step="1" name="noOfQ5Customized" placeholder="No. of 5 mark Questions">
 	</div>
 </div>
-<br/><br/>
-<!-- Randomize and Segregate buttons -->
-<button class="randSeg" id="randomize">Randomize</button>
-<button class="randSeg" id="segregate">Segregate</button>
-<!-- Choose Number of Questions -->
-<br/><br/><br/>
-<input id="noOfQ1" type="number" min="0" max="100" step="1" name="noOfQ1" placeholder="No. of 1 mark Questions">
-<br/>
-<input id="noOfQ2" type="number" min="0" max="100" step="1" name="noOfQ2" placeholder="No. of 2 mark Questions">
-<br/>
-<input id="noOfQ3" type="number" min="0" max="100" step="1" name="noOfQ3" placeholder="No. of 3 mark Questions">
-<br/>
-<input id="noOfQ4" type="number" min="0" max="100" step="1" name="noOfQ4" placeholder="No. of 4 mark Questions">
-<br/>
-<input id="noOfQ5" type="number" min="0" max="100" step="1" name="noOfQ5" placeholder="No. of 5 mark Questions">
-<br/>
-<br/>
-<button id="submit" type="submit">DOWNLOAD</submit>
+<br>
+<button id="submit">DOWNLOAD</button>
 {% endblock %}

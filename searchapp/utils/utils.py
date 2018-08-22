@@ -163,7 +163,7 @@ def convert_question_bank(question_bank_path):
             }
 
     """
-    question_bank = op.load_workbook(question_bank_path).worksheets[0]
+    question_bank = op.load_workbook(question_bank_path).worksheets[1]
     col_count = -1
     chapter_to_question = defaultdict(lambda: defaultdict(lambda: list))
     for col in question_bank.columns:
@@ -191,13 +191,34 @@ def convert_question_bank(question_bank_path):
                     break
                 col = [i.value for i in col]
                 temp_col = col[question_type_start_row:]
-                questions = temp_col[:temp_col.index2(None)]
+                questions = temp_col[:temp_col.index(None)]
                 max_questions = max(max_questions, len(questions))
                 chapter_to_question[chapter_name][question_type] = questions
         question_type_start_row += max_questions + 1
         question_type = question_type_col[question_type_start_row].value
     chapter_to_question = default_to_regular(chapter_to_question)
     return chapter_to_question
+
+def get_type_and_weightage(question_type):
+    q_type = 0
+    weightage = 0
+    if question_type=='1A':
+        q_type=1
+        weightage=1
+    elif question_type=='1B':
+        q_type=2
+        weightage=1
+    elif question_type=='2':
+        q_type=1
+        weightage=2
+    elif question_type=='3':
+        q_type=1
+        weightage = 3
+    elif question_type=='5':
+        q_type = 1
+        weightage = 5
+    return q_type,weightage
+    
 
 if __name__ == "__main__":
     science_breakup = {
@@ -208,6 +229,6 @@ if __name__ == "__main__":
         '5': [2, 2]
     }
     data = convert_marker_data("data.xlsx", science_breakup)
-    filtered_data = get_allowed_questions(data, ['1A', '1B', '2'], [3])
+    filtered_data = get_allowed_questions(data, ['1A', '1B', '2','3','5'], [1,2,3,4,5])
     customized_data = get_customized_paper(filtered_data)
     print(customized_data)
