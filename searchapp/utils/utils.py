@@ -147,14 +147,14 @@ def convert_question_bank(question_bank_path):
         :example return:
             {
                 'Science': {
-                    1: {
+                    (1, 'Gravitation') : {
                         '1A': ['Gravitation is caused by ______', 'There are ___ laws of Kepler', 'Earth has a radius of ___'],
                         '1B': ['Planetary motion blah True?', 'Give reason why the sun...', 'What is a ...?'],
                         '2': ['State the laws', 'What is Kepler', 'WHy is escape velo?'],
                         '3': ['Derive conditions for escape veloty and find it', 'State the Keplers Law and derive', 'What is potential energy'],
                         '4': ['Numerical on free fall', 'Derive the gravitational constant from Newtons Law', 'Find launching speed of satellite']
                     },
-                    2: {
+                    (2, 'Sun'): {
                         '1A': [],
                         '1B': [],
                         '2': [],
@@ -175,11 +175,12 @@ def convert_question_bank(question_bank_path):
             try:
                 subject = row[0].value.lower()
                 chapter_no = int(row[1].value)
-                question_type = row[2].value
+                chapter_name = row[2].value
+                question_type = row[3].value
                 question_type = str(int(question_type)) if type(question_type) == type(1.0) else question_type.lower()
-                question_text = row[3].value
-                question_source = row[4].value
-                subject_to_chapter_to_question[subject][chapter_no][question_type].append((question_text, question_source))
+                question_text = row[4].value
+                question_source = row[5].value
+                subject_to_chapter_to_question[subject][(chapter_no, chapter_name)][question_type].append((question_text, question_source))
             except Exception as e:
                 break
     return subject_to_chapter_to_question
