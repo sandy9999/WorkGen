@@ -146,16 +146,16 @@ def get_type_and_weightage(question_type):
     if question_type=='1A':
         q_type=1
         weightage=1
-    else if question_type=='1B':
+    elif question_type=='1B':
        q_type=2
        weightage=1
-   else if question_type=='2':
+    elif question_type=='2':
         q_type=1
         weightage=2
-    else if question_type=='3':
+    elif question_type=='3':
         q_type=1
         weightage=3
-    else if question_type=='5'
+    elif question_type=='5':
         q_type=1
         weightage=5
     return q_type,weightage
@@ -189,7 +189,7 @@ def convert_question_bank(question_bank_path):
                 }
 
     """
-    question_bank = op.load_workbook(question_bank_path).worksheets[0]
+    question_bank = op.load_workbook(question_bank_path).worksheets[2]
     subject_to_chapter_to_question = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: list([]))))
     row_no = -1
     for row in question_bank.rows:
