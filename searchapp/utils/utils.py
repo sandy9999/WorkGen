@@ -141,63 +141,48 @@ def convert_question_bank(question_bank_path):
 
         :param question_bank_path: path of the question bank excel file
         :type question_bank_path: str
-        :returns: dictionary of chapter_name => (dictionary of question_type => list of questions)
+        :returns: dictionary of chapter_number => (dictionary of question_type => list of questions)
         :rtype: dict
 
         :example return:
             {
-                'Gravitation': {
-                    '1A': ['Gravitation is caused by ______', 'There are ___ laws of Kepler', 'Earth has a radius of ___'],
-                    '1B': ['Planetary motion blah True?', 'Give reason why the sun...', 'What is a ...?'],
-                    '2': ['State the laws', 'What is Kepler', 'WHy is escape velo?'],
-                    '3': ['Derive conditions for escape veloty and find it', 'State the Keplers Law and derive', 'What is potential energy'],
-                    '4': ['Numerical on free fall', 'Derive the gravitational constant from Newtons Law', 'Find launching speed of satellite']
+                'Science': {
+                    1: {
+                        '1A': ['Gravitation is caused by ______', 'There are ___ laws of Kepler', 'Earth has a radius of ___'],
+                        '1B': ['Planetary motion blah True?', 'Give reason why the sun...', 'What is a ...?'],
+                        '2': ['State the laws', 'What is Kepler', 'WHy is escape velo?'],
+                        '3': ['Derive conditions for escape veloty and find it', 'State the Keplers Law and derive', 'What is potential energy'],
+                        '4': ['Numerical on free fall', 'Derive the gravitational constant from Newtons Law', 'Find launching speed of satellite']
                     },
-                'Sun': {
-                    '1A': [],
-                    '1B': [],
-                    '2': [],
-                    '3': [],
-                    '4': []
+                    2: {
+                        '1A': [],
+                        '1B': [],
+                        '2': [],
+                        '3': [],
+                        '4': []
                     }
-            }
+                }
 
     """
     question_bank = op.load_workbook(question_bank_path).worksheets[0]
-    col_count = -1
-    chapter_to_question = defaultdict(lambda: defaultdict(lambda: list))
-    for col in question_bank.columns:
-        col_count += 1
-        if col_count == 0:
-            # header_col = col
-            continue
-        elif col_count == 1:
-            question_type_col = col
+    subject_to_chapter_to_question = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: list([]))))
+    row_no = -1
+    for row in question_bank.rows:
+        row_no += 1
+        if (row_no == 0):
+            pass
         else:
-            break
-    question_type_start_row = 1
-    question_type = question_type_col[question_type_start_row].value
-    max_questions = 1
-    while (question_type != None):
-        question_type = question_type if type(question_type) == str else str(int(question_type))
-        col_no = -1
-        for col in question_bank.columns:
-            col_no += 1
-            if col_no <= 1:
-                continue
-            else:
-                chapter_name = col[0].value
-                if not chapter_name:
-                    break
-                col = [i.value for i in col]
-                temp_col = col[question_type_start_row:]
-                questions = temp_col[:temp_col.index2(None)]
-                max_questions = max(max_questions, len(questions))
-                chapter_to_question[chapter_name][question_type] = questions
-        question_type_start_row += max_questions + 1
-        question_type = question_type_col[question_type_start_row].value
-    chapter_to_question = default_to_regular(chapter_to_question)
-    return chapter_to_question
+            try:
+                subject = row[0].value.lower()
+                chapter_no = int(row[1].value)
+                question_type = row[2].value
+                question_type = str(int(question_type)) if type(question_type) == type(1.0) else question_type.lower()
+                question_text = row[3].value
+                question_source = row[4].value
+                subject_to_chapter_to_question[subject][chapter_no][question_type].append((question_text, question_source))
+            except Exception as e:
+                break
+    return subject_to_chapter_to_question
 
 if __name__ == "__main__":
     science_breakup = {
@@ -207,7 +192,6 @@ if __name__ == "__main__":
         '3': [7, 5],
         '5': [2, 2]
     }
-    data = convert_marker_data("data.xlsx", science_breakup)
-    filtered_data = get_allowed_questions(data, ['1A', '1B', '2'], [3])
-    customized_data = get_customized_paper(filtered_data)
-    print(customized_data)
+    data = convert_question_bank("data.xlsx")
+    data = default_to_regular(data)
+    print(data)
