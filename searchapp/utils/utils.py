@@ -152,11 +152,8 @@ def convert_question_bank(question_bank_path):
             {
                 'Science': {
                     (1, 'Gravitation') : {
-                        '1A': ['Gravitation is caused by ______', 'There are ___ laws of Kepler', 'Earth has a radius of ___'],
-                        '1B': ['Planetary motion blah True?', 'Give reason why the sun...', 'What is a ...?'],
-                        '2': ['State the laws', 'What is Kepler', 'WHy is escape velo?'],
-                        '3': ['Derive conditions for escape veloty and find it', 'State the Keplers Law and derive', 'What is potential energy'],
-                        '4': ['Numerical on free fall', 'Derive the gravitational constant from Newtons Law', 'Find launching speed of satellite']
+                        '1A': [('Gravitation is caused by ______', 'Textbook'), ('There are ___ laws of Kepler', None), ('Earth has a radius of ___', None)],
+                        ...
                     },
                     (2, 'Sun'): {
                         '1A': [],
