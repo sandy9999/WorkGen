@@ -11,14 +11,13 @@ Student View
 
 });*/
 
-function worksheetType(){
-	console.log($('#worksheetType').dropdown('get value'));
-}
+
 
 
 
 </script>
 {% endblock %}
+{%  block login %}<li><a href="login">Login</a></li>{% endblock %}
 {% block student_view %}
 <!-- Select worksheet type -->
 <div id="worksheetType" class="ui selection dropdown">
@@ -26,9 +25,9 @@ function worksheetType(){
 	<i class="dropdown icon"></i>
 	<div class="default text">Select Worksheet Type</div>
 	<div class="menu">
-		<div class="item" data-value="testPaper" onclick="worksheetType()">Test Paper</div>
-		<div class="item" data-value="genericWorksheet" onclick="worksheetType()">Generic Worksheet</div>
-		<div class="item" data-value="customizedWorksheet" onclick="worksheetType()">Customized Worksheet</div>
+		<div class="item" data-value="testPaper" >Test Paper</div>
+		<div class="item" data-value="genericWorksheet">Generic Worksheet</div>
+		<div class="item" data-value="customizedWorksheet" >Customized Worksheet</div>
 	</div>
 </div>
 <br>
@@ -38,21 +37,20 @@ function worksheetType(){
 		<i class="dropdown icon"></i>
 		<div class="default text">Select Subject</div>
 		<div class="menu">
-		<!-- {% for item in subject %}
+		{% for item in data%}
 		<div class="item" data-value="{{ item.subject }}">{{ item.subject }}</div>
-		{% endfor %} -->
-		<div class="item" data-value="Science">Science</div>
-		<div class="item" data-value="Math">Math</div>
+		{% endfor %}
+
 		</div>
 	</div>
 	<br>
-	<div id="chapter" class="ui fluid multiple search selection dropdown">
+	<div id="chapter" class="ui fluid multiple search selection dropdown" style="display:none;">
 		<input name="chapter" type="hidden">
 		<i class="dropdown icon"></i>
 		<div class="default text">Select chapter</div>
 		<div class="menu">
-			{% for thing in chap %}
-			<div class="item" data-value="{{ thing.chapter }}">{{ thing.chapter }}</div>
+			{% for item in data %}
+			<div class="item" data-value="{{chap  }}">{{ thing.chapter }}</div>
 				{% endfor %}
 		</div>
 	</div>

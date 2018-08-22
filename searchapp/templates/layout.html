@@ -17,11 +17,12 @@
 <body>
 <img src="{% static "WordArt.png" %}" height=20% width=50% align="center" id="logo">
 <ul id="nav">
-    <li><a href="#">Home</a></li>
+    <li><a href="/">Home</a></li>
     <li><a href="#">About Us</a></li>
     <li><a href="#">How it Works</a></li>
     <li><a href="#">Contact Us</a></li>
-    <li><a href="#">Logout</a></li>
+    {% block login %}{% endblock %}
+    {% block logout %}{% endblock %}
 </ul>
 {% block student_view %}{% endblock %}
 </body>

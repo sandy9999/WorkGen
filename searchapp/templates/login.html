@@ -4,13 +4,16 @@
 {% block css %}
   <link rel="stylesheet" type="text/css" href="{% static 'login.css' %}"/>
   {% endblock %}
+
 {% block student_view %}
 <br>
 <br>
 <div class="form">
+
 <div class="form-head"><h4>MENTOR LOG-IN</h4></div>
 <br>
 <br>
+
 <form class="site-form" method="post" action="login">
 {% csrf_token %}
 
@@ -24,6 +27,9 @@
     </ol>
     {% endif %}
 <input type="submit" value="Log In">
-</form>
+</form><br>
+<br>
+<br>
+Not a user? <a href="signup">Create an account</a>
 </div>
 {% endblock %}

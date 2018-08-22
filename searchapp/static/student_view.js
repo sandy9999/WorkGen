@@ -1,7 +1,12 @@
+flag='';
+subject='';
+
 $(document).ready(function(){
 	$('#worksheetType').dropdown({
 		onChange: function (value, text, $selectedItem) {
+			flag=value;
 		if(value == 'testPaper') {
+
 			$("#test-div").show();
 			$("#generic-div").hide();
 			$("#customized-div").hide();
@@ -23,6 +28,10 @@ $(document).ready(function(){
 
 $('#subject').dropdown({
 	onChange: function (value, text, $selectedItem) {
+		subject=value;
+
+
+
 		if(value == "Science") {
 			$('#chapter .menu div').remove();
 			$('<div class="item" data-value="Motion">Motion</div>').appendTo('#chapter .menu');
@@ -31,6 +40,16 @@ $('#subject').dropdown({
 			$('#chapter div div').remove();
 			$('<div class="item" data-value="Rational Nos">Rational Nos</div>').appendTo('#chapter .menu');
 		}
+
+		$.ajax({
+			url:'/get_chapters',
+			data:subject,
+		success:function(data){
+
+			 $('#chapter').show();
+		},
+		type:'GET'
+	});
 		},
 		forceSelection: false,
 		selectOnKeydown: false,
