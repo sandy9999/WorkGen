@@ -5,8 +5,17 @@ Student View
 {% endblock %}
 {% block js %}
 <script>
-val=$('#worksheetType').dropdown('get value');
-console.log(val);
+/*$('#worksheetType').change(function(){
+	val=$('#worksheetType').dropdown('get value');
+	console.log(val);
+
+});*/
+
+function worksheetType(){
+	console.log($('#worksheetType').dropdown('get value'));
+}
+
+
 
 </script>
 {% endblock %}
@@ -17,9 +26,9 @@ console.log(val);
 	<i class="dropdown icon"></i>
 	<div class="default text">Select Worksheet Type</div>
 	<div class="menu">
-		<div class="item" data-value="testPaper">Test Paper</div>
-		<div class="item" data-value="genericWorksheet">Generic Worksheet</div>
-		<div class="item" data-value="customizedWorksheet">Customized Worksheet</div>
+		<div class="item" data-value="testPaper" onclick="worksheetType()">Test Paper</div>
+		<div class="item" data-value="genericWorksheet" onclick="worksheetType()">Generic Worksheet</div>
+		<div class="item" data-value="customizedWorksheet" onclick="worksheetType()">Customized Worksheet</div>
 	</div>
 </div>
 <br>

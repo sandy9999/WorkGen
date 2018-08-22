@@ -18,10 +18,19 @@ logger = logging.getLogger(__name__)
 
 
 def student_view(request):
-    subject = Subject.objects.all().values_list('subject_name', flat=True)
-    chap = Questions.objects.filter(subject='Science')
-    template_data = {'subject':subject,'chap':chap}
-    return render(request,'student_view.html',template_data)
+    print("hello")
+    template_data=[]
+    subject_list = Subject.objects.all().values_list('subject_name', flat=True)
+    for i in range(len(subject_list)):
+        subject=subject_list[i]
+        chap_list=Questions.objects.filter(subject=i)
+        row={
+          'subject':subject,
+          'chap_list':chap_list
+        }
+        template_data.append(row)
+    print(template_data)
+    return render(request,'student_view.html',{'data':template_data})
 
 
 def login_view(request):
@@ -72,7 +81,8 @@ def add_to_database(subject_to_chapter_to_question, user):
             subject = Subject.objects.get(subject_name=subject_name)
         except Exception as e:
             print("So such subject")
-        chapter_to_question = subject_to_chapter_to_question[subject]
+            return
+        chapter_to_question = subject_to_chapter_to_question[subject_name]
         for chapter_tuple in chapter_to_question:
             chapter_no = chapter_tuple[0]
             chapter_name = chapter_tuple[1]
