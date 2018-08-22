@@ -18,7 +18,7 @@ class Mentor(models.Model):
 
 
 class Subject(models.Model):
-    subject_name = models.CharField(max_length=100)
+    subject_name = models.CharField(max_length=100, unique=True, blank=False, null=False)
 
 
 class Questions(models.Model):

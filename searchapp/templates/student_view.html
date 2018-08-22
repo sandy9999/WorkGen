@@ -3,22 +3,6 @@
 {% block title %}
 Student View
 {% endblock %}
-{% block js %}
-<script>
-/*$('#worksheetType').change(function(){
-	val=$('#worksheetType').dropdown('get value');
-	console.log(val);
-
-});*/
-
-function worksheetType(){
-	console.log($('#worksheetType').dropdown('get value'));
-}
-
-
-
-</script>
-{% endblock %}
 {% block student_view %}
 <!-- Select worksheet type -->
 <div id="worksheetType" class="ui selection dropdown">
@@ -26,9 +10,9 @@ function worksheetType(){
 	<i class="dropdown icon"></i>
 	<div class="default text">Select Worksheet Type</div>
 	<div class="menu">
-		<div class="item" data-value="testPaper" onclick="worksheetType()">Test Paper</div>
-		<div class="item" data-value="genericWorksheet" onclick="worksheetType()">Generic Worksheet</div>
-		<div class="item" data-value="customizedWorksheet" onclick="worksheetType()">Customized Worksheet</div>
+		<div class="item" data-value="testPaper">Test Paper</div>
+		<div class="item" data-value="genericWorksheet">Generic Worksheet</div>
+		<div class="item" data-value="customizedWorksheet">Customized Worksheet</div>
 	</div>
 </div>
 <br>
@@ -38,11 +22,9 @@ function worksheetType(){
 		<i class="dropdown icon"></i>
 		<div class="default text">Select Subject</div>
 		<div class="menu">
-		<!-- {% for item in subject %}
-		<div class="item" data-value="{{ item.subject }}">{{ item.subject }}</div>
-		{% endfor %} -->
-		<div class="item" data-value="Science">Science</div>
-		<div class="item" data-value="Math">Math</div>
+			{% for element in data %}
+				<div class="item" data-value="{{element}}">{{element}}</div>
+			{% endfor %}
 		</div>
 	</div>
 	<br>
@@ -50,10 +32,8 @@ function worksheetType(){
 		<input name="chapter" type="hidden">
 		<i class="dropdown icon"></i>
 		<div class="default text">Select chapter</div>
-		<div class="menu">
-			{% for thing in chap %}
-			<div class="item" data-value="{{ thing.chapter }}">{{ thing.chapter }}</div>
-				{% endfor %}
+		<div id="chapter-options-parent" class="menu">
+			<!-- <div class="item" data-value="{{ thing.chapter }}">{{ thing.chapter }}</div> -->
 		</div>
 	</div>
 </div>

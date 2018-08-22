@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login,logout
-from django.http import HttpResponse
+from django.http import JsonResponse, HttpResponse
 
 from django.shortcuts import render,redirect,render_to_response
 from django.contrib.auth.forms import AuthenticationForm
@@ -18,19 +18,9 @@ logger = logging.getLogger(__name__)
 
 
 def student_view(request):
-    print("hello")
-    template_data=[]
     subject_list = Subject.objects.all().values_list('subject_name', flat=True)
-    for i in range(len(subject_list)):
-        subject=subject_list[i]
-        chap_list=Questions.objects.filter(subject=i)
-        row={
-          'subject':subject,
-          'chap_list':chap_list
-        }
-        template_data.append(row)
-    print(template_data)
-    return render(request,'student_view.html',{'data':template_data})
+    subject_list = list(subject_list)
+    return render(request,'student_view.html',{'data':subject_list})
 
 
 def login_view(request):
@@ -75,12 +65,13 @@ def add_questions(request):
 
 
 def add_to_database(subject_to_chapter_to_question, user):
+    print(user.username)
     mentor = Mentor.objects.get(username=user.username)
     for subject_name in subject_to_chapter_to_question:
         try:
             subject = Subject.objects.get(subject_name=subject_name)
         except Exception as e:
-            print("So such subject")
+            print("No such subject")
             return
         chapter_to_question = subject_to_chapter_to_question[subject_name]
         for chapter_tuple in chapter_to_question:
@@ -101,3 +92,33 @@ def add_to_database(subject_to_chapter_to_question, user):
                                     source=questions_list[i][1])
                             q.save()
                         transaction.commit()
+
+
+def get_chapters(request):
+    subject_name = request.GET['subject']
+    chapters = Questions.objects.filter(subject__subject_name=subject_name).values_list('chapter', flat=True).distinct()
+    json_data = {
+        'chapters': list(chapters)
+    }
+    return JsonResponse(json_data)
+
+
+def get_test_paper(request):
+    if request.method == 'GET':
+        subject = request.GET['subject']
+        chapters = request.GET.getlist('chapters[]')
+        breakup = {
+            '1A': [1, 1],
+            '1B': [1, 1],
+            '2': [1, 1],
+            '3': [1, 1],
+            '5': [1, 1]
+        }
+        try:
+            document = generate_test_paper(subject, chapters, breakup)
+            response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+            response['Content-Disposition'] = 'attachment; filename=download.docx'
+            document.save(response)
+            return response
+        except Exception as e:
+            print(e)
