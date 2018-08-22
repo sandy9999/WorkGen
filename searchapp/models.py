@@ -17,6 +17,10 @@ class Mentor(models.Model):
     created_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
 
+class Subject(models.Model):
+    subject_name = models.CharField(max_length=100)
+
+
 class Questions(models.Model):
     ONE = 1
     TWO = 2
@@ -42,7 +46,7 @@ class Questions(models.Model):
         (FILL_IN_THE_BLANKS, 'FILL IN THE BLANKS'),
         (MCQ, 'MCQ'),
     )
-    subject = models.CharField(max_length=100)
+    subject = models.ForeignKey('Subject', on_delete=models.CASCADE)
     chapter = models.CharField(max_length=100)
     chapter_number = models.IntegerField(blank=False, null=False)
     question_weightage = models.IntegerField(choices=QUESTION_WEIGHTAGE_CHOICES, null=True)

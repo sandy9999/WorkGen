@@ -140,25 +140,12 @@ def get_customized_paper(marker_data):
         student_to_chapter[student] = sample(student_to_chapter[student], min(3, len(student_to_chapter[student])))
     return student_to_chapter
 
+
 def get_type_and_weightage(question_type):
-    q_type=0
-    weightage=0
-    if question_type=='1A':
-        q_type=1
-        weightage=1
-    elif question_type=='1B':
-       q_type=2
-       weightage=1
-    elif question_type=='2':
-        q_type=1
-        weightage=2
-    elif question_type=='3':
-        q_type=1
-        weightage=3
-    elif question_type=='5':
-        q_type=1
-        weightage=5
-    return q_type,weightage
+    weightage = int(question_type[0])
+    qtype = ord(question_type[1].lower()) - ord('a') + 1 if len(question_type) == 2 else 1
+    return weightage, qtype
+
 
 def convert_question_bank(question_bank_path):
     """
