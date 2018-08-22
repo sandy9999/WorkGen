@@ -23,26 +23,14 @@ Upload
   <div class="container">
     <form action="upload" method="POST" enctype="multipart/form-data" class="ui form">
         {% csrf_token %}
-      <div class="text">  Choose a subject:
-        <br>
-        <br>
-        <div class="subject">
-          <select class="ui dropdown" name="dropdownSubject">
-              <option value="" selected>Subject</option>
-              <option value="maths">Maths</option>
-              <option value="science">Science</option>
-          </select>
-        </div>
         <br>
         <br>
         <div>
           Select a file to upload:
           <br>
           <br>
-          <label class="file">
-            Browse..
-              <input type="file" name="datafile" accept=".xlx,.xlsx">
-          </label>
+          <div class="file">
+            <input type="file" name="datafile" accept=".xlx,.xlsx">
           </div>
           <div>
             <br>

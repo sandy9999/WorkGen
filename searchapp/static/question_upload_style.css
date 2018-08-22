@@ -12,23 +12,20 @@
   margin-left: 25%;
   margin-right: 25%;
   }
-  
+
   .file{
-    width:20%;
-    background:#d5f6b9;
+    width:50%;
     border:none;
     color:black;
     padding: 8px 32px;
     text-decoration: none;
-    margin: 10px 20px;
+    margin: 0 auto;
     cursor: pointer;
     border-radius:10px;
 
 
   }
-  input[type="file"]{
-    display:none;
-  }
+
 
   input[type=submit] {
    background-color:#d5f6b9;

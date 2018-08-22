@@ -3,7 +3,13 @@
 {% block title %}
 Student View
 {% endblock %}
+{% block js %}
+<script>
+val=$('#worksheetType').dropdown('get value');
+console.log(val);
 
+</script>
+{% endblock %}
 {% block student_view %}
 <!-- Select worksheet type -->
 <div id="worksheetType" class="ui selection dropdown">
