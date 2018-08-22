@@ -26,7 +26,8 @@ def convert_marker_data(marker_path, subject_breakup):
         :param subject_breakup: dictionay of QuestionType => [total_questions, no_to_attempt] for the given subject
         :type marker_path: str
         :type subject_breakup: str
-        :returns: Dictionary of student_name => (Dictionary of question_type => [(marks_secured, question_number, chapter_number)])
+        :returns: tuple of Dictionary of student_name => (Dictionary of question_type => [(marks_secured, question_number, chapter_number)])
+                    along with chapter numbers asked in that test
         :rtype: dict
 
         :example subject_breakup:
@@ -38,15 +39,18 @@ def convert_marker_data(marker_path, subject_breakup):
                 '5': [2, 2]
             }
         :example of return:
-            {
-                'Akshay': {
-                    '1A': [(1,1,1), (1,2,1), (1,3,1), (1,4,1), (1,5,1)],
-                    '1B': ...
-                    '2': ...
-                    '3': ...
-                    '5':  ...
-                }
-            }
+            (
+                {
+                    'Akshay': {
+                        '1A': [(1,1,1), (1,2,1), (1,3,1), (1,4,1), (1,5,1)],
+                        '1B': ...
+                        '2': ...
+                        '3': ...
+                        '5':  ...
+                    }
+                },
+                [1,2,3,4,5]
+            )
     """
     marker = op.load_workbook(marker_path).worksheets[0]
     row_no = -1
@@ -83,7 +87,7 @@ def convert_marker_data(marker_path, subject_breakup):
                 student_to_answer[student][question_type] = questions_of_given_type
                 question_type_start_row += total_questions
                 question_type = header_row[question_type_start_row].value
-    return student_to_answer
+    return student_to_answer, [int(val.value) for val in chapter_row if type(val.value) == type(1.0)]
 
 def get_allowed_questions(data, allowed_qtypes, allowed_chapters):
     """
@@ -193,6 +197,5 @@ if __name__ == "__main__":
         '3': [7, 5],
         '5': [2, 2]
     }
-    data = convert_question_bank("data.xlsx")
-    data = default_to_regular(data)
+    data = convert_marker_data("data.xlsx", science_breakup)
     print(data)
