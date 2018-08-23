@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block title %}
+Upload
+{% endblock %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'generated_documents.css' %}"/>
+  {% endblock %}
+  {% block js %}
+  <script>
+  var flag1 = "{{ flag }}";
+  var error1="{{error}}";
+  if (flag1=='1'){
+    alert(error1);
+  }
+  </script>
+  {% endblock %}
+
+{% block student_view %}
+<br>
+<br>
+<br>
+  <div class="container">
+      <table class="ui celled table">
+          <thead>
+            <tr><th>Token</th>
+            <th>Submitted Time</th>
+            <th>Number Of Papers</th>
+            <th>Download</th>
+          </tr></thead>
+          <tbody>
+            {% for doc in data %}
+            <tr>
+              <td>{{doc.0}}</td>
+              <td>{{doc.1}}</td>
+              <td>{{doc.3}}</td>
+              <td><button class="ui button">Download</button></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+  </div>
+{% endblock %}

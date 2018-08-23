@@ -2,9 +2,12 @@ from .models import Questions
 from .utils.utils import get_type_and_weightage
 from .generate_doc import convert_to_doc
 import random
+from searchapp.models import GeneratedQuestionPaper
+from celery import shared_task
 
 
-def generate_test_paper(subject, chapters, subject_breakup):
+@shared_task
+def generate_test_paper(subject, chapters, subject_breakup, mentor, token):
 
     ''' here chapters should be in form of list=['Sun','Gravitation']
 
@@ -36,5 +39,5 @@ def generate_test_paper(subject, chapters, subject_breakup):
             'attempt':subject_breakup.get(question_type,None)[1]
          }
         test_paper_dict.append(row)
-    document = convert_to_doc(test_paper_dict, subject)
-    return document
+    filepath = convert_to_doc(test_paper_dict, subject)
+    GeneratedQuestionPaper.objects.filter(mentor__username=mentor, token=token).update(file_path=filepath, is_ready=True)

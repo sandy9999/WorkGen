@@ -7,12 +7,16 @@ from django.shortcuts import render,redirect,render_to_response
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.db.models import Count
+from collections import defaultdict
 
 import logging
+import datetime
+import hashlib
 
 from .utils.utils import convert_question_bank,get_type_and_weightage,default_to_regular
 from .test_paper import generate_test_paper
-from .models import Mentor, Questions, MCQOptions, Subject
+from .models import Mentor, Questions, MCQOptions, Subject, GeneratedQuestionPaper
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +55,22 @@ def add_questions_view(request):
 
 
 @login_required(login_url='/login')
+def generated_documents_view(request):
+    generated_data = GeneratedQuestionPaper.objects.filter(
+        mentor=request.user,
+        is_ready=True).values_list(
+            'token', 'submitted_date', 'file_path').order_by('-submitted_date').annotate(doc_count=Count('token'))
+    generated_data = list(generated_data)
+    unique_token = defaultdict(bool)
+    data = []
+    for item in generated_data:
+        if not unique_token[item[0]]:
+            unique_token[item[0]] = True
+            data.append(item)
+    return render(request, 'generated_documents.html', {'data': data})
+
+
+@login_required(login_url='/login')
 def add_questions(request):
     error = ""
     if request.method == 'POST':
@@ -65,7 +85,6 @@ def add_questions(request):
 
 
 def add_to_database(subject_to_chapter_to_question, user):
-    print(user.username)
     mentor = Mentor.objects.get(username=user.username)
     for subject_name in subject_to_chapter_to_question:
         try:
@@ -114,11 +133,10 @@ def get_test_paper(request):
             '3': [1, 1],
             '5': [1, 1]
         }
-        try:
-            document = generate_test_paper(subject, chapters, breakup)
-            response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-            response['Content-Disposition'] = 'attachment; filename=download.docx'
-            document.save(response)
-            return response
-        except Exception as e:
-            print(e)
+        # if there are a 100 students for whom this paper is being generated, use SAME token for all entries
+        # token is what identifies which papers are together
+        token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
+        generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
+        generated_paper.save()
+        generate_test_paper.delay(subject, chapters, breakup, request.user.username, token)
+        return JsonResponse({"message":"success", "token": token})

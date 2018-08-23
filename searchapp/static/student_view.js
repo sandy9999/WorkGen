@@ -14,8 +14,7 @@ $(document).ready(function(){
 				data: formData,
 				headers: { "X-CSRFToken": csrftoken,},
 				success: function(response) {
-					console.log("hi");
-					var blob = new Blob([response.bodyText], { type: headers['application/msword'] });
+					alert(response['token']);
 				}
 			});
 		}

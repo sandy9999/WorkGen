@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 
 class Mentor(models.Model):
@@ -67,3 +69,11 @@ class SubjectSplit(models.Model):
     question_type = models.IntegerField(choices=Questions.QUESTION_TYPE_CHOICES, null=True)
     total_questions = models.IntegerField(default=0)
     questions_to_attempt = models.IntegerField(default=0)
+
+
+class GeneratedQuestionPaper(models.Model):
+    token = models.CharField(max_length=100)
+    file_path = models.CharField(max_length=200, default=None, null=True)
+    is_ready = models.BooleanField(default=False)
+    mentor = models.ForeignKey(User, on_delete=models.CASCADE)
+    submitted_date = models.DateTimeField(null=True, default=None)
