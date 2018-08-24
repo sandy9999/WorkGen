@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block title %}
-Upload
+Download Generated Documents
 {% endblock %}
 {% load static %}
 {% block css %}
@@ -12,6 +12,26 @@ Upload
   var error1="{{error}}";
   if (flag1=='1'){
     alert(error1);
+  }
+  function download_token(token) {
+    var request = new XMLHttpRequest();
+    var url = 'http://localhost:8000/download_docx';
+    var params = `token=${token}`;
+    request.open('GET', `${url}?${params}`, true);
+    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+    request.responseType = 'blob';
+    request.onload = function() {
+      if(request.status === 200) {
+        var blob = new Blob([request.response], { type: 'application/pdf' });
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = "workgen_document.docx";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    };
+    request.send();
   }
   </script>
   {% endblock %}
@@ -34,7 +54,7 @@ Upload
               <td>{{doc.0}}</td>
               <td>{{doc.1}}</td>
               <td>{{doc.3}}</td>
-              <td><button class="ui button">Download</button></td>
+              <td><button onclick="download_token('{{doc.0}}')" class="ui button">Download</button></td>
             </tr>
             {% endfor %}
           </tbody>

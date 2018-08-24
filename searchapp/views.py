@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.db.models import Count
 from collections import defaultdict
+from django.conf import settings
 
 import logging
 import datetime
@@ -17,6 +18,7 @@ import hashlib
 from .utils.utils import convert_question_bank,get_type_and_weightage,default_to_regular
 from .test_paper import generate_test_paper
 from .models import Mentor, Questions, MCQOptions, Subject, GeneratedQuestionPaper
+from docx import Document
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +54,17 @@ def mentor_view(request):
 @login_required(login_url='/login')
 def add_questions_view(request):
     return render(request, 'question_upload_mentor.html')
+
+
+@login_required(login_url='/login')
+def download_docx(request):
+    token = request.GET['token']
+    doc_obj = GeneratedQuestionPaper.objects.get(mentor=request.user, token=token, is_ready=True)
+    document = Document(settings.BASE_DIR + "/" + doc_obj.file_path)
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    response['Content-Disposition'] = 'attachment; filename=workgen_document.docx'
+    document.save(response)
+    return response
 
 
 @login_required(login_url='/login')

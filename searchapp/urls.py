@@ -5,6 +5,7 @@ app_name='searchapp'
 urlpatterns=[
    path('questions_upload',views.add_questions_view,name='questions_upload'),
    path('generated_documents', views.generated_documents_view, name='generated_documents'),
+   path('download_docx', views.download_docx, name='download_docx'),
    path('upload',views.add_questions,name='upload'),
    path('login',views.login_view,name='login'),
    path('logout',views.logout_view,name='logout'),
