@@ -41,7 +41,7 @@ $(document).ready(function(){
 	$('#subject').dropdown({
 		onChange: function (value, text, $selectedItem) {
 				let formData = {
-					subject: 'Science',
+					subject: value,
 				}
 				$.ajax({
 					url: "http://localhost:8000/get_chapters",
@@ -49,7 +49,8 @@ $(document).ready(function(){
 					data: formData,
 					headers: { "X-CSRFToken": csrftoken,},
 					success: function(d) {
-						var chapters = d['chapters'];
+						$("#chapter-options-parent").empty();
+						let chapters = d['chapters'];
 						$("#chapter").show();
 						for (var i=0; i<chapters.length; i++) {
 							$("#chapter-options-parent").append(`<div class="item" data-value=${chapters[i]}>${chapters[i]}</div>`);

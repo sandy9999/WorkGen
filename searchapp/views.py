@@ -128,7 +128,7 @@ def add_to_database(subject_to_chapter_to_question, user):
 
 def get_chapters(request):
     subject_name = request.GET['subject']
-    chapters = Questions.objects.filter(subject__subject_name=subject_name).values_list('chapter', flat=True).distinct()
+    chapters = Questions.objects.filter(subject__subject_name__iexact=subject_name).values_list('chapter', flat=True).distinct()
     json_data = {
         'chapters': list(chapters)
     }
@@ -146,8 +146,7 @@ def get_test_paper(request):
             '3': [1, 1],
             '5': [1, 1]
         }
-        # if there are a 100 students for whom this paper is being generated, use SAME token for all entries
-        # token is what identifies which papers are together
+        # token is basically used to identify paper
         token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
         generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
         generated_paper.save()
