@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login,logout
 from django.http import JsonResponse, HttpResponse
-
 from django.shortcuts import render,redirect,render_to_response
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
@@ -14,15 +13,15 @@ from django.conf import settings
 import logging
 import datetime
 import hashlib
+from docx import Document
 
 from .utils.utils import convert_question_bank,get_type_and_weightage,default_to_regular
 from .test_paper import generate_test_paper
 from .models import Mentor, Questions, MCQOptions, Subject, GeneratedQuestionPaper
-from docx import Document
 
 logger = logging.getLogger(__name__)
 
-
+@login_required(login_url='/login')
 def student_view(request):
     subject_list = Subject.objects.all().values_list('subject_name', flat=True)
     subject_list = list(subject_list)
@@ -152,3 +151,22 @@ def get_test_paper(request):
         generated_paper.save()
         generate_test_paper.delay(subject, chapters, breakup, request.user.username, token)
         return JsonResponse({"message":"success", "token": token})
+
+
+def get_generic_paper(request):
+    subject = request.GET['subject']
+    chapters = request.GET.getlist('chapters[]')
+    sent_breakup = request.GET.getlist('breakup[]')
+    random_settings = request.GET['random_setting']
+    breakup = {
+        '1A': [int(sent_breakup[0])]*2,
+        '1B': [int(sent_breakup[1])]*2,
+        '2': [int(sent_breakup[2])]*2,
+        '3': [int(sent_breakup[3])]*2,
+        '5': [int(sent_breakup[4])]*2,
+    }
+    token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
+    generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
+    generated_paper.save()
+    generate_test_paper.delay(subject, chapters, breakup, request.user.username, token)
+    return JsonResponse({"message":"success", "token": token})

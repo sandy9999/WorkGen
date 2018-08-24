@@ -1,9 +1,30 @@
 $(document).ready(function(){
-	$("#submit").click(function (e) {
+
+	// on selecting type of worksheet
+	$('#worksheetType').dropdown({
+		onChange: function (value, text, $selectedItem) {
+			if(value == 'test') {
+				$("#test-div").show();
+				$("#generic-div").hide();
+				$("#customized-div").hide();
+			} else if(value == 'generic') {
+				$("#test-div").hide();
+				$("#generic-div").show();
+				$("#customized-div").hide();
+			} else if(value == 'customized') {
+				$("#test-div").hide();
+				$("#generic-div").hide();
+				$("#customized-div").show();
+			}
+		},
+	});
+
+	// function called when submit button clicked
+	function submit_click(e) {
 		var worksheetType = $("#worksheetType").dropdown('get value');
-		if (worksheetType == 'testPaper') {
-			var subject = $("#subject").dropdown('get value');
-			var chapters = $('#chapter').dropdown('get values');
+		if (worksheetType == 'test') {
+			var subject = $("#test-subject").dropdown('get value');
+			var chapters = $('#test-chapter').dropdown('get values');
 			var formData = {
 				"subject": subject,
 				"chapters[]": chapters
@@ -14,65 +35,108 @@ $(document).ready(function(){
 				data: formData,
 				headers: { "X-CSRFToken": csrftoken,},
 				success: function(response) {
-					alert(response['token']);
-				}
+					$(function(){
+						new PNotify({
+							title: 'Success!',
+							text: 'Your document is currently being generated.',
+							type: 'success'
+						});
+					});
+				},
+			});
+		} else if (worksheetType == 'generic') {
+			var subject = $("#generic-subject").dropdown('get value');
+			var chapters = $("#generic-chapter").dropdown('get values');
+			var q1a = $('#generic-noOfQ1a').val() || 0;
+			var q1b = $('#generic-noOfQ1b').val() || 0;
+			var q2 = $('#generic-noOfQ2').val() || 0;
+			var q3 = $('#generic-noOfQ3').val() || 0;
+			var q4 = $('#generic-noOfQ4').val() || 0;
+			var q5 = $('#generic-noOfQ5').val() || 0;
+			var random_setting = $("#random-setting").dropdown('get value');
+			var formData = {
+				subject: subject,
+				chapters: chapters,
+				breakup: [q1a, q1b, q2, q3, q4, q5],
+				random_setting: random_setting,
+			};
+			$.ajax({
+				url: "http://localhost:8000/get_generic_paper",
+				method : "get",
+				data: formData,
+				headers: { "X-CSRFToken": csrftoken,},
+				success: function(response) {
+					$(function(){
+						new PNotify({
+							title: 'Success!',
+							text: 'Your document is currently being generated.',
+							type: 'success'
+						});
+					});
+				},
 			});
 		}
-	});
+	}
 
-	$('#worksheetType').dropdown({
-		onChange: function (value, text, $selectedItem) {
-			if(value == 'testPaper') {
-				$("#test-div").show();
-				$("#generic-div").hide();
-				$("#customized-div").hide();
-			} else if(value == 'genericWorksheet') {
-				$("#test-div").hide();
-				$("#generic-div").show();
-				$("#customized-div").hide();
-			} else if(value == 'customizedWorksheet') {
-				$("#test-div").hide();
-				$("#generic-div").hide();
-				$("#customized-div").show();
-			}
-		},
-	});
-
-	$('#subject').dropdown({
-		onChange: function (value, text, $selectedItem) {
-				let formData = {
-					subject: value,
+	function populate_chapters(value, text, $selectedItem) {
+		let formData = {
+			subject: value,
+		}
+		let worksheetType = $("#worksheetType").dropdown('get value');
+		$.ajax({
+			url: "http://localhost:8000/get_chapters",
+			method : "get",
+			data: formData,
+			headers: { "X-CSRFToken": csrftoken,},
+			success: function(d) {
+				$(`#${worksheetType}-chapter-options-parent`).empty();
+				let chapters = d['chapters'];
+				$(`#${worksheetType}-chapter`).removeClass('hide-display').addClass('show-display');
+				for (var i=0; i<chapters.length; i++) {
+					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapters[i]}>${chapters[i]}</div>`);
 				}
-				$.ajax({
-					url: "http://localhost:8000/get_chapters",
-					method : "get",
-					data: formData,
-					headers: { "X-CSRFToken": csrftoken,},
-					success: function(d) {
-						$("#chapter-options-parent").empty();
-						let chapters = d['chapters'];
-						$("#chapter").show();
-						for (var i=0; i<chapters.length; i++) {
-							$("#chapter-options-parent").append(`<div class="item" data-value=${chapters[i]}>${chapters[i]}</div>`);
-						}
-					}
-				});
-			},
+			}
 		});
+	}
 
-	$('#chapter').dropdown({
+	// methods for TEST worksheet
+
+	$('#test-subject').dropdown({
+		onChange: populate_chapters,
+	});
+
+	$('#test-chapter').dropdown({
 		onChange: function (value, text, $selectedItem) {
 		},
 	});
 
-	$('#qtype').dropdown({
+	$("#submit").click(submit_click);	
+
+	// methods for GENERIC worksheet
+
+	$('#generic-subject').dropdown({
+		onChange: populate_chapters,
+	});
+
+	$('#generic-chapter').dropdown({
+		onChange: function (value, text, $selectedItem) {
+			$("#generic-qtype").removeClass("hide-display").addClass("show-display");
+		},
+	});
+
+	$('#generic-qtype').dropdown({
 		onChange: function (value, text, $selectedItem) {
 		},
 	});
+
+	$('#random-setting').dropdown({
+	})
 
 	$('#stud_name').dropdown({
 		onChange: function (value, text, $selectedItem) {
 		},
 	});
+
+	// methods for CUSTOMIZED worksheet
 
 });

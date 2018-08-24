@@ -5,35 +5,47 @@
 	width:50%;
 	display:block;
 }
-#subject {
-	margin-left:auto;
-	margin-right:auto;
-	width:50%;
-	display: block;
-}
-#chapter {
-	margin-left:auto;
-	margin-right:auto;
-	width:50%;
-	display: none;
-}
-#qtype{
-	margin-left:auto;
-	margin-right:auto;
-	width:50%;
+
+.show-display {
+	display: block !important;
 }
 
-#noOfQ1,#noOfQ2,#noOfQ3,#noOfQ4,#noOfQ5{
+.hide-display {
+	display: none !important;
+}
+
+.subject {
+	margin-left:auto !important;
+	margin-right:auto !important;
+	width:50% !important;
+}
+.chapter {
+	margin-left:auto !important;
+	margin-right:auto !important;
+	width:50% !important;
+}
+.qtype{
+	margin-left:auto !important;
+	margin-right:auto !important;
+	width:50% !important;
+	padding: 0px !important;
+	border: 0px !important;
+}
+
+.no_of_questions{
 	margin-left:auto;
 	margin-right:auto;
 	font-size:20px;
+	min-width: 70px;
+	height: 30px;
 }
+
 #stud_name{
 	margin-left:auto;
 	margin-right:auto;
 	width:50%;
-
 }
+
 #submit{
 	margin-left:auto;
 	margin-right:auto;
@@ -48,6 +60,7 @@
 	margin-bottom:1%;
 	display: block;
 }
+
 #randomize{
 	float:left;
 	margin-left:20%;
@@ -61,6 +74,7 @@
 	margin-bottom:1%;
 	font-size:12px;
 }
+
 #segregate{
 	float:right;
 	margin-right:20%;
@@ -74,6 +88,7 @@
 	margin-bottom:1%;
 	font-size:12px;
 }
+
 #upload{
 	margin-left:auto;
 	margin-right:auto;
@@ -89,6 +104,7 @@
 	display: block;
 	font-weight: bold;
 }
+
 ul{
 	list-style:none;
 	margin: 0;
@@ -97,21 +113,25 @@ ul{
 	display:table;
 	width:100%;
 }
+
 #nav{
 	margin-top:30px;
 	background-color:#AAADAC;
 }
+
 #logo{
 	display:block;
 	margin-left:auto;
 	margin-right:auto;
 	width:50%;
 }
+
 ul li{
 	text-align:center;
 	display:table-cell;
 	width:20%;
 }
+
 ul li a{
 	text-decoration:none;
 	color:white;
@@ -119,32 +139,40 @@ ul li a{
 	font-size:15px;
 	font-family: 'Baloo Bhai', cursive;	
 }
+
 ul li a:hover{
 	text-decoration:none;
 	color:white;
 }
+
 input[type=number] {
 	-moz-appearance: textfield;
 	border-radius:5px;
 	border: 1px solid #ebebe0;
 	font-size:13px;
+	text-align: center;
+	width: 100%;
 }
 ::-webkit-input-placeholder{
 	font-size:13px;
 	color:#c2c2a3;
+	text-align: center !important;
 }
 ::-moz-placeholder{
 	font-size: 13px;
 	color:#c2c2a3;
+	text-align: center !important;
 }
 :-ms-input-placeholder{
 	font-size: 13px;
 	color:#c2c2a3;
+	text-align: center;
 
 }
 ::placeholder{
 	font-size:13px;
 	color:#c2c2a3;
+	text-align: center !important;
 }
 
 .workgen-title {
