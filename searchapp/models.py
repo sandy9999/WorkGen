@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 
 class Mentor(models.Model):
@@ -15,6 +17,10 @@ class Mentor(models.Model):
     mentor_type = models.IntegerField(choices=MENTOR_TYPE_CHOICES, default=REGULAR)
     full_name = models.CharField(max_length=40)
     created_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
+
+class Subject(models.Model):
+    subject_name = models.CharField(max_length=100, unique=True, blank=False, null=False)
 
 
 class Questions(models.Model):
@@ -42,7 +48,7 @@ class Questions(models.Model):
         (FILL_IN_THE_BLANKS, 'FILL IN THE BLANKS'),
         (MCQ, 'MCQ'),
     )
-    subject = models.CharField(max_length=100)
+    subject = models.ForeignKey('Subject', on_delete=models.CASCADE)
     chapter = models.CharField(max_length=100)
     chapter_number = models.IntegerField(blank=False, null=False)
     question_weightage = models.IntegerField(choices=QUESTION_WEIGHTAGE_CHOICES, null=True)
@@ -63,3 +69,11 @@ class SubjectSplit(models.Model):
     question_type = models.IntegerField(choices=Questions.QUESTION_TYPE_CHOICES, null=True)
     total_questions = models.IntegerField(default=0)
     questions_to_attempt = models.IntegerField(default=0)
+
+
+class GeneratedQuestionPaper(models.Model):
+    token = models.CharField(max_length=100)
+    file_path = models.CharField(max_length=200, default=None, null=True)
+    is_ready = models.BooleanField(default=False)
+    mentor = models.ForeignKey(User, on_delete=models.CASCADE)
+    submitted_date = models.DateTimeField(null=True, default=None)

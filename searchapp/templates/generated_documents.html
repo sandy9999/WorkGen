@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% block title %}
+Download Generated Documents
+{% endblock %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'generated_documents.css' %}"/>
+  {% endblock %}
+  {% block js %}
+  <script>
+  var flag1 = "{{ flag }}";
+  var error1="{{error}}";
+  if (flag1=='1'){
+    alert(error1);
+  }
+  function download_token(token) {
+    var request = new XMLHttpRequest();
+    var url = 'http://localhost:8000/download_docx';
+    var params = `token=${token}`;
+    request.open('GET', `${url}?${params}`, true);
+    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+    request.responseType = 'blob';
+    request.onload = function() {
+      if(request.status === 200) {
+        var blob = new Blob([request.response], { type: 'application/pdf' });
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = "workgen_document.docx";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    };
+    request.send();
+  }
+  </script>
+  {% endblock %}
+
+{% block student_view %}
+<br>
+<br>
+<br>
+  <div class="container">
+      <table class="ui celled table">
+          <thead>
+            <tr><th>Token</th>
+            <th>Submitted Time</th>
+            <th>Number Of Papers</th>
+            <th>Download</th>
+          </tr></thead>
+          <tbody>
+            {% for doc in data %}
+            <tr>
+              <td>{{doc.0}}</td>
+              <td>{{doc.1}}</td>
+              <td>{{doc.3}}</td>
+              <td><button onclick="download_token('{{doc.0}}')" class="ui button">Download</button></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+  </div>
+{% endblock %}

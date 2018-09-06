@@ -1,0 +1,53 @@
+.form{
+  text-align:center;
+  font-size:17px;
+  }
+
+  .form-head{
+    font-size:25px;
+    width:13%;
+    background:white;
+    border-radius:10px;
+    border-top:5px solid #d5f6b9;
+    border-left:5px solid #d5f6b9;
+    border-right:5px solid #d5f6b9;
+    margin: 0 auto;
+
+
+  }
+
+  p>input[type="text"]{
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 12px 10px;
+    margin: 8px 5px;
+    font-size:15px;
+  }
+  p>input[type="password"]{
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 12px 10px;
+    margin: 8px 5px;
+    font-size:15px;
+  }
+
+  .errorlist{
+    margin-bottom:10px;
+
+  }
+
+
+
+input[type=submit] {
+ background-color:#d5f6b9;
+ border: none;
+ color:black;
+ padding: 8px 32px;
+ text-decoration: none;
+ margin: 10px 20px;
+ cursor: pointer;
+ border-radius:10px;
+ font-weight:bold;
+}

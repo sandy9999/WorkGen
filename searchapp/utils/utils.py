@@ -110,6 +110,7 @@ def get_allowed_questions(data, allowed_qtypes, allowed_chapters):
             if qtype in allowed_qtypes:
                 updated_data[student][qtype] = [x for x in qtypes[qtype] if x[2] in allowed_chapters]
     updated_data = default_to_regular(updated_data)
+    print(updated_data)
     return updated_data
 
 def get_customized_paper(marker_data):
@@ -139,6 +140,13 @@ def get_customized_paper(marker_data):
         student_to_chapter[student] = sample(student_to_chapter[student], min(3, len(student_to_chapter[student])))
     return student_to_chapter
 
+
+def get_type_and_weightage(question_type):
+    weightage = int(question_type[0])
+    qtype = ord(question_type[1].lower()) - ord('a') + 1 if len(question_type) == 2 else 1
+    return weightage, qtype
+
+
 def convert_question_bank(question_bank_path):
     """
         This function converts the excel file of the question bank to a mapping between chapter name to questions.
@@ -165,7 +173,7 @@ def convert_question_bank(question_bank_path):
                 }
 
     """
-    question_bank = op.load_workbook(question_bank_path).worksheets[0]
+    question_bank = op.load_workbook(question_bank_path).worksheets[2]
     subject_to_chapter_to_question = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: list([]))))
     row_no = -1
     for row in question_bank.rows:

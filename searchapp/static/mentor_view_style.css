@@ -1,0 +1,57 @@
+
+.dashboard{
+  margin-left:3%;
+  }
+
+.column{
+  background:#d5f6b9;
+
+  margin:20px;
+  -moz-border-radius:10px;  /* for Firefox */
+-webkit-border-radius:10px; /* for Webkit-Browsers */
+border-radius:10px; /* regular */
+  opacity:0.7;
+  text-align:center;
+}
+#grid{
+  grid-row-gap:70px;
+}
+.button{
+  outline:none;
+  margin:20px;
+  width:75%;
+  height:75%;
+
+}/* Style the links inside the navigation bar */
+.button a {
+    outline:0;
+    font-weight:800;
+    color:black;
+    text-align: center;
+    padding: 0.5em 0em;
+    text-decoration: none;
+    font-size: 17px;
+    margin:20px;
+    border:none;
+    border-radius:5px;
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word;
+}
+.button a:hover {
+
+    color: black;
+}
+.button a:active{
+  outline:0;
+  border:none;
+  -moz-outline-style:none;
+}
+#button{
+  margin:10px;
+  background:black;
+  color:white;
+  border-radius:5px;
+}

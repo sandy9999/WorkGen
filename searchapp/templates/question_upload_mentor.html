@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block title %}
+Upload
+{% endblock %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'question_upload_style.css' %}"/>
+  {% endblock %}
+  {% block js %}
+  <script>
+  var flag1 = "{{ flag }}";
+  var error1="{{error}}";
+  if (flag1=='1'){
+    alert(error1);
+  }
+  </script>
+  {% endblock %}
+
+{% block student_view %}
+<br>
+<br>
+<br>
+  <div class="container">
+    <form action="upload" method="POST" enctype="multipart/form-data" class="ui form">
+        {% csrf_token %}
+        <br>
+        <br>
+        <div>
+          Select a file to upload:
+          <br>
+          <br>
+          <div class="file">
+            <input type="file" name="datafile" accept=".xlx,.xlsx">
+          </div>
+          <div>
+            <br>
+            <br>
+            <input type="submit" value="UPLOAD QUESTIONS">
+          </div>
+        </div>
+      </form>
+    </div>
+{% endblock %}

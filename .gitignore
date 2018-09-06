@@ -1,3 +1,5 @@
+dump.rdb
+*.docx
 *.pyc
 *.swp
 *.vscode
