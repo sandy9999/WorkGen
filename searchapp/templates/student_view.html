@@ -129,6 +129,7 @@ Student View
 		<br>
 		<form method="POST" enctype="multipart/form-data" class="ui form" id="upload_form">
 			{% csrf_token %}
+		<div id="fileinput"><input type="file" name="datafile" accept=".xlx,.xlsx"></div>
 		<button id="upload">Upload</button>
 		</form>
 		<br>

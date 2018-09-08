@@ -92,6 +92,7 @@ $(document).ready(function(){
 				url: "http://localhost:8000/get_customize_paper",
 				method : "get",
 				data: formData,
+				processData: false,
 				headers: { "X-CSRFToken": csrftoken,},
 				success: function(response) {
 					$(function(){
@@ -166,5 +167,26 @@ $(document).ready(function(){
 	});
 
 	// methods for CUSTOMIZED worksheet
+
+	$('#customized-subject').dropdown({
+		onChange: populate_chapters,
+	});
+
+	$('#customized-chapter').dropdown({
+		onChange: function (value, text, $selectedItem) {
+			$("#generic-qtype").removeClass("hide-display").addClass("show-display");
+		},
+	});
+
+	$('#customized-qtype').dropdown({
+		onChange: function (value, text, $selectedItem) {
+		},
+	});
+	
+
+	$('#stud_name').dropdown({
+		onChange: function (value, text, $selectedItem) {
+		},
+	});
 
 });

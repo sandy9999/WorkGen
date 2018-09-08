@@ -196,3 +196,13 @@ input[type=number] {
 	margin-left: auto;
 	margin-right: auto;
 }
+input[type="file"] {
+	text-align:center;
+}
+#fileinput{
+	margin-left:auto;
+	margin-right:auto;
+	width:50%;
+	display:block;
+	margin-bottom:2%;
+}
