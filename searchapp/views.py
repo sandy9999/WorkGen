@@ -135,9 +135,13 @@ def get_chapters(request):
 
 
 def get_test_paper(request):
+    print("hey there")
     if request.method == 'GET':
+        print("This is a get request")
         subject = request.GET['subject']
+        print(subject)
         chapters = request.GET.getlist('chapters[]')
+        print(chapters)
         breakup = {
             '1A': [1, 1],
             '1B': [1, 1],
@@ -147,8 +151,11 @@ def get_test_paper(request):
         }
         # token is basically used to identify paper
         token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
+        print(token)
         generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
+        print(request.user)
         generated_paper.save()
+        print("Something just got saved")
         generate_test_paper.delay(subject, chapters, breakup, request.user.username, token)
         return JsonResponse({"message":"success", "token": token})
 
@@ -170,3 +177,25 @@ def get_generic_paper(request):
     generated_paper.save()
     generate_test_paper.delay(subject, chapters, breakup, request.user.username, token)
     return JsonResponse({"message":"success", "token": token})
+
+def get_customize_paper(request):
+    subject = request.GET['subject']
+    if len(request.FILES)!=0:
+        file_obj = request.FILES['datafile']
+        breakup = {
+            '1A': [1, 1],
+            '1B': [1, 1],
+            '2': [1, 1],
+            '3': [1, 1],
+            '5': [1, 1]
+        }
+        totalchapterlist = Questions.objects.all().values_list('chapter_number',flat=True).distinct()
+        data = convert_marker_data(file_obj,breakup)
+        filtered_data = get_allowed_questions(data,['1A','1B','2','3','5'],totalchapterlist)
+        customized_data = get_customized_paper(filtered_data)
+        token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
+        generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
+        generated_paper.save()
+        for key in customized_data:
+            generate_test_paper.delay(subject, customized_data[key], breakup, request.user.username, token)
+        return JsonResponse({"message":"success", "token": token})

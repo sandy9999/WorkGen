@@ -76,6 +76,34 @@ $(document).ready(function(){
 				},
 			});
 		}
+		else if (worksheetType == 'customized') {
+			/*var subject = $("#generic-subject").dropdown('get value');
+			var chapters = $("#generic-chapter").dropdown('get values');
+			var q1a = $('#generic-noOfQ1a').val() || 0;
+			var q1b = $('#generic-noOfQ1b').val() || 0;
+			var q2 = $('#generic-noOfQ2').val() || 0;
+			var q3 = $('#generic-noOfQ3').val() || 0;
+			var q4 = $('#generic-noOfQ4').val() || 0;
+			var q5 = $('#generic-noOfQ5').val() || 0;
+			var random_setting = $("#random-setting").dropdown('get value');*/
+			var form = $('#upload_form')[0];
+			var formData = new FormData(form);
+			$.ajax({
+				url: "http://localhost:8000/get_customize_paper",
+				method : "get",
+				data: formData,
+				headers: { "X-CSRFToken": csrftoken,},
+				success: function(response) {
+					$(function(){
+						new PNotify({
+							title: 'Success!',
+							text: 'Your document is currently being generated.',
+							type: 'success'
+						});
+					});
+				},
+			});
+		}
 	}
 
 	function populate_chapters(value, text, $selectedItem) {

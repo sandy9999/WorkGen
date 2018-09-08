@@ -22,6 +22,7 @@ def generate_test_paper(subject, chapters, subject_breakup, mentor, token):
 
     it returns a list of dicts of form==>[{'question_type':'','question':'','attempt':''},{},{}]
     '''
+    print("blablabla")
     test_paper_dict=[]
     for question_type in subject_breakup:
         final_list = []
@@ -39,5 +40,7 @@ def generate_test_paper(subject, chapters, subject_breakup, mentor, token):
             'attempt':subject_breakup.get(question_type,None)[1]
          }
         test_paper_dict.append(row)
+    print(test_paper_dict)
     filepath = convert_to_doc(test_paper_dict, subject)
+    print(filepath)
     GeneratedQuestionPaper.objects.filter(mentor__username=mentor, token=token).update(file_path=filepath, is_ready=True)
