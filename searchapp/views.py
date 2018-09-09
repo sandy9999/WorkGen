@@ -163,7 +163,7 @@ def get_test_paper(request):
         token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
         generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
         generated_paper.save()
-        generate_test_paper.delay(subject, chapters, breakup, request.user.username, token,'0')
+        generate_test_paper.delay(subject, chapters, breakup, 'test', '0', request.user.username, token)
         return JsonResponse({"message":"success", "token": token})
 
 
@@ -233,10 +233,15 @@ def get_customize_paper(request):
         print(filtered_data)
         customized_data = get_customized_paper(filtered_data)
         print(customized_data)
-        for key in customized_data:
+        token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
+        generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
+        generated_paper.save()
+        generate_test_paper.delay(subject, chapters, breakup, 'customized', customized_data, request.user.username, token)
+        return JsonResponse({"message":"success", "token": token})
+        """for key in customized_data:
             print("iteration key")
             token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
             generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
             generated_paper.save()
             generate_test_paper.delay(subject, customized_data[key], breakup, request.user.username, token)
-            return JsonResponse({"message":"success", "token": token})
+            return JsonResponse({"message":"success", "token": token})"""
