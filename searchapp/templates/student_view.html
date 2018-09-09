@@ -3,6 +3,7 @@
 {% block title %}
 Student View
 {% endblock %}
+{% block login %}<li><a href="login">Login</a></li>{% endblock %}
 {% block student_view %}
 <!-- Select worksheet type -->
 <div id="worksheetType" class="ui selection dropdown">
@@ -68,7 +69,7 @@ Student View
 					<tr>
 						<td>1A (One Mark Textual)</td>
 						<td>
-							<input class="no_of_questions" id="generic-noOfQ1a" type="number" min="0" max="100" step="1" name="noOfQ1" value=0>		
+							<input class="no_of_questions" id="generic-noOfQ1a" type="number" min="0" max="100" step="1" name="noOfQ1" value=0>
 						</td>
 					</tr>
 					<tr>
@@ -178,4 +179,3 @@ Student View
 		<br>
 		<button id="submit">DOWNLOAD</submit>
 			{% endblock %}
-			

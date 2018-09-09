@@ -17,7 +17,7 @@ from docx import Document
 
 from .utils.utils import convert_question_bank,get_type_and_weightage,default_to_regular
 from .test_paper import generate_test_paper
-from .models import Mentor, Questions, MCQOptions, Subject, GeneratedQuestionPaper
+from .models import Mentor, Questions, MCQOptions, Subject, GeneratedQuestionPaper,SubjectSplit
 
 logger = logging.getLogger(__name__)
 
@@ -91,7 +91,7 @@ def add_questions(request):
             default_dict = convert_question_bank(file_obj)
             subject_to_chapter_to_question=default_to_regular(default_dict)
             add_to_database(subject_to_chapter_to_question, request.user)
-            return HttpResponse("added successfully")
+            return render(request,'mentor_view.html',{'pop':" the questions have been added successfully",'flag':'0'})
         else:
             return render(request,'question_upload_mentor.html',{'error':"no file selected",'flag':'1'})
 
@@ -126,47 +126,95 @@ def add_to_database(subject_to_chapter_to_question, user):
 
 
 def get_chapters(request):
-    subject_name = request.GET['subject']
-    chapters = Questions.objects.filter(subject__subject_name__iexact=subject_name).values_list('chapter', flat=True).distinct()
-    json_data = {
-        'chapters': list(chapters)
-    }
-    return JsonResponse(json_data)
+    if request.method == 'GET':
+        subject_name = request.GET['subject']
+        chapters = Questions.objects.filter(subject__subject_name__iexact=subject_name).values_list('chapter', flat=True).distinct()
+        json_data = {
+            'chapters': list(chapters)
+        }
+        return JsonResponse(json_data)
 
 
 def get_test_paper(request):
     if request.method == 'GET':
         subject = request.GET['subject']
         chapters = request.GET.getlist('chapters[]')
-        breakup = {
+        q_types_and_q_weightages = SubjectSplit.objects.filter(name=subject).values_list('question_weightage','question_type')
+        print(q_types_and_q_weightages)
+        i=0
+        for tuples in q_types_and_q_weightages:
+            print(tuples[0])
+            print(tuples[1])
+            if tuples[0]==1 :
+                if tuples[1]==1:
+                  q_type='1A'
+                else:
+                  q_type='1B'
+            else :
+                print("in else")
+                q_type=str(tuples[0])
+            print(q_type)
+            breakup.update({q_type : [int(sent_breakup[i])]*2})
+            print(breakup)
+            i = i+1
+        '''breakup = {
             '1A': [1, 1],
             '1B': [1, 1],
             '2': [1, 1],
             '3': [1, 1],
             '5': [1, 1]
-        }
+        }'''
         # token is basically used to identify paper
         token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
         generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
         generated_paper.save()
-        generate_test_paper.delay(subject, chapters, breakup, request.user.username, token)
+        generate_test_paper.delay(subject, chapters, breakup, request.user.username, token,'0')
         return JsonResponse({"message":"success", "token": token})
 
 
 def get_generic_paper(request):
+    breakup = {}
     subject = request.GET['subject']
     chapters = request.GET.getlist('chapters[]')
     sent_breakup = request.GET.getlist('breakup[]')
+    print(sent_breakup)
+    print("hi")
+    q_types_and_q_weightages = SubjectSplit.objects.filter(name=subject).values_list('question_weightage','question_type')
+    print(q_types_and_q_weightages)
+    i=0
+    for tuples in q_types_and_q_weightages:
+        print(tuples[0])
+        print(tuples[1])
+        if tuples[0]==1 :
+            if tuples[1]==1:
+              q_type='1A'
+            else:
+              q_type='1B'
+        else :
+            print("in else")
+            q_type=str(tuples[0])
+        print(q_type)
+        breakup.update({q_type : [int(sent_breakup[i])]*2})
+        print(breakup)
+        i = i+1
+
     random_settings = request.GET['random_setting']
-    breakup = {
+
+    '''breakup = {
         '1A': [int(sent_breakup[0])]*2,
         '1B': [int(sent_breakup[1])]*2,
         '2': [int(sent_breakup[2])]*2,
         '3': [int(sent_breakup[3])]*2,
         '5': [int(sent_breakup[4])]*2,
     }
+    '''
+
+
     token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
     generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
     generated_paper.save()
-    generate_test_paper.delay(subject, chapters, breakup, request.user.username, token)
+    print("here")
+    print(random_settings)
+    #generate_test_paper.delay(subject, chapters, breakup, request.user.username, token,random_settings)
+    generate_test_paper(subject, chapters, breakup, request.user.username, token,random_settings)
     return JsonResponse({"message":"success", "token": token})
