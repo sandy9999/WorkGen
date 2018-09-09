@@ -79,8 +79,40 @@ $(document).ready(function(){
 					});
 				},
 			});
-		}
+		} else if (worksheetType == 'customized') {
+			var subject = $("#customized-subject").dropdown('get value');
+			/*var chapters = $("#generic-chapter").dropdown('get values');
+			var q1a = $('#generic-noOfQ1a').val() || 0;
+			var q1b = $('#generic-noOfQ1b').val() || 0;
+			var q2 = $('#generic-noOfQ2').val() || 0;
+			var q3 = $('#generic-noOfQ3').val() || 0;
+			var q4 = $('#generic-noOfQ4').val() || 0;
+			var q5 = $('#generic-noOfQ5').val() || 0;
+			var random_setting = $("#random-setting").dropdown('get value');*/
+			var form = $('#upload_form')[0];
+			var formData = new FormData(form);
+			formData.append('subject',subject)
+			$.ajax({
+				enctype: 'multipart/form-data',
+				url: "http://localhost:8000/get_customize_paper",
+				method : "post",
+				data: formData,
+				processData: false,
+				cache: false,
+				contentType: false,
+				headers: { "X-CSRFToken": csrftoken,},
+				success: function(response) {
+					$(function(){
+						new PNotify({
+							title: 'Success!',
+							text: 'Your document is currently being generated.',
+							type: 'success'
+						});
+					});
+				},
+		});
 	}
+}
 
 	function populate_chapters(value, text, $selectedItem) {
 		let formData = {
@@ -162,5 +194,25 @@ $(document).ready(function(){
 	});
 
 	// methods for CUSTOMIZED worksheet
+
+	$('#customized-subject').dropdown({
+		onChange: populate_chapters,
+	});
+
+	$('#customized-chapter').dropdown({
+		onChange: function (value, text, $selectedItem) {
+			$("#generic-qtype").removeClass("hide-display").addClass("show-display");
+		},
+	});
+
+	$('#customized-qtype').dropdown({
+		onChange: function (value, text, $selectedItem) {
+		},
+	});
+	
+	$('#stud_name').dropdown({
+		onChange: function (value, text, $selectedItem) {
+		},
+});
 
 });
