@@ -7,6 +7,16 @@ Hello
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{% static 'mentor_view_style.css' %}"/>
 {% endblock %}
+{% block js %}
+<script>
+var flag1 = "{{ flag }}";
+var pop1="{{pop}}";
+if (flag1=='0'){
+  alert(pop1);
+}
+</script>
+{% endblock %}
+{% block login %}<li><a href="logout">Logout</a></li>{% endblock %}
 {% block student_view %}
 <br>
 <br>
