@@ -65,6 +65,7 @@ class MCQOptions(models.Model):
 
 class SubjectSplit(models.Model):
     name = models.CharField(max_length=100)
+    subject = models.ForeignKey('Subject', on_delete=models.CASCADE, null=True)
     question_weightage = models.IntegerField(choices=Questions.QUESTION_WEIGHTAGE_CHOICES, null=True)
     question_type = models.IntegerField(choices=Questions.QUESTION_TYPE_CHOICES, null=True)
     total_questions = models.IntegerField(default=0)
