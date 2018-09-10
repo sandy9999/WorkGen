@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 def student_view(request):
     subject_list = Subject.objects.all().values_list('subject_name', flat=True)
     subject_list = list(subject_list)
-    return render(request,'student_view.html',{'data':subject_list})
+    return render(request,'student_view.html',{'data':subject_list, 'is_logged_in': request.user.is_authenticated})
 
 
 def login_view(request):
@@ -36,18 +36,20 @@ def login_view(request):
             login(request,user)
             return redirect('searchapp:mentor_view')
     else:
+        if request.user.is_authenticated:
+            return redirect('/')
         form=AuthenticationForm()
     return render(request,'login.html',{'form':form})
 
 
 def logout_view(request):
   logout(request)
-  return render_to_response('logout.html')
+  return redirect('/')
 
 
 @login_required(login_url='/login')
 def mentor_view(request):
-    return render(request, 'mentor_view.html')
+    return render(request, 'mentor_view.html', {'is_logged_in': request.user.is_authenticated})
 
 
 @login_required(login_url='/login')
