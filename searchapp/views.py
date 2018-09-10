@@ -197,10 +197,23 @@ def get_test_format(request):
         return JsonResponse({"papers": list(papers)})
 
 def get_customize_paper(request):
-    subject = request.POST['subject']
-    if len(request.FILES)!=0:
-        file_obj = request.FILES['datafile']
-        # print(file_obj)
+    if request.method == 'POST':
+        print(request.POST)
+        subject = request.POST['subject']
+        chapters = request.POST.getlist('chapters[]')
+        chapters = chapters[0].split(',')
+        chapters = [ int(x) for x in chapters ]
+        sent_breakup = request.POST.getlist('breakup[]')
+        student_names = request.POST.getlist('student_names[]')
+        student_names = student_names[0].split(',')
+        print(subject)
+        print(chapters)
+        print(sent_breakup)
+        print(student_names)
+        if len(request.FILES)==0:
+                return JsonResponse({"message":"failed"})
+        file_obj = request.FILES['file']
+        print(file_obj)
         breakup = {
             '1A': [1, 1],
             '1B': [1, 1],
@@ -208,49 +221,51 @@ def get_customize_paper(request):
             '3': [1, 1],
             '5': [1, 1]
         }
-        total_chapter_list = Questions.objects.all().values_list('chapter_number',flat=True).distinct()
-        # print(totalchapterlist)
         data = convert_marker_data(file_obj, breakup)
-        print(data)
+        # print(data)
         allowed_qtype = []
         allowed_chapters = []
         stud_data  = data[0]
-        print(stud_data)
-        allowed_chapters = data[1]
-        x=np.array(allowed_chapters)
-        allowed_chapters = np.unique(x)
-        allowed_chapters = allowed_chapters.tolist()
+        # print(stud_data)
+        allowed_chapters = list(set(data[1]))
+        for item in chapters:
+            print(item)
+            if item in allowed_chapters:
+                allowed_chapters.remove(item)
         print(allowed_chapters)
         for student_name in stud_data :
             for ques_type in stud_data[student_name]:
                 allowed_qtype.append(ques_type)
-        y = np.array(allowed_qtype)
-        allowed_qtype = np.unique(y)
-        allowed_qtype = allowed_qtype.tolist()
+        allowed_qtype = list(set(allowed_qtype))
         print(allowed_qtype)
         filtered_data = get_allowed_questions(stud_data,allowed_qtype,allowed_chapters)
         print(filtered_data)
         customized_data = get_customized_paper(filtered_data)
+        for item in student_names:
+            if item in customized_data:
+                del customized_data[item]
         print(customized_data)
         token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
         generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
         generated_paper.save()
         generate_test_paper.delay(subject, chapters, breakup, 'customized', customized_data, request.user.username, token)
         return JsonResponse({"message":"success", "token": token})
-        """for key in customized_data:
-            print("iteration key")
-            token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
-            generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
-            generated_paper.save()
-            generate_test_paper.delay(subject, customized_data[key], breakup, request.user.username, token)
-            return JsonResponse({"message":"success", "token": token})"""
+    """for key in customized_data:
+       print("iteration key")
+        token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
+        generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
+        generated_paper.save()
+        generate_test_paper.delay(subject, customized_data[key], breakup, request.user.username, token)
+        return JsonResponse({"message":"success", "token": token})"""
 
 def generate_optional_inputs(request):
     if request.method=='POST':
         subject = request.POST['subject']
+        # print(subject)
         if len(request.FILES)==0:
             return JsonResponse({"message":"failed"})
-        file_obj = request.FILES['datafile']
+        file_obj = request.FILES['file']
+        # print(file_obj)
         breakup = {
             '1A': [1, 1],
             '1B': [1, 1],
@@ -266,15 +281,15 @@ def generate_optional_inputs(request):
         allowed_chapters = []
         student_name_list = []
         stud_data  = data[0]
-        print(stud_data)
+        # print(stud_data)
         allowed_chapters = list(set(data[1]))
-        print(allowed_chapters)
+        # print(allowed_chapters)
         for student_name in stud_data :
             student_name_list.append(student_name)
             for ques_type in stud_data[student_name]:
                 allowed_qtype.append(ques_type)
         allowed_qtype = list(set(allowed_qtype))
-        print(allowed_qtype)
-        print("hi")
-        return JsonResponse({"message":"success"})
-        # return JsonResponse({"message":"success","chapters":allowed_chapters,"stud_name":student_name_list,"qtype":allowed_qtype})
+        # print(allowed_qtype)
+        # print("hi")
+        # return JsonResponse({"message":"success"})
+        return JsonResponse({"message":"success","chapters":allowed_chapters,"stud_name":student_name_list,"qtype":allowed_qtype})

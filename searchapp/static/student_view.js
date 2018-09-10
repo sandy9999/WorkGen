@@ -81,17 +81,21 @@ $(document).ready(function(){
 			});
 		} else if (worksheetType == 'customized') {
 			var subject = $("#customized-subject").dropdown('get value');
-			/*var chapters = $("#generic-chapter").dropdown('get values');
-			var q1a = $('#generic-noOfQ1a').val() || 0;
-			var q1b = $('#generic-noOfQ1b').val() || 0;
-			var q2 = $('#generic-noOfQ2').val() || 0;
-			var q3 = $('#generic-noOfQ3').val() || 0;
-			var q4 = $('#generic-noOfQ4').val() || 0;
-			var q5 = $('#generic-noOfQ5').val() || 0;
-			var random_setting = $("#random-setting").dropdown('get value');*/
-			var form = $('#upload_form')[0];
-			var formData = new FormData(form);
-			formData.append('subject',subject)
+			var chapters = $("#customized-chapter").dropdown('get values');
+			var q1a = $('#customized-noOfQ1a').val() || 0;
+			var q1b = $('#customized-noOfQ1b').val() || 0;
+			var q2 = $('#customized-noOfQ2').val() || 0;
+			var q3 = $('#customized-noOfQ3').val() || 0;
+			var q4 = $('#customized-noOfQ4').val() || 0;
+			var q5 = $('#customized-noOfQ5').val() || 0;
+			var student_names = $("#stud_name").dropdown('get values');
+			var file_data = $('#realfile').prop("files")[0];
+			var formData = new FormData();
+			formData.append("file",file_data);
+			formData.append('subject',subject);
+			formData.append('chapters[]',chapters);
+			formData.append('breakup[]',[q1a,q1b,q2,q3,q4,q5]);
+			formData.append('student_names[]',student_names);
 			$.ajax({
 				enctype: 'multipart/form-data',
 				url: "http://localhost:8000/get_customize_paper",
@@ -118,8 +122,9 @@ function upload_click(e) {
 	var worksheetType = $("#worksheetType").dropdown('get value');
 	if (worksheetType == 'customized') {
 		var subject = $("#customized-subject").dropdown('get value');
-		var form = $('#upload_form')[0];
-		var formData = new FormData(form);
+		var file_data = $('#realfile').prop("files")[0];
+		var formData = new FormData();
+		formData.append("file",file_data);
 		console.log("Hello testing...");
 		formData.append('subject',subject);
 		$.ajax({
@@ -133,13 +138,23 @@ function upload_click(e) {
 			headers: { "X-CSRFToken": csrftoken,},
 			success: function(response) {
 				console.log(response);
+				$(`#${worksheetType}-chapter-options-parent`).empty();
+				let chapters = response['chapters'];
+				$(`#${worksheetType}-chapter`).removeClass('hide-display').addClass('show-display');
+				for (var i=0; i<chapters.length; i++) {
+					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapters[i]}>${chapters[i]}</div>`);}
+				
+				$(`#stud_name-options-parent`).empty();
+				let student_names = response['stud_name'];	
+				$(`#stud_name`).removeClass('hide-display').addClass('show-display');
+				for (var i=0; i<student_names.length; i++) {
+					$(`#stud_name-options-parent`).append(`<div class="item" data-value=${student_names[i]}>${student_names[i]}</div>`);}
 				$(function(){
-					console.log(response);
-					/*new PNotify({
+					new PNotify({
 						title: 'Success!',
 						text: 'Your document is currently being generated.',
 						type: 'success'
-					});*/
+					});
 
 				});
 			},

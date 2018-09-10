@@ -134,22 +134,14 @@ Student View
 			</div>
 		</div>
 		<br>
-		<form method="POST" enctype="multipart/form-data" class="ui form" id="upload_form">
-			{% csrf_token %}
-		<div id="fileinput"><input type="file" name="datafile" accept=".xlx,.xlsx"></div>
+		<div id="fileinput"><input type="file" name="datafile" accept=".xlx,.xlsx" id="realfile"/></div>
 		<button id="upload">Upload</button>
-		</form>
 		<br>
 		<div id="stud_name" class="ui fluid multiple search selection dropdown">
 			<input name="stud_name" type="hidden">
 			<i class="dropdown icon"></i>
 			<div class="default text">Select Student Name</div>
-			<div class="menu">
-				<div class="item" data-value="Sandhya">Sandhya</div>
-				<div class="item" data-value="Ishani">Ishani</div>
-				<div class="item" data-value="Akshay">Akshay</div>
-				<div class="item" data-value="Naven">Naven</div>
-			</div>
+			<div id="stud_name-options-parent" class="menu"></div>
 		</div>
 		<br>
 		<div id="customized-chapter" class="ui fluid multiple search selection dropdown chapter hide-display">
