@@ -201,7 +201,7 @@ def get_customize_paper(request):
         subject = request.POST['subject']
         chapters = request.POST.getlist('chapters[]')
         chapters = chapters[0].split(',')
-        chapters = [ int(x) for x in chapters ]
+        # print(chapters)
         sent_breakup = request.POST.getlist('breakup[]')
         sent_breakup = sent_breakup[0].split(',')
         sent_breakup = [ int(x) for x in sent_breakup ]
@@ -230,23 +230,34 @@ def get_customize_paper(request):
         allowed_qtype = []
         allowed_chapters = []
         stud_data  = data[0]
-        allowed_chapters = list(set(data[1]))
+        allowed_chapter_nos = list(set(data[1]))
+        # print(allowed_chapter_nos)
+        allowed_chapters = Questions.objects.filter(subject__subject_name__iexact=subject,chapter_number__in=allowed_chapter_nos).values_list('chapter', flat=True).distinct()
+        allowed_chapters = list(allowed_chapters)
+        # print(allowed_chapters)
         for item in chapters:
             if item in allowed_chapters and len(allowed_chapters)>3:
                 allowed_chapters.remove(item)
+        # print(allowed_chapters)
         for student_name in stud_data :
             for ques_type in stud_data[student_name]:
                 allowed_qtype.append(ques_type)
         allowed_qtype = list(set(allowed_qtype))
-        filtered_data = get_allowed_questions(stud_data,allowed_qtype,allowed_chapters)
+        allowed_chapter_nos = Questions.objects.filter(subject__subject_name__iexact=subject,chapter__in=allowed_chapters).values_list('chapter_number', flat=True).distinct()
+        allowed_chapter_nos = list(allowed_chapter_nos)
+        # print(allowed_chapter_nos)
+        filtered_data = get_allowed_questions(stud_data,allowed_qtype,allowed_chapter_nos)
         customized_data = get_customized_paper(filtered_data)
         for item in student_names:
             if item in customized_data:
                 del customized_data[item]
+        # print(allowed_chapters)
+        # print(allowed_qtype)
+        print(customized_data)
         token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
         generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
         generated_paper.save()
-        generate_test_paper.delay(subject, chapters, breakup, 'customized', customized_data, request.user.username, token)
+        generate_test_paper.delay(subject, allowed_chapters, breakup, 'customized', customized_data, request.user.username, token)
         return JsonResponse({"message":"success", "token": token})
 
 def generate_optional_inputs(request):
@@ -262,16 +273,21 @@ def generate_optional_inputs(request):
             '3': [1, 1],
             '5': [1, 1]
         }
-        total_chapter_list = Questions.objects.all().values_list('chapter_number',flat=True).distinct()
         data = convert_marker_data(file_obj, breakup)
         allowed_qtype = []
-        allowed_chapters = []
+        allowed_chapter_nos = []
         student_name_list = []
         stud_data  = data[0]
-        allowed_chapters = list(set(data[1]))
+        allowed_chapter_nos = list(set(data[1]))
         for student_name in stud_data :
             student_name_list.append(student_name)
             for ques_type in stud_data[student_name]:
                 allowed_qtype.append(ques_type)
+        # print(student_name_list)
         allowed_qtype = list(set(allowed_qtype))
+        # print(allowed_chapter_nos)
+        allowed_chapters = Questions.objects.filter(subject__subject_name__iexact=subject,chapter_number__in=allowed_chapter_nos).values_list('chapter', flat=True).distinct()
+        allowed_chapters = list(allowed_chapters)
+        # print(allowed_chapters)
+        # print(allowed_qtype)
         return JsonResponse({"message":"success","chapters":allowed_chapters,"stud_name":student_name_list,"qtype":allowed_qtype})
