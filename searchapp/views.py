@@ -13,7 +13,6 @@ from django.conf import settings
 import logging
 import datetime
 import hashlib
-import numpy as np
 from docx import Document
 
 from .utils.utils import convert_question_bank,get_type_and_weightage,default_to_regular,convert_marker_data,get_allowed_questions,get_customized_paper
@@ -245,3 +244,37 @@ def get_customize_paper(request):
             generated_paper.save()
             generate_test_paper.delay(subject, customized_data[key], breakup, request.user.username, token)
             return JsonResponse({"message":"success", "token": token})"""
+
+def generate_optional_inputs(request):
+    if request.method=='POST':
+        subject = request.POST['subject']
+        if len(request.FILES)==0:
+            return JsonResponse({"message":"failed"})
+        file_obj = request.FILES['datafile']
+        breakup = {
+            '1A': [1, 1],
+            '1B': [1, 1],
+            '2': [1, 1],
+            '3': [1, 1],
+            '5': [1, 1]
+        }
+        total_chapter_list = Questions.objects.all().values_list('chapter_number',flat=True).distinct()
+        # print(totalchapterlist)
+        data = convert_marker_data(file_obj, breakup)
+        # print(data)
+        allowed_qtype = []
+        allowed_chapters = []
+        student_name_list = []
+        stud_data  = data[0]
+        print(stud_data)
+        allowed_chapters = list(set(data[1]))
+        print(allowed_chapters)
+        for student_name in stud_data :
+            student_name_list.append(student_name)
+            for ques_type in stud_data[student_name]:
+                allowed_qtype.append(ques_type)
+        allowed_qtype = list(set(allowed_qtype))
+        print(allowed_qtype)
+        print("hi")
+        return JsonResponse({"message":"success"})
+        # return JsonResponse({"message":"success","chapters":allowed_chapters,"stud_name":student_name_list,"qtype":allowed_qtype})

@@ -137,7 +137,7 @@ Student View
 		<form method="POST" enctype="multipart/form-data" class="ui form" id="upload_form">
 			{% csrf_token %}
 		<div id="fileinput"><input type="file" name="datafile" accept=".xlx,.xlsx"></div>
-		<button id="upload" type="submit">Upload</button>
+		<button id="upload">Upload</button>
 		</form>
 		<br>
 		<div id="stud_name" class="ui fluid multiple search selection dropdown">
@@ -209,5 +209,5 @@ Student View
 			<br>
 		</div>
 		<br>
-		<button id="submit">DOWNLOAD</submit>
+		<button id="submit">DOWNLOAD</button>
 			{% endblock %}

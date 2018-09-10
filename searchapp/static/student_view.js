@@ -114,6 +114,44 @@ $(document).ready(function(){
 	}
 }
 
+function upload_click(e) {
+	var worksheetType = $("#worksheetType").dropdown('get value');
+	if (worksheetType == 'customized') {
+		var subject = $("#customized-subject").dropdown('get value');
+		var form = $('#upload_form')[0];
+		var formData = new FormData(form);
+		console.log("Hello testing...");
+		formData.append('subject',subject);
+		$.ajax({
+			enctype: 'multipart/form-data',
+			url: "http://localhost:8000/generate_optional_inputs",
+			method : "post",
+			data: formData,
+			processData: false,
+			cache: false,
+			contentType: false,
+			headers: { "X-CSRFToken": csrftoken,},
+			success: function(response) {
+				console.log(response);
+				$(function(){
+					console.log(response);
+					/*new PNotify({
+						title: 'Success!',
+						text: 'Your document is currently being generated.',
+						type: 'success'
+					});*/
+
+				});
+			},
+	});
+	/*console.log("Testing json");
+		$.getJSON('http://localhost:8000/generate_optional_inputs',function(data){
+			console.log(data);
+		});*/
+}
+}
+
+
 	function populate_chapters(value, text, $selectedItem) {
 		let formData = {
 			subject: value,
@@ -188,11 +226,6 @@ $(document).ready(function(){
 	$('#random-setting').dropdown({
 	})
 
-	$('#stud_name').dropdown({
-		onChange: function (value, text, $selectedItem) {
-		},
-	});
-
 	// methods for CUSTOMIZED worksheet
 
 	$('#customized-subject').dropdown({
@@ -201,7 +234,7 @@ $(document).ready(function(){
 
 	$('#customized-chapter').dropdown({
 		onChange: function (value, text, $selectedItem) {
-			$("#generic-qtype").removeClass("hide-display").addClass("show-display");
+			$("#customized-qtype").removeClass("hide-display").addClass("show-display");
 		},
 	});
 
@@ -213,6 +246,10 @@ $(document).ready(function(){
 	$('#stud_name').dropdown({
 		onChange: function (value, text, $selectedItem) {
 		},
-});
+	});
+
+	$('#upload').click(upload_click);
+	$("#submit").click(submit_click);
+
 
 });
