@@ -175,48 +175,25 @@ def get_test_paper(request):
 
 
 def get_generic_paper(request):
-    breakup = {}
-    subject = request.GET['subject']
-    chapters = request.GET.getlist('chapters[]')
-    sent_breakup = request.GET.getlist('breakup[]')
-    print(sent_breakup)
-    print("hi")
-    q_types_and_q_weightages = SubjectSplit.objects.filter(name=subject).values_list('question_weightage','question_type')
-    print(q_types_and_q_weightages)
-    i=0
-    for tuples in q_types_and_q_weightages:
-        print(tuples[0])
-        print(tuples[1])
-        if tuples[0]==1 :
-            if tuples[1]==1:
-              q_type='1A'
-            else:
-              q_type='1B'
-        else :
-            print("in else")
-            q_type=str(tuples[0])
-        print(q_type)
-        breakup.update({q_type : [int(sent_breakup[i])]*2})
-        print(breakup)
-        i = i+1
+    if request.method == "GET":
+        breakup = {}
+        subject = request.GET['subject']
+        chapters = request.GET.getlist('chapters[]')
+        sent_breakup = request.GET.getlist('breakup[]')
+        random_settings = request.GET['random_setting']
 
-    random_settings = request.GET['random_setting']
+        breakup = {
+            '1A': [int(sent_breakup[0])]*2,
+            '1B': [int(sent_breakup[1])]*2,
+            '2': [int(sent_breakup[2])]*2,
+            '3': [int(sent_breakup[3])]*2,
+            '5': [int(sent_breakup[4])]*2,
+        }
 
-    '''breakup = {
-        '1A': [int(sent_breakup[0])]*2,
-        '1B': [int(sent_breakup[1])]*2,
-        '2': [int(sent_breakup[2])]*2,
-        '3': [int(sent_breakup[3])]*2,
-        '5': [int(sent_breakup[4])]*2,
-    }
-    '''
+        token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
+        generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
+        generated_paper.save()
 
+        generate_test_paper.delay(subject, chapters, breakup, request.user.username, token, random_settings)
 
-    token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
-    generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
-    generated_paper.save()
-    print("here")
-    print(random_settings)
-    #generate_test_paper.delay(subject, chapters, breakup, request.user.username, token,random_settings)
-    generate_test_paper(subject, chapters, breakup, request.user.username, token,random_settings)
-    return JsonResponse({"message":"success", "token": token})
+        return JsonResponse({"message":"success", "token": token})
