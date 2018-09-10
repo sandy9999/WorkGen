@@ -47,6 +47,11 @@ $(document).ready(function(){
 		} else if (worksheetType == 'generic') {
 			var subject = $("#generic-subject").dropdown('get value');
 			var chapters = $("#generic-chapter").dropdown('get values');
+			chapters = chapters.map(function(x) {
+				x = x.split('_');
+				x = x.join(' ');
+				return x;
+			});
 			var q1a = $('#generic-noOfQ1a').val() || 0;
 			var q1b = $('#generic-noOfQ1b').val() || 0;
 			var q2 = $('#generic-noOfQ2').val() || 0;
@@ -93,7 +98,9 @@ $(document).ready(function(){
 				let chapters = d['chapters'];
 				$(`#${worksheetType}-chapter`).removeClass('hide-display').addClass('show-display');
 				for (var i=0; i<chapters.length; i++) {
-					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapters[i]}>${chapters[i]}</div>`);
+					let chapter_value = chapters[i].split(' ');
+					chapter_value = chapter_value.join('_');
+					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapter_value}>${chapters[i]}</div>`);
 				}
 			}
 		});
