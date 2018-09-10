@@ -159,14 +159,8 @@ function upload_click(e) {
 				});
 			},
 	});
-	/*console.log("Testing json");
-		$.getJSON('http://localhost:8000/generate_optional_inputs',function(data){
-			console.log(data);
-		});*/
 }
 }
-
-
 	function populate_chapters(value, text, $selectedItem) {
 		let formData = {
 			subject: value,
