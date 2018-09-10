@@ -125,7 +125,6 @@ function upload_click(e) {
 		var file_data = $('#realfile').prop("files")[0];
 		var formData = new FormData();
 		formData.append("file",file_data);
-		console.log("Hello testing...");
 		formData.append('subject',subject);
 		$.ajax({
 			enctype: 'multipart/form-data',
@@ -137,7 +136,6 @@ function upload_click(e) {
 			contentType: false,
 			headers: { "X-CSRFToken": csrftoken,},
 			success: function(response) {
-				console.log(response);
 				$(`#${worksheetType}-chapter-options-parent`).empty();
 				let chapters = response['chapters'];
 				$(`#${worksheetType}-chapter`).removeClass('hide-display').addClass('show-display');
@@ -149,6 +147,7 @@ function upload_click(e) {
 				$(`#stud_name`).removeClass('hide-display').addClass('show-display');
 				for (var i=0; i<student_names.length; i++) {
 					$(`#stud_name-options-parent`).append(`<div class="item" data-value=${student_names[i]}>${student_names[i]}</div>`);}
+				$("#customized-qtype").removeClass("hide-display").addClass("show-display");
 				$(function(){
 					new PNotify({
 						title: 'Success!',
@@ -243,7 +242,6 @@ function upload_click(e) {
 
 	$('#customized-chapter').dropdown({
 		onChange: function (value, text, $selectedItem) {
-			$("#customized-qtype").removeClass("hide-display").addClass("show-display");
 		},
 	});
 

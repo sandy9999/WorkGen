@@ -13,7 +13,6 @@ def convert_to_doc(questions_mapping, worksheet_type, subject):
             p.add_run("set 1 marks=1").bold=True
             i = 0
             for row in questions_mapping[name]:
-                print(row)
                 if row['question_type']=='1A':
                     p = document.add_paragraph()
                     p.add_run("Attempt only "+str(row['attempt'])+" questions").italic=True
