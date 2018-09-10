@@ -141,31 +141,23 @@ def get_test_paper(request):
     if request.method == 'GET':
         subject = request.GET['subject']
         chapters = request.GET.getlist('chapters[]')
-        q_types_and_q_weightages = SubjectSplit.objects.filter(name=subject).values_list('question_weightage','question_type')
-        print(q_types_and_q_weightages)
-        i=0
-        for tuples in q_types_and_q_weightages:
-            print(tuples[0])
-            print(tuples[1])
-            if tuples[0]==1 :
-                if tuples[1]==1:
-                  q_type='1A'
-                else:
-                  q_type='1B'
-            else :
-                print("in else")
-                q_type=str(tuples[0])
-            print(q_type)
-            breakup.update({q_type : [int(sent_breakup[i])]*2})
-            print(breakup)
-            i = i+1
-        '''breakup = {
-            '1A': [1, 1],
-            '1B': [1, 1],
-            '2': [1, 1],
-            '3': [1, 1],
-            '5': [1, 1]
-        }'''
+        papertype = request.GET['papertype']
+        subject_breakup = SubjectSplit.objects.filter(
+            name=papertype,
+            subject__subject_name__iexact=subject).values_list(
+                'question_weightage',
+                'question_type',
+                'total_questions',
+                'questions_to_attempt')
+        breakup = {}
+        for qtype in subject_breakup:
+            if qtype[0] == 1:
+                if qtype[1] == 1:
+                    breakup['1A'] = [qtype[2], qtype[3]]
+                elif qtype[1] == 2:
+                    breakup['1B'] = [qtype[2], qtype[3]]
+            else:
+                breakup[str(qtype[0])] = [qtype[2], qtype[3]]
         # token is basically used to identify paper
         token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
         generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
@@ -197,3 +189,9 @@ def get_generic_paper(request):
         generate_test_paper.delay(subject, chapters, breakup, request.user.username, token, random_settings)
 
         return JsonResponse({"message":"success", "token": token})
+
+def get_test_format(request):
+    if request.method == 'GET':
+        subject = request.GET['subject']
+        papers = SubjectSplit.objects.filter(subject__subject_name__iexact=subject).values_list('name', flat=True).distinct()
+        return JsonResponse({"papers": list(papers)})

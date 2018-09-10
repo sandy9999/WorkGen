@@ -30,6 +30,14 @@ Student View
 		</div>
 	</div>
 	<br>
+	<div id="test-breakup" class="ui selection dropdown subject show-display">
+		<input name="subject" type="hidden">
+		<i class="dropdown icon"></i>
+		<div class="default text">Select Paper Format</div>
+		<div id="test-breakup-options-parent" class="menu">
+		</div>
+	</div>
+	<br>
 	<div id="test-chapter" class="ui fluid multiple search selection dropdown chapter hide-display">
 		<input name="chapter" type="hidden">
 		<i class="dropdown icon"></i>
@@ -45,9 +53,7 @@ Student View
 		<i class="dropdown icon"></i>
 		<div class="default text">Select Subject</div>
 		<div class="menu">
-			{% for element in data %}
 			<div class="item" data-value="{{element}}">{{element}}</div>
-			{% endfor %}
 		</div>
 	</div>
 	<br>
