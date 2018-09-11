@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'searchapp.apps.SearchappConfig',
     'corsheaders',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

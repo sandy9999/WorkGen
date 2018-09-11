@@ -123,65 +123,83 @@ Student View
 		</div>
 	</div>
 	<div id="customized-div" style="display: none;">
-		<div id="subject" class="ui selection dropdown">
+		<div id="customized-subject" class="ui selection dropdown subject show-display">
 			<input name="subject" type="hidden">
 			<i class="dropdown icon"></i>
 			<div class="default text">Select Subject</div>
 			<div class="menu">
-				<!-- {% for item in subject %}
-					<div class="item" data-value="{{ item.subject }}">{{ item.subject }}</div>
-					{% endfor %} -->
-					<div class="item" data-value="Science">Science</div>
-					<div class="item" data-value="Math">Math</div>
-				</div>
-			</div>
-			<br>
-			<button id="upload">Upload</button>
-			<br>
-			<div id="stud_name" class="ui fluid multiple search selection dropdown">
-				<input name="stud_name" type="hidden">
-				<i class="dropdown icon"></i>
-				<div class="default text">Select Student Name</div>
-				<div class="menu">
-					<div class="item" data-value="Sandhya">Sandhya</div>
-					<div class="item" data-value="Ishani">Ishani</div>
-					<div class="item" data-value="Akshay">Akshay</div>
-					<div class="item" data-value="Naven">Naven</div>
-				</div>
-			</div>
-			<br>
-			<div id="chapter" class="ui fluid multiple search selection dropdown">
-				<input name="chapter" type="hidden">
-				<i class="dropdown icon"></i>
-				<div class="default text">Select chapter</div>
-				<div class="menu">
-					{% for thing in chap %}
-					<div class="item" data-value="{{ thing.chapter }}">{{ thing.chapter }}</div>
-					{% endfor %}
-				</div>
-			</div>
-			<br>
-			<div id="qtype" class="ui fluid multiple search selection dropdown">
-				<input name="qtype" type="hidden">
-				<i class="dropdown icon"></i>
-				<div class="default text">Select Question Type</div>
-				<div class="menu">
-					<div class="item" data-value="1">1 mark</div>
-					<div class="item" data-value="2">2 marks</div>
-					<div class="item" data-value="3">3 marks</div>
-					<div class="item" data-value="4">4 marks</div>
-					<div class="item" data-value="5">5 marks</div>
-				</div>
-			</div>
-			<br>
-			<div class="question-type-div">
-				<input id="noOfQ1" type="number" min="0" max="100" step="1" name="noOfQ1" placeholder="No. of 1 mark Questions">
-				<input id="noOfQ2" type="number" min="0" max="100" step="1" name="noOfQ2" placeholder="No. of 2 mark Questions">
-				<input id="noOfQ3" type="number" min="0" max="100" step="1" name="noOfQ3" placeholder="No. of 3 mark Questions">
-				<input id="noOfQ4" type="number" min="0" max="100" step="1" name="noOfQ4" placeholder="No. of 4 mark Questions">
-				<input id="noOfQ5" type="number" min="0" max="100" step="1" name="noOfQ5" placeholder="No. of 5 mark Questions">
+				{% for element in data %}
+				<div class="item" data-value="{{element}}">{{element}}</div>
+				{% endfor %}
 			</div>
 		</div>
 		<br>
-		<button id="submit">DOWNLOAD</submit>
+		<div id="fileinput"><input type="file" name="datafile" accept=".xlx,.xlsx" id="realfile"/></div>
+		<button id="upload">Upload</button>
+		<br>
+		<div id="stud_name" class="ui fluid multiple search selection dropdown">
+			<input name="stud_name" type="hidden">
+			<i class="dropdown icon"></i>
+			<div class="default text">Select Student Names to Exclude</div>
+			<div id="stud_name-options-parent" class="menu"></div>
+		</div>
+		<br>
+		<div id="customized-chapter" class="ui fluid multiple search selection dropdown chapter hide-display">
+			<input name="chapter" type="hidden">
+			<i class="dropdown icon"></i>
+			<div class="default text">Select Chapters to Exclude</div>
+			<div id="customized-chapter-options-parent" class="menu">
+			</div>
+		</div>
+		<br>
+		<div id="customized-qtype" class="ui fluid multiple search selection dropdown qtype hide-display">
+			<table class="ui celled table">
+				<thead>
+					<tr><th>Type of Question</th>
+						<th>Number of Questions</th>
+					</tr></thead>
+					<tbody>
+						<tr>
+							<td>1A (One Mark Textual)</td>
+							<td>
+								<input class="no_of_questions" id="customized-noOfQ1a" type="number" min="0" max="100" step="1" name="noOfQ1" value=0>		
+							</td>
+						</tr>
+						<tr>
+							<td>1B (One Mark One Word)</td>
+							<td>
+								<input class="no_of_questions" id="customized-noOfQ1b" type="number" min="0" max="100" step="1" name="noOfQ1" value=0>
+							</td>
+						</tr>
+						<tr>
+							<td>2 (Two Marks)</td>
+							<td>
+								<input class="no_of_questions" id="customized-noOfQ2" type="number" min="0" max="100" step="1" name="noOfQ2" value=0>
+							</td>
+						</tr>
+						<tr>
+							<td>3 (Three Marks)</td>
+							<td>
+								<input class="no_of_questions" id="customized-noOfQ3" type="number" min="0" max="100" step="1" name="noOfQ3" value=0>
+							</td>
+						</tr>
+						<tr>
+							<td>4 (Four Marks)</td>
+							<td>
+								<input class="no_of_questions" id="customized-noOfQ4" type="number" min="0" max="100" step="1" name="noOfQ4" value=0>
+							</td>
+						</tr>
+						<tr>
+							<td>5 (Five Marks)</td>
+							<td>
+								<input class="no_of_questions" id="customized-noOfQ5" type="number" min="0" max="100" step="1" name="noOfQ5" value=0>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<br>
+		</div>
+		<br>
+		<button id="submit">DOWNLOAD</button>
 			{% endblock %}
