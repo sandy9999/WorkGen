@@ -51,9 +51,9 @@ def convert_to_doc(questions_mapping, worksheet_type, subject):
                         p1 = document.add_paragraph(str(i)+" : ")
                         p1.add_run(question)
             p = document.add_paragraph()
-            p.add_run("set 5 marks=4").bold=True
+            p.add_run("set 5 marks=5").bold=True
             for row in questions_mapping[name]:
-                if row['question_type'] == '4':
+                if row['question_type'] == '5':
                     p = document.add_paragraph()
                     p.add_run("Attempt only "+str(row['attempt'])+" questions").italic=True
                     for question in row['question']:
@@ -112,7 +112,7 @@ def convert_to_doc(questions_mapping, worksheet_type, subject):
                     p1 = document.add_paragraph(str(i)+" : ")
                     p1.add_run(question)
         p = document.add_paragraph()
-        p.add_run("set 5 marks=4").bold=True
+        p.add_run("set 5 marks=5").bold=True
 
     for row in questions_mapping:
         if row['question_type'] == '5':
@@ -122,7 +122,7 @@ def convert_to_doc(questions_mapping, worksheet_type, subject):
                 i = i+1
                 p1 = document.add_paragraph(str(i)+" : ")
                 p1.add_run(question)
-        filename = "test_worksheet_" + datetime.datetime.now().__str__() + ".docx"
-        filepath = os.path.join('searchapp/static/docs', filename)
-        document.save(filepath)
-        return filepath
+    filename = "test_worksheet_" + datetime.datetime.now().__str__() + ".docx"
+    filepath = os.path.join('searchapp/static/docs', filename)
+    document.save(filepath)
+    return filepath
