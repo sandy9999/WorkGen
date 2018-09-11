@@ -17,7 +17,7 @@ from docx import Document
 
 from .utils.utils import convert_question_bank,get_type_and_weightage,default_to_regular
 from .test_paper import generate_test_paper
-from .models import Mentor, Questions, MCQOptions, Subject, GeneratedQuestionPaper
+from .models import Mentor, Questions, MCQOptions, Subject, GeneratedQuestionPaper,SubjectSplit
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 def student_view(request):
     subject_list = Subject.objects.all().values_list('subject_name', flat=True)
     subject_list = list(subject_list)
-    return render(request,'student_view.html',{'data':subject_list})
+    return render(request,'student_view.html',{'data':subject_list, 'is_logged_in': request.user.is_authenticated})
 
 
 def login_view(request):
@@ -36,18 +36,20 @@ def login_view(request):
             login(request,user)
             return redirect('searchapp:mentor_view')
     else:
+        if request.user.is_authenticated:
+            return redirect('/')
         form=AuthenticationForm()
     return render(request,'login.html',{'form':form})
 
 
 def logout_view(request):
   logout(request)
-  return render_to_response('logout.html')
+  return redirect('/')
 
 
 @login_required(login_url='/login')
 def mentor_view(request):
-    return render(request, 'mentor_view.html')
+    return render(request, 'mentor_view.html', {'is_logged_in': request.user.is_authenticated})
 
 
 @login_required(login_url='/login')
@@ -91,7 +93,7 @@ def add_questions(request):
             default_dict = convert_question_bank(file_obj)
             subject_to_chapter_to_question=default_to_regular(default_dict)
             add_to_database(subject_to_chapter_to_question, request.user)
-            return HttpResponse("added successfully")
+            return render(request,'mentor_view.html',{'pop':" the questions have been added successfully",'flag':'0'})
         else:
             return render(request,'question_upload_mentor.html',{'error':"no file selected",'flag':'1'})
 
@@ -126,47 +128,70 @@ def add_to_database(subject_to_chapter_to_question, user):
 
 
 def get_chapters(request):
-    subject_name = request.GET['subject']
-    chapters = Questions.objects.filter(subject__subject_name__iexact=subject_name).values_list('chapter', flat=True).distinct()
-    json_data = {
-        'chapters': list(chapters)
-    }
-    return JsonResponse(json_data)
+    if request.method == 'GET':
+        subject_name = request.GET['subject']
+        chapters = Questions.objects.filter(subject__subject_name__iexact=subject_name).values_list('chapter', flat=True).distinct()
+        json_data = {
+            'chapters': list(chapters)
+        }
+        return JsonResponse(json_data)
 
 
 def get_test_paper(request):
     if request.method == 'GET':
         subject = request.GET['subject']
         chapters = request.GET.getlist('chapters[]')
-        breakup = {
-            '1A': [1, 1],
-            '1B': [1, 1],
-            '2': [1, 1],
-            '3': [1, 1],
-            '5': [1, 1]
-        }
+        papertype = request.GET['papertype']
+        subject_breakup = SubjectSplit.objects.filter(
+            name=papertype,
+            subject__subject_name__iexact=subject).values_list(
+                'question_weightage',
+                'question_type',
+                'total_questions',
+                'questions_to_attempt')
+        breakup = {}
+        for qtype in subject_breakup:
+            if qtype[0] == 1:
+                if qtype[1] == 1:
+                    breakup['1A'] = [qtype[2], qtype[3]]
+                elif qtype[1] == 2:
+                    breakup['1B'] = [qtype[2], qtype[3]]
+            else:
+                breakup[str(qtype[0])] = [qtype[2], qtype[3]]
         # token is basically used to identify paper
         token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
         generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
         generated_paper.save()
-        generate_test_paper.delay(subject, chapters, breakup, request.user.username, token)
+        generate_test_paper.delay(subject, chapters, breakup, request.user.username, token,'0')
         return JsonResponse({"message":"success", "token": token})
 
 
 def get_generic_paper(request):
-    subject = request.GET['subject']
-    chapters = request.GET.getlist('chapters[]')
-    sent_breakup = request.GET.getlist('breakup[]')
-    random_settings = request.GET['random_setting']
-    breakup = {
-        '1A': [int(sent_breakup[0])]*2,
-        '1B': [int(sent_breakup[1])]*2,
-        '2': [int(sent_breakup[2])]*2,
-        '3': [int(sent_breakup[3])]*2,
-        '5': [int(sent_breakup[4])]*2,
-    }
-    token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
-    generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
-    generated_paper.save()
-    generate_test_paper.delay(subject, chapters, breakup, request.user.username, token)
-    return JsonResponse({"message":"success", "token": token})
+    if request.method == "GET":
+        breakup = {}
+        subject = request.GET['subject']
+        chapters = request.GET.getlist('chapters[]')
+        sent_breakup = request.GET.getlist('breakup[]')
+        random_settings = request.GET['random_setting']
+
+        breakup = {
+            '1A': [int(sent_breakup[0])]*2,
+            '1B': [int(sent_breakup[1])]*2,
+            '2': [int(sent_breakup[2])]*2,
+            '3': [int(sent_breakup[3])]*2,
+            '5': [int(sent_breakup[4])]*2,
+        }
+
+        token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
+        generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
+        generated_paper.save()
+
+        generate_test_paper.delay(subject, chapters, breakup, request.user.username, token, random_settings)
+
+        return JsonResponse({"message":"success", "token": token})
+
+def get_test_format(request):
+    if request.method == 'GET':
+        subject = request.GET['subject']
+        papers = SubjectSplit.objects.filter(subject__subject_name__iexact=subject).values_list('name', flat=True).distinct()
+        return JsonResponse({"papers": list(papers)})

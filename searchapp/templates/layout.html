@@ -21,11 +21,16 @@
 <body>
 <img src="{% static "WordArt.png" %}" height=20% width=50% align="center" id="logo">
 <ul id="nav">
-    <li><a href="#">Home</a></li>
+    <li><a href="/">Home</a></li>
     <li><a href="#">About Us</a></li>
     <li><a href="#">How it Works</a></li>
     <li><a href="#">Contact Us</a></li>
-    <li><a href="#">Logout</a></li>
+    {% if is_logged_in %}
+    <li><a href="/logout">Logout</a></li>
+    {% else %}
+    <li><a href="/login">Login</a></li>
+    {% endif %}
+
 </ul>
 {% block student_view %}{% endblock %}
 </body>

@@ -25,8 +25,10 @@ $(document).ready(function(){
 		if (worksheetType == 'test') {
 			var subject = $("#test-subject").dropdown('get value');
 			var chapters = $('#test-chapter').dropdown('get values');
+			var papertype = $('#test-breakup').dropdown('get value');
 			var formData = {
 				"subject": subject,
+				"papertype": papertype,
 				"chapters[]": chapters
 			}
 			$.ajax({
@@ -47,11 +49,7 @@ $(document).ready(function(){
 		} else if (worksheetType == 'generic') {
 			var subject = $("#generic-subject").dropdown('get value');
 			var chapters = $("#generic-chapter").dropdown('get values');
-			chapters = chapters.map(function(x) {
-				x = x.split('_');
-				x = x.join(' ');
-				return x;
-			});
+			console.log(chapters);
 			var q1a = $('#generic-noOfQ1a').val() || 0;
 			var q1b = $('#generic-noOfQ1b').val() || 0;
 			var q2 = $('#generic-noOfQ2').val() || 0;
@@ -65,6 +63,7 @@ $(document).ready(function(){
 				breakup: [q1a, q1b, q2, q3, q4, q5],
 				random_setting: random_setting,
 			};
+
 			$.ajax({
 				url: "http://localhost:8000/get_generic_paper",
 				method : "get",
@@ -88,19 +87,32 @@ $(document).ready(function(){
 			subject: value,
 		}
 		let worksheetType = $("#worksheetType").dropdown('get value');
+		if (worksheetType == 'test') {
+			$.ajax({
+				url: "http://localhost:8000/get_test_format",
+				method : "get",
+				data: formData,
+				headers: { "X-CSRFToken": csrftoken, crossOrigin: false},
+				success: function(d) {
+					let papers = d['papers'];
+					for (var i=0; i<papers.length; i++) {
+						let paperElement = `<div class="item" data-value=${papers[i]}>${papers[i]}</div>`;
+						$('#test-breakup-options-parent').append(paperElement);
+					}
+				}
+			});
+		}
 		$.ajax({
 			url: "http://localhost:8000/get_chapters",
 			method : "get",
 			data: formData,
-			headers: { "X-CSRFToken": csrftoken,},
+			headers: { "X-CSRFToken": csrftoken, crossOrigin: false},
 			success: function(d) {
 				$(`#${worksheetType}-chapter-options-parent`).empty();
 				let chapters = d['chapters'];
 				$(`#${worksheetType}-chapter`).removeClass('hide-display').addClass('show-display');
 				for (var i=0; i<chapters.length; i++) {
-					let chapter_value = chapters[i].split(' ');
-					chapter_value = chapter_value.join('_');
-					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapter_value}>${chapters[i]}</div>`);
+					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapters[i]}>${chapters[i]}</div>`);
 				}
 			}
 		});
@@ -117,7 +129,12 @@ $(document).ready(function(){
 		},
 	});
 
-	$("#submit").click(submit_click);	
+	$('#test-breakup').dropdown({
+		onChange: function (value, text, $selectedItem) {
+		},
+	});
+
+	$("#submit").click(submit_click);
 
 	// methods for GENERIC worksheet
 
