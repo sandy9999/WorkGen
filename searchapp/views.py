@@ -17,7 +17,7 @@ import random
 from docx import Document
 
 from .utils.utils import convert_question_bank,get_type_and_weightage,default_to_regular,convert_marker_data,get_allowed_questions,get_customized_paper
-from .test_paper import generate_test_paper
+from .test_paper import generate_test_or_generic_paper, generate_customized_paper
 from .models import Mentor, Questions, MCQOptions, Subject, GeneratedQuestionPaper,SubjectSplit
 
 logger = logging.getLogger(__name__)
@@ -163,7 +163,7 @@ def get_test_paper(request):
         token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
         generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
         generated_paper.save()
-        generate_test_paper.delay(subject, chapters, breakup, 'test', '0', request.user.username, token)
+        generate_test_or_generic_paper.delay(subject, chapters, breakup, request.user.username, token, 'random')
         return JsonResponse({"message":"success", "token": token})
 
 
@@ -187,7 +187,7 @@ def get_generic_paper(request):
         generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
         generated_paper.save()
 
-        generate_test_paper.delay(subject, chapters, breakup, request.user.username, token, random_settings)
+        generate_test_or_generic_paper.delay(subject, chapters, breakup, request.user.username, token, random_settings)
 
         return JsonResponse({"message":"success", "token": token})
 
@@ -207,6 +207,7 @@ def get_customize_paper(request):
         sent_breakup = [ int(x) for x in sent_breakup ]
         student_names = request.POST.getlist('student_names[]')
         student_names = student_names[0].split(',')
+        print("reached")
         if len(request.FILES)==0:
                 return JsonResponse({"message":"failed"})
         file_obj = request.FILES['file']
@@ -270,7 +271,7 @@ def get_customize_paper(request):
         token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
         generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
         generated_paper.save()
-        generate_test_paper.delay(subject, allowed_chapter_nos, breakup, 'customized', customized_data, request.user.username, token)
+        generate_customized_paper.delay(subject, allowed_chapter_nos, breakup, customized_data, request.user.username, token)
         return JsonResponse({"message":"success", "token": token})
 
 def generate_optional_inputs(request):

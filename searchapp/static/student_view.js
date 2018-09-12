@@ -23,6 +23,7 @@ $(document).ready(function(){
 	function submit_click(e) {
 		var worksheetType = $("#worksheetType").dropdown('get value');
 		if (worksheetType == 'test') {
+			console.log("submit click called");
 			var subject = $("#test-subject").dropdown('get value');
 			var chapters = $('#test-chapter').dropdown('get values');
 			var papertype = $('#test-breakup').dropdown('get value');
@@ -49,7 +50,6 @@ $(document).ready(function(){
 		} else if (worksheetType == 'generic') {
 			var subject = $("#generic-subject").dropdown('get value');
 			var chapters = $("#generic-chapter").dropdown('get values');
-			console.log(chapters);
 			var q1a = $('#generic-noOfQ1a').val() || 0;
 			var q1b = $('#generic-noOfQ1b').val() || 0;
 			var q2 = $('#generic-noOfQ2').val() || 0;
@@ -212,7 +212,6 @@ function upload_click(e) {
 		},
 	});
 
-	$("#submit").click(submit_click);
 
 	// methods for GENERIC worksheet
 

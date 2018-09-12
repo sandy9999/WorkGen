@@ -53,7 +53,9 @@ Student View
 		<i class="dropdown icon"></i>
 		<div class="default text">Select Subject</div>
 		<div class="menu">
-			<div class="item" data-value="{{element}}">{{element}}</div>
+			{% for element in data %}				
+				<div class="item" data-value="{{element}}">{{element}}</div>
+			{% endfor %}
 		</div>
 	</div>
 	<br>

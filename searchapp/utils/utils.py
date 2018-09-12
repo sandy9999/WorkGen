@@ -110,7 +110,6 @@ def get_allowed_questions(data, allowed_qtypes, allowed_chapters):
             if qtype in allowed_qtypes:
                 updated_data[student][qtype] = [x for x in qtypes[qtype] if x[2] in allowed_chapters]
     updated_data = default_to_regular(updated_data)
-    print(updated_data)
     return updated_data
 
 def get_customized_paper(marker_data):
