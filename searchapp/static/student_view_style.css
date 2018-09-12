@@ -6,6 +6,18 @@
 	display:block;
 }
 
+#title-div {
+	text-align: center;
+	margin-top: 30px;
+}
+
+#title-text {
+	font-size: 60px;
+	margin-top: 10px;
+	color: orange;
+	font-family: 'Raleway', sans-serif;
+}
+
 .show-display {
 	display: block !important;
 }
@@ -115,7 +127,7 @@ ul{
 }
 
 #nav{
-	margin-top:30px;
+	margin-top:15px;
 	background-color:#AAADAC;
 }
 
@@ -136,8 +148,8 @@ ul li a{
 	text-decoration:none;
 	color:white;
 	line-height:40px;
-	font-size:15px;
-	font-family: 'Baloo Bhai', cursive;	
+	font-size:16px;
+	font-family: 'Raleway', sans-serif;
 }
 
 ul li a:hover{
