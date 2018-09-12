@@ -207,7 +207,6 @@ def get_customize_paper(request):
         sent_breakup = [ int(x) for x in sent_breakup ]
         student_names = request.POST.getlist('student_names[]')
         student_names = student_names[0].split(',')
-        print("reached")
         if len(request.FILES)==0:
                 return JsonResponse({"message":"failed"})
         file_obj = request.FILES['file']

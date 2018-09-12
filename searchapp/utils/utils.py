@@ -185,7 +185,7 @@ def convert_question_bank(question_bank_path):
                 chapter_no = int(row[1].value)
                 chapter_name = row[2].value
                 question_type = row[3].value
-                question_type = str(int(question_type)) if type(question_type) == type(1.0) else question_type.lower()
+                question_type = str(int(question_type)) if (type(question_type) == type(1.0) or type(question_type) == type(1)) else question_type.lower()
                 question_text = row[4].value
                 question_source = row[5].value
                 subject_to_chapter_to_question[subject][(chapter_no, chapter_name)][question_type].append((question_text, question_source))
