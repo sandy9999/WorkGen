@@ -33,7 +33,7 @@ $(document).ready(function(){
 				"chapters[]": chapters
 			}
 			$.ajax({
-				url: "http://localhost:8000/get_test_paper",
+				url: BASE_DIR + "/get_test_paper",
 				method : "get",
 				data: formData,
 				headers: { "X-CSRFToken": csrftoken,},
@@ -65,7 +65,7 @@ $(document).ready(function(){
 			};
 
 			$.ajax({
-				url: "http://localhost:8000/get_generic_paper",
+				url: BASE_DIR + "/get_generic_paper",
 				method : "get",
 				data: formData,
 				headers: { "X-CSRFToken": csrftoken,},
@@ -98,7 +98,7 @@ $(document).ready(function(){
 			formData.append('student_names[]',student_names);
 			$.ajax({
 				enctype: 'multipart/form-data',
-				url: "http://localhost:8000/get_customize_paper",
+				url: BASE_DIR + "/get_customize_paper",
 				method : "post",
 				data: formData,
 				processData: false,
@@ -128,7 +128,7 @@ function upload_click(e) {
 		formData.append('subject',subject);
 		$.ajax({
 			enctype: 'multipart/form-data',
-			url: "http://localhost:8000/generate_optional_inputs",
+			url: BASE_DIR + "/generate_optional_inputs",
 			method : "post",
 			data: formData,
 			processData: false,
@@ -167,7 +167,7 @@ function upload_click(e) {
 		let worksheetType = $("#worksheetType").dropdown('get value');
 		if (worksheetType == 'test') {
 			$.ajax({
-				url: "http://localhost:8000/get_test_format",
+				url: BASE_DIR + "/get_test_format",
 				method : "get",
 				data: formData,
 				headers: { "X-CSRFToken": csrftoken, crossOrigin: false},
@@ -181,7 +181,7 @@ function upload_click(e) {
 			});
 		}
 		$.ajax({
-			url: "http://localhost:8000/get_chapters",
+			url: BASE_DIR + "/get_chapters",
 			method : "get",
 			data: formData,
 			headers: { "X-CSRFToken": csrftoken, crossOrigin: false},
