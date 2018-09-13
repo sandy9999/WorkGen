@@ -8,11 +8,13 @@
 
     {% endblock %}
     <link rel="stylesheet" type="text/css" href="{% static 'student_view_style.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.14/semantic.css"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'pnotify.custom.min.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.14/semantic.css"/>
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.14/semantic.js"></script>
     <script type="text/javascript" src="{% static 'student_view.js' %}"></script>
+	<script type="text/javascript" src="{% static 'pnotify.custom.min.js' %}"></script>
     <script>
         var csrftoken = "{{ csrf_token }}";
         var BASE_DIR = "http://localhost:8000";
