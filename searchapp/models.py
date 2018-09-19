@@ -18,9 +18,15 @@ class Mentor(models.Model):
     full_name = models.CharField(max_length=40)
     created_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
+    def __str__(self):
+        return self.username
+
 
 class Subject(models.Model):
     subject_name = models.CharField(max_length=100, unique=True, blank=False, null=False)
+
+    def __str__(self):
+        return self.subject_name
 
 
 class Questions(models.Model):
@@ -48,9 +54,7 @@ class Questions(models.Model):
         (FILL_IN_THE_BLANKS, 'FILL IN THE BLANKS'),
         (MCQ, 'MCQ'),
     )
-    subject = models.ForeignKey('Subject', on_delete=models.CASCADE)
-    chapter = models.CharField(max_length=100)
-    chapter_number = models.IntegerField(blank=False, null=False)
+    chapter = models.ForeignKey('Chapter', on_delete=models.CASCADE, null=True)
     question_weightage = models.IntegerField(choices=QUESTION_WEIGHTAGE_CHOICES, null=True)
     question_type = models.IntegerField(choices=QUESTION_TYPE_CHOICES, null=True)
     uploaded_by = models.ForeignKey('Mentor', on_delete=models.CASCADE)
@@ -71,6 +75,9 @@ class SubjectSplit(models.Model):
     total_questions = models.IntegerField(default=0)
     questions_to_attempt = models.IntegerField(default=0)
 
+    def __str__(self):
+        return self.name
+
 
 class GeneratedQuestionPaper(models.Model):
     token = models.CharField(max_length=100)
@@ -78,3 +85,14 @@ class GeneratedQuestionPaper(models.Model):
     is_ready = models.BooleanField(default=False)
     mentor = models.ForeignKey(User, on_delete=models.CASCADE)
     submitted_date = models.DateTimeField(null=True, default=None)
+
+    def __str__(self):
+        return self.token
+
+
+class Chapter(models.Model):
+    subject = models.ForeignKey('Subject', on_delete=models.CASCADE)
+    chapter_name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.chapter_name

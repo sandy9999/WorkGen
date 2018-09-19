@@ -140,7 +140,7 @@ function upload_click(e) {
 				let chapters = response['chapters'];
 				$(`#${worksheetType}-chapter`).removeClass('hide-display').addClass('show-display');
 				for (var i=0; i<chapters.length; i++) {
-					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapters[i]}>${chapters[i]}</div>`);}
+					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapters[i]['chapter_id']}>${chapters[i]['chapter_name']}</div>`);}
 				
 				$(`#stud_name-options-parent`).empty();
 				let student_names = response['stud_name'];	
@@ -151,7 +151,7 @@ function upload_click(e) {
 				$(function(){
 					new PNotify({
 						title: 'Success!',
-						text: 'Your document is currently being generated.',
+						text: 'Processing your data!',
 						type: 'success'
 					});
 
@@ -190,7 +190,7 @@ function upload_click(e) {
 				let chapters = d['chapters'];
 				$(`#${worksheetType}-chapter`).removeClass('hide-display').addClass('show-display');
 				for (var i=0; i<chapters.length; i++) {
-					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapters[i]}>${chapters[i]}</div>`);
+					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapters[i]['chapter_id']}>${chapters[i]['chapter_name']}</div>`);
 				}
 			}
 		});

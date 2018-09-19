@@ -1,4 +1,4 @@
-from .models import Questions
+from .models import Questions, Chapter
 from .utils.utils import get_type_and_weightage
 from .generate_doc import convert_customized_to_doc, convert_to_doc
 import random
@@ -28,9 +28,8 @@ def generate_test_or_generic_paper(subject, chapters, subject_breakup, mentor, t
         total_question_no = subject_breakup[question_type][0]
         q_type,weightage = get_type_and_weightage(question_type)
         total_list = Questions.objects.filter(question_type=q_type,
-            subject__subject_name=subject,
             question_weightage=weightage,
-            chapter__in=chapters).values_list('text',flat=True)
+            chapter__in=Chapter.objects.filter(id__in=chapters)).values_list('text',flat=True)
         total_list = list(total_list)
         total_question_no = min(total_question_no,len(total_list))
         final_list = random.sample(total_list,total_question_no)
@@ -53,9 +52,8 @@ def generate_customized_paper(subject, chapters, subject_breakup, data, mentor, 
             total_question_no = subject_breakup[question_type][0]
             q_type,weightage = get_type_and_weightage(question_type)
             total_list = Questions.objects.filter(question_type=q_type,
-                subject__subject_name=subject,
                 question_weightage=weightage,
-                chapter_number__in=data[key]).values_list('text',flat=True)
+                chapter__in=Chapter.objects.filter(id__in=data[key])).values_list('text',flat=True)
             total_list = list(total_list)
             total_question_no = min(total_question_no,len(total_list))
             final_list = random.sample(total_list,total_question_no)

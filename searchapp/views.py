@@ -18,7 +18,7 @@ from docx import Document
 
 from .utils.utils import convert_question_bank,get_type_and_weightage,default_to_regular,convert_marker_data,get_allowed_questions,get_customized_paper
 from .test_paper import generate_test_or_generic_paper, generate_customized_paper
-from .models import Mentor, Questions, MCQOptions, Subject, GeneratedQuestionPaper,SubjectSplit
+from .models import Mentor, Questions, MCQOptions, Subject, GeneratedQuestionPaper, SubjectSplit, Chapter
 
 logger = logging.getLogger(__name__)
 
@@ -88,13 +88,19 @@ def generated_documents_view(request):
 @login_required(login_url='/login')
 def add_questions(request):
     error = ""
+    if request.method == 'GET':
+        return redirect('/questions_upload')
     if request.method == 'POST':
         if request.FILES:
             file_obj = request.FILES['datafile']
             default_dict = convert_question_bank(file_obj)
             subject_to_chapter_to_question=default_to_regular(default_dict)
-            add_to_database(subject_to_chapter_to_question, request.user)
-            return render(request,'mentor_view.html',{'pop':" the questions have been added successfully",'flag':'0'})
+            try:
+                add_to_database(subject_to_chapter_to_question, request.user)
+                return render(request,'mentor_view.html',{'pop':" the questions have been added successfully",'flag':'0'})
+            except Exception as e:
+                logger.error(str(e))
+                return render(request,'question_upload_mentor.html',{'error': str(e),'flag':'1'})
         else:
             return render(request,'question_upload_mentor.html',{'error':"no file selected",'flag':'1'})
 
@@ -112,28 +118,30 @@ def add_to_database(subject_to_chapter_to_question, user):
             chapter_no = chapter_tuple[0]
             chapter_name = chapter_tuple[1]
             questions_dict = chapter_to_question[chapter_tuple]
-            for question_type in questions_dict:
+            try:
+                with transaction.atomic():
+                    for question_type in questions_dict:
                         questions_list = questions_dict[question_type]
                         q_type, weightage = get_type_and_weightage(question_type)
                         for i in range(len(questions_list)):
-                            q = Questions(chapter_number=chapter_no,
-                                    subject=subject,
-                                    chapter=chapter_name,
+                            q = Questions(
+                                    chapter=Chapter.objects.get(chapter_name=chapter_name),
                                     question_type=q_type,
                                     question_weightage=weightage,
                                     text=questions_list[i][0],
                                     uploaded_by=mentor,
                                     source=questions_list[i][1])
                             q.save()
-                        transaction.commit()
+            except Chapter.DoesNotExist as e:
+                raise Exception("{} is not a valid chapter in the database. Please check for typos / entry in the database".format(chapter_name))
 
 
 def get_chapters(request):
     if request.method == 'GET':
         subject_name = request.GET['subject']
-        chapters = Questions.objects.filter(subject__subject_name__iexact=subject_name).values_list('chapter', flat=True).distinct()
+        chapters = Chapter.objects.filter(subject__subject_name__iexact=subject_name).values_list('id', 'chapter_name')
         json_data = {
-            'chapters': list(chapters)
+            'chapters': [{'chapter_id': x[0], 'chapter_name': x[1]} for x in chapters]
         }
         return JsonResponse(json_data)
 
@@ -200,8 +208,7 @@ def get_test_format(request):
 def get_customize_paper(request):
     if request.method == 'POST':
         subject = request.POST['subject']
-        chapters = request.POST.getlist('chapters[]')
-        chapters = chapters[0].split(',')
+        chapters = map(int, request.POST.getlist('chapters[]')[0].split(','))
         sent_breakup = request.POST.getlist('breakup[]')
         sent_breakup = sent_breakup[0].split(',')
         sent_breakup = [ int(x) for x in sent_breakup ]
@@ -227,21 +234,20 @@ def get_customize_paper(request):
                 '5': [sent_breakup[4]]*2,
             }
         data = convert_marker_data(file_obj, breakup)
-        allowed_qtype = []
-        allowed_chapters = []
+
         stud_data  = data[0]
-        allowed_chapter_nos = list(set(data[1]))
-        allowed_chapters = Questions.objects.filter(subject__subject_name__iexact=subject,chapter_number__in=allowed_chapter_nos).values_list('chapter', flat=True).distinct()
-        allowed_chapters = list(allowed_chapters)
-        for item in chapters:
-            if item in allowed_chapters:
-                allowed_chapters.remove(item)
+        allowed_chapter_nos = data[1]
+        allowed_chapter_nos = list(set(allowed_chapter_nos) - set(chapters))
+        allowed_qtype = []
         for student_name in stud_data :
             for ques_type in stud_data[student_name]:
                 allowed_qtype.append(ques_type)
         allowed_qtype = list(set(allowed_qtype))
-        allowed_chapter_nos = Questions.objects.filter(subject__subject_name__iexact=subject,chapter__in=allowed_chapters).values_list('chapter_number', flat=True).distinct()
-        allowed_chapter_nos = list(allowed_chapter_nos)
+
+        print(stud_data)
+        print(allowed_qtype)
+        print(allowed_chapter_nos)
+
         filtered_data = get_allowed_questions(stud_data,allowed_qtype,allowed_chapter_nos)
         customized_data = get_customized_paper(filtered_data)
         if len(allowed_chapter_nos)==1:
@@ -274,7 +280,7 @@ def get_customize_paper(request):
         return JsonResponse({"message":"success", "token": token})
 
 def generate_optional_inputs(request):
-    if request.method=='POST':
+    if request.method == 'POST':
         subject = request.POST['subject']
         if len(request.FILES)==0:
             return JsonResponse({"message":"failed"})
@@ -297,6 +303,6 @@ def generate_optional_inputs(request):
             for ques_type in stud_data[student_name]:
                 allowed_qtype.append(ques_type)
         allowed_qtype = list(set(allowed_qtype))
-        allowed_chapters = Questions.objects.filter(subject__subject_name__iexact=subject,chapter_number__in=allowed_chapter_nos).values_list('chapter', flat=True).distinct()
-        allowed_chapters = list(allowed_chapters)
+        allowed_chapters = Chapter.objects.filter(id__in=allowed_chapter_nos).values_list('id', 'chapter_name')
+        allowed_chapters = [{'chapter_id': x[0], 'chapter_name': x[1]} for x in allowed_chapters]
         return JsonResponse({"message":"success","chapters":allowed_chapters,"stud_name":student_name_list,"qtype":allowed_qtype})
