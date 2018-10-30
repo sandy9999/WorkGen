@@ -22,10 +22,20 @@ from .models import Mentor, Questions, MCQOptions, Subject, GeneratedQuestionPap
 
 logger = logging.getLogger(__name__)
 
-@login_required(login_url='/login')
+
+def home(request):
+    return render(request,'home.html')
+
+
+def contact(request):
+    return render(request,'contact.html')
+
 def student_view(request):
     subject_list = Subject.objects.all().values_list('subject_name', flat=True)
     subject_list = list(subject_list)
+    paper_type = request.data
+    print(paper_type)
+
     return render(request,'student_view.html',{'data':subject_list, 'is_logged_in': request.user.is_authenticated})
 
 
