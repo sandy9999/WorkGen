@@ -48,7 +48,7 @@ def login_view(request):
             return redirect('searchapp:mentor_view')
     else:
         if request.user.is_authenticated:
-            return redirect('/')
+            return redirect('searchapp:mentor_view')
         form=AuthenticationForm()
     return render(request,'login.html',{'form':form})
 
