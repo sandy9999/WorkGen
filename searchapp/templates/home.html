@@ -20,28 +20,24 @@ var test=document.getElementById("test");
 
 test.addEventListener('click',function(){
   $.ajax({
-    url :'student_view',
+    url :'paper_generator',
     data :'test',
-    method : "get",
+    method : "POST",
     headers: { "X-CSRFToken": csrftoken,},
     success: function(response) {
-      $(function(){
-        new PNotify({
-          title: 'Success!',
-          type: 'success'
-        });
-      });
+      console.log("success");
+
     },
   });
 });
 
 
 var generic=document.getElementById("generic");
-test.addEventListener('click',function(){
+generic.addEventListener('click',function(){
   $.ajax({
-    url :'student_view',
+    url :'paper_generator',
     data :'generic',
-    method : "get",
+    method : "POST",
     success: function(){
       console.log("success");
     }
@@ -49,16 +45,16 @@ test.addEventListener('click',function(){
 });
 
 var customized = document.getElementById("customized");
-test.addEventListener('click',function(){
+customized.addEventListener('click',function(){
   $.ajax({
-    url :'student_view',
+    url :'paper_generator',
     data :'customized',
-    method : "get",
+    method : "POST",
     success: function(){
       console.log("success");
     }
   });
-})
+});
 </script>
 {% endblock %}
 {% block login %}<li><a href="login">Login</a></li>{% endblock %}

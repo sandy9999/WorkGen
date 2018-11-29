@@ -27,11 +27,7 @@
     <span id="title-text">WorkGen</span>
     </div>
     <ul id="nav">
-        {% if is_logged_in and request.path == '/' %}
-        <li><a href="/mentor_view">Dashboard</a></li>
-        {% else %}
         <li><a href="/">Home</a></li>
-        {% endif %}
         <li><a href="#">About Us</a></li>
         <li><a href="#">How it Works</a></li>
         <li><a href="contact">Contact Us</a></li>
@@ -40,6 +36,7 @@
         {% else %}
         <li><a href="/login">Login</a></li>
         {% endif %}
+
 
     </ul>
     {% block student_view %}{% endblock %}
