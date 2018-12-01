@@ -1,15 +1,12 @@
 .dashboard{
   margin-left:3%;
   }
-
-
 .column{
   background:#d5f6b9;
-
   margin:20px;
   -moz-border-radius:10px;  /* for Firefox */
--webkit-border-radius:10px; /* for Webkit-Browsers */
-border-radius:10px; /* regular */
+  -webkit-border-radius:10px; /* for Webkit-Browsers */
+  border-radius:10px; /* regular */
   opacity:0.7;
   text-align:center;
   font-style: normal;
@@ -22,7 +19,6 @@ border-radius:10px; /* regular */
 }
 .button{
   outline:none;
-
 }/* Style the links inside the navigation bar */
 .button a {
     outline:0;
@@ -42,7 +38,6 @@ border-radius:10px; /* regular */
     word-wrap: break-word;
 }
 .button a:hover {
-
     color: black;
 }
 .button a:active{
