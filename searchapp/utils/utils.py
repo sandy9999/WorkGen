@@ -172,7 +172,7 @@ def convert_question_bank(question_bank_path):
                 }
 
     """
-    question_bank = op.load_workbook(question_bank_path).worksheets[0]
+    question_bank = op.load_workbook(question_bank_path).worksheets[2]
     subject_to_chapter_to_question = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: list([]))))
     row_no = -1
     for row in question_bank.rows:
