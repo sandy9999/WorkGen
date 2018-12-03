@@ -33,9 +33,6 @@ def contact(request):
 def student_view(request):
     subject_list = Subject.objects.all().values_list('subject_name', flat=True)
     subject_list = list(subject_list)
-    paper_type = request.data
-    print(paper_type)
-
     return render(request,'student_view.html',{'data':subject_list, 'is_logged_in': request.user.is_authenticated})
 
 

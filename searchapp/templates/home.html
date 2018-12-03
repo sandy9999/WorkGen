@@ -6,70 +6,17 @@ WorkGen
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{% static 'home.css' %}"/>
 {% endblock %}
-{% block js %}
-<script>
-var flag1 = "{{ flag }}";
-var pop1="{{pop}}";
-if (flag1=='0'){
-  alert(pop1);
-}
-
-
-
-var test=document.getElementById("test");
-
-test.addEventListener('click',function(){
-  $.ajax({
-    url :'paper_generator',
-    data :'test',
-    method : "POST",
-    headers: { "X-CSRFToken": csrftoken,},
-    success: function(response) {
-      console.log("success");
-
-    },
-  });
-});
-
-
-var generic=document.getElementById("generic");
-generic.addEventListener('click',function(){
-  $.ajax({
-    url :'paper_generator',
-    data :'generic',
-    method : "POST",
-    success: function(){
-      console.log("success");
-    }
-  });
-});
-
-var customized = document.getElementById("customized");
-customized.addEventListener('click',function(){
-  $.ajax({
-    url :'paper_generator',
-    data :'customized',
-    method : "POST",
-    success: function(){
-      console.log("success");
-    }
-  });
-});
-</script>
-{% endblock %}
-{% block login %}<li><a href="login">Login</a></li>{% endblock %}
 {% block student_view %}
 <br>
 <br>
 <br>
  <div class="dashboard">
-   <div class="ui grid" >
+   <div class="ui grid" id="general-container">
       <div class="thirteen wide column" id="general">
       Tired of creating worksheets for your students?
       <br>
       <br>
       Try WorkGen - to generate automatic worksheets in seconds so you can spend more time planning lessons than creating assessments.
-
     </div>
     </div>
   <div class="ui grid">
@@ -85,7 +32,6 @@ customized.addEventListener('click',function(){
     <br>
     A Generic Paper is designed as per the fellow requirements. You can choose the chapters
     and the number of questions of each type. Great for specific question type and differentiated practice.
-
     </div></div>
     <div class="four wide column" id="customized"><div class="button"><a href="student_view" class="button">Customized Paper</a>
     <br>
@@ -93,7 +39,6 @@ customized.addEventListener('click',function(){
       A customized paper is generated based on the performance of each student. The fellow uploads the tracker of the class,
       and a separate worksheet is created for each student to practice at and just above their level.
       This is currently under development. </div>
-
-  </div>
+   </div>
 </div>
 {% endblock %}
