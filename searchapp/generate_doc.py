@@ -30,7 +30,7 @@ def convert_customized_to_doc(questions_mapping, subject):
         for row in questions_mapping[name]:
             if row.get('question_type')=='1A':
                 p = document.add_paragraph()
-                p.add_run("Attempt only "+str(row['attempt'])+" questions").italic=True
+                p.add_run("Attempt only "+str(min(row['attempt'],ct))+" questions").italic=True
                 p.alignment = 1
                 for question in row['question']:
                     i = i+1
@@ -54,7 +54,7 @@ def convert_customized_to_doc(questions_mapping, subject):
         for row in questions_mapping[name]:
             if row['question_type'] == '1B':
                 p = document.add_paragraph()
-                p.add_run("Attempt only "+str(row['attempt'])+" questions").italic=True
+                p.add_run("Attempt only "+str(min(row['attempt'],ct))+" questions").italic=True
                 p.alignment = 1
                 for question in row['question']:
                     i=i+1
@@ -78,7 +78,7 @@ def convert_customized_to_doc(questions_mapping, subject):
         for row in questions_mapping[name]:
             if row['question_type'] == '2':
                 p=document.add_paragraph()
-                p.add_run("Attempt only "+str(row['attempt'])+" questions").italic=True
+                p.add_run("Attempt only "+str(min(row['attempt'],ct))+" questions").italic=True
                 p.alignment = 1
                 for question in row['question']:
                     i=i+1
@@ -102,7 +102,7 @@ def convert_customized_to_doc(questions_mapping, subject):
         for row in questions_mapping[name]:
             if row['question_type'] == '3':
                 p=document.add_paragraph()
-                p.add_run("Attempt only "+str(row['attempt'])+" questions").italic=True
+                p.add_run("Attempt only "+str(min(row['attempt'],ct))+" questions").italic=True
                 p.alignment = 1
                 for question in row['question']:
                     i = i+1
@@ -126,7 +126,7 @@ def convert_customized_to_doc(questions_mapping, subject):
         for row in questions_mapping[name]:
             if row['question_type'] == '5':
                 p = document.add_paragraph()
-                p.add_run("Attempt only "+str(row['attempt'])+" questions").italic=True
+                p.add_run("Attempt only "+str(min(row['attempt'],ct))+" questions").italic=True
                 p.alignment = 1
                 for question in row['question']:
                     i = i+1
@@ -165,7 +165,7 @@ def convert_to_doc(questions_mapping, subject):
     for row in questions_mapping:
         if row.get('question_type')=='1A':
             p = document.add_paragraph()
-            p.add_run("Attempt only "+str(row['attempt'])+" questions").italic=True
+            p.add_run("Attempt only "+str(min(row['attempt'],ct))+" questions").italic=True
             p.alignment = 1
             for question in row['question']:
                 i = i+1
@@ -189,7 +189,7 @@ def convert_to_doc(questions_mapping, subject):
     for row in questions_mapping:
         if row['question_type'] == '1B':
             p = document.add_paragraph()
-            p.add_run("Attempt only "+str(row['attempt'])+" questions").italic=True
+            p.add_run("Attempt only "+str(min(row['attempt'],ct))+" questions").italic=True
             p.alignment = 1
             for question in row['question']:
                 i=i+1
@@ -213,7 +213,7 @@ def convert_to_doc(questions_mapping, subject):
     for row in questions_mapping:
         if row['question_type'] == '2':
             p=document.add_paragraph()
-            p.add_run("Attempt only "+str(row['attempt'])+" questions").italic=True
+            p.add_run("Attempt only "+str(min(row['attempt'],ct))+" questions").italic=True
             p.alignment = 1
             for question in row['question']:
                 i=i+1
@@ -237,7 +237,7 @@ def convert_to_doc(questions_mapping, subject):
     for row in questions_mapping:
         if row['question_type'] == '3':
             p=document.add_paragraph()
-            p.add_run("Attempt only "+str(row['attempt'])+" questions").italic=True
+            p.add_run("Attempt only "+str(min(row['attempt'],ct))+" questions").italic=True
             p.alignment = 1
             for question in row['question']:
                 i = i+1
@@ -261,7 +261,7 @@ def convert_to_doc(questions_mapping, subject):
     for row in questions_mapping:
         if row['question_type'] == '5':
             p = document.add_paragraph()
-            p.add_run("Attempt only "+str(row['attempt'])+" questions").italic=True
+            p.add_run("Attempt only "+str(min(row['attempt'],ct))+" questions").italic=True
             p.alignment = 1
             for question in row['question']:
                 i = i+1

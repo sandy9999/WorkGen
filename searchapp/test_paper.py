@@ -76,4 +76,4 @@ def generate_customized_paper(subject, chapters, subject_breakup, data, mentor, 
             test_paper_dict.append(row)
         final_dict.update({key: test_paper_dict})
     filepath = convert_customized_to_doc(final_dict, subject)
-    GeneratedQuestionPaper.objects.filter(mentor__username=mentor, token=token).update(file_path=filepath, is_ready=True)   
+    GeneratedQuestionPaper.objects.filter(mentor__username=mentor, token=token).update(file_path=filepath, is_ready=True)
