@@ -6,6 +6,13 @@ WorkGen
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{% static 'home.css' %}"/>
 {% endblock %}
+{% block li %}
+  {% if is_logged_in %}
+  <li><a href="/logout">Logout</a></li>
+  {% else %}
+  <li><a href="/login">Dashboard</a></li>
+  {% endif %}
+{% endblock %}
 {% block student_view %}
 <br>
 <br>

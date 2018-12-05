@@ -31,13 +31,7 @@
         <li><a href="#">About Us</a></li>
         <li><a href="#">How it Works</a></li>
         <li><a href="contact">Contact Us</a></li>
-        {% if is_logged_in %}
-        <li><a href="/logout">Logout</a></li>
-        {% else %}
-        <li><a href="/login">Login</a></li>
-        {% endif %}
-
-
+        {% block li %}{% endblock %}
     </ul>
     {% block student_view %}{% endblock %}
 </body>
