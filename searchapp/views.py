@@ -111,7 +111,7 @@ def add_to_database(subject_to_chapter_to_question, user):
         try:
             subject = Subject.objects.get(subject_name=subject_name)
         except Exception as e:
-            print("No such subject")
+            logger.error("No such subject")
             return
         chapter_to_question = subject_to_chapter_to_question[subject_name]
         for chapter_tuple in chapter_to_question:
@@ -243,11 +243,6 @@ def get_customize_paper(request):
             for ques_type in stud_data[student_name]:
                 allowed_qtype.append(ques_type)
         allowed_qtype = list(set(allowed_qtype))
-
-        print(stud_data)
-        print(allowed_qtype)
-        print(allowed_chapter_nos)
-
         filtered_data = get_allowed_questions(stud_data,allowed_qtype,allowed_chapter_nos)
         customized_data = get_customized_paper(filtered_data)
         if len(allowed_chapter_nos)==1:

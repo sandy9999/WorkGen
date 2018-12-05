@@ -44,6 +44,17 @@ def generate_test_or_generic_paper(subject, chapters, subject_breakup, mentor, t
 
 @shared_task
 def generate_customized_paper(subject, chapters, subject_breakup, data, mentor, token):
+    ''' 
+    data will be a dictionary of student names to chapter numbers they need more practice in
+    here subject_breakup will be of form{
+        '1A': [5, 5],
+        '1B': [5, 5],
+        '2': [7, 5],
+        '3': [7, 5],
+        '5': [2, 2]
+    }
+    it returns a list of dicts of form==>{stud_name_1: [{'question_type':'','question':'','attempt':''},{},{}],stud_name_2: [{'question_type':'','question':'','attempt':''},{},{}]}
+    '''
     final_dict = {}
     for key in data:
         test_paper_dict = []
