@@ -28,7 +28,7 @@ def home(request):
     if previous_url is None:
         return render(request,'home.html',{'check_login':'Login'})
     else:
-    return render(request,'home.html',{'check_login':'Dashboard'})
+        return render(request,'home.html',{'check_login':'Dashboard'})
 
 
 def contact(request):
