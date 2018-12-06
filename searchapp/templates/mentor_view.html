@@ -9,14 +9,20 @@ WorkGen
 {% endblock %}
 {% block js %}
 <script>
-var flag1 = "{{ flag }}";
-var pop1="{{pop}}";
-if (flag1=='0'){
-  alert(pop1);
-}
+  var flag1 = "{{ flag }}";
+  var pop1="{{pop}}";
+  if (flag1=='0'){
+    alert(pop1);
+  }
 </script>
 {% endblock %}
-{% block login %}<li><a href="logout">Logout</a></li>{% endblock %}
+{% block li %}
+  {% if is_logged_in %}
+  <li><a href="/logout">Logout</a></li>
+  {% else %}
+  <li><a href="/login">Login</a></li>
+  {% endif %}
+{% endblock %}
 {% block student_view %}
 <br>
 <br>

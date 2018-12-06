@@ -22,7 +22,19 @@ from .models import Mentor, Questions, MCQOptions, Subject, GeneratedQuestionPap
 
 logger = logging.getLogger(__name__)
 
-@login_required(login_url='/login')
+
+def home(request):
+    previous_url = request.META.get('HTTP_REFERER')
+    if previous_url is None:
+        return render(request,'home.html',{'check_login':'Login'})
+    else:
+        return render(request,'home.html',{'check_login':'Dashboard'})
+
+
+def contact(request):
+    return render(request,'contact.html')
+
+
 def student_view(request):
     subject_list = Subject.objects.all().values_list('subject_name', flat=True)
     subject_list = list(subject_list)
@@ -38,7 +50,7 @@ def login_view(request):
             return redirect('searchapp:mentor_view')
     else:
         if request.user.is_authenticated:
-            return redirect('/')
+            return redirect('searchapp:mentor_view')
         form=AuthenticationForm()
     return render(request,'login.html',{'form':form})
 
