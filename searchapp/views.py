@@ -32,10 +32,9 @@ def home(request):
     return render(request,'home.html',{'check_login':'Dashboard'})
 
 
-
-
 def contact(request):
     return render(request,'contact.html')
+    
 
 def student_view(request):
     subject_list = Subject.objects.all().values_list('subject_name', flat=True)
