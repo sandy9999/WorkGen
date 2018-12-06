@@ -7,11 +7,7 @@ WorkGen
 <link rel="stylesheet" type="text/css" href="{% static 'home.css' %}"/>
 {% endblock %}
 {% block li %}
-  {% if is_logged_in %}
-  <li><a href="/logout">Logout</a></li>
-  {% else %}
-  <li><a href="/login">Dashboard</a></li>
-  {% endif %}
+  <li><a href="/login">{{check_login}}</a></li>
 {% endblock %}
 {% block student_view %}
 <br>

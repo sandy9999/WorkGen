@@ -24,7 +24,14 @@ logger = logging.getLogger(__name__)
 
 
 def home(request):
-    return render(request,'home.html')
+    previous_url = request.META.get('HTTP_REFERER')
+    if previous_url is None:
+        return render(request,'home.html',{'check_login':'Login'})
+    else:
+       print("no")
+    return render(request,'home.html',{'check_login':'Dashboard'})
+
+
 
 
 def contact(request):
@@ -57,6 +64,8 @@ def logout_view(request):
 
 @login_required(login_url='/login')
 def mentor_view(request):
+    bo = request.user.is_authenticated
+    print(bo)
     return render(request, 'mentor_view.html', {'is_logged_in': request.user.is_authenticated})
 
 
