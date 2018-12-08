@@ -45,6 +45,10 @@ $(document).ready(function(){
 							type: 'success'
 						});
 					});
+					if(window.confirm('Click ok to be generated to your list of downloads'))
+					{
+						window.location.href="http://workgen.org/generated_documents";
+					}
 				},
 			});
 		} else if (worksheetType == 'generic') {
@@ -77,6 +81,10 @@ $(document).ready(function(){
 							type: 'success'
 						});
 					});
+					if(window.confirm('Click ok to be generated to your list of downloads'))
+					{
+						window.location.href="http://workgen.org/generated_documents";
+					}
 				},
 			});
 		} else if (worksheetType == 'customized') {
@@ -113,6 +121,10 @@ $(document).ready(function(){
 							type: 'success'
 						});
 					});
+					if(window.confirm('Click ok to be generated to your list of downloads'))
+					{
+						window.location.href="http://workgen.org/generated_documents";
+					}
 				},
 		});
 	}
