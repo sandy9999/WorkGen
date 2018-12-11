@@ -18,7 +18,7 @@ from docx import Document
 
 from .utils.utils import convert_question_bank,get_type_and_weightage,default_to_regular,convert_marker_data,get_allowed_questions,get_customized_paper
 from .test_paper import generate_test_or_generic_paper, generate_customized_paper
-from .models import Mentor, Questions, MCQOptions, Subject, GeneratedQuestionPaper, SubjectSplit, Chapter
+from .models import Mentor, Questions, MCQOptions, Subject, GeneratedTestAndGenericPaper,GeneratedCustomizedPaper, SubjectSplit, Chapter
 
 logger = logging.getLogger(__name__)
 
@@ -82,8 +82,8 @@ def download_docx(request):
 
 
 @login_required(login_url='/login')
-def generated_documents_view(request):
-    generated_data = GeneratedQuestionPaper.objects.filter(
+def generated_customized_view(request):
+    generated_data = GeneratedCustomizedPaper.objects.filter(
         mentor=request.user,
         is_ready=True).values_list(
             'token', 'submitted_date', 'file_path').order_by('-submitted_date').annotate(doc_count=Count('token'))
@@ -95,6 +95,20 @@ def generated_documents_view(request):
             unique_token[item[0]] = True
             data.append(item)
     return render(request, 'generated_documents.html', {'data': data})
+
+def generated_test_and_generic_view(request):
+    generated_data = GeneratedCustomizedPaper.objects.filter(
+        is_ready=True).values_list(
+            'token', 'submitted_date', 'file_path').order_by('-submitted_date').annotate(doc_count=Count('token'))
+    generated_data = list(generated_data)
+    unique_token = defaultdict(bool)
+    data = []
+    for item in generated_data:
+        if not unique_token[item[0]]:
+            unique_token[item[0]] = True
+            data.append(item)
+    return render(request, 'generated_documents.html', {'data': data})
+
 
 
 @login_required(login_url='/login')
@@ -181,7 +195,7 @@ def get_test_paper(request):
                 breakup[str(qtype[0])] = [qtype[2], qtype[3]]
         # token is basically used to identify paper
         token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
-        generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
+        generated_paper = GeneratedTestAndGenericPaper(token=token, submitted_date=datetime.datetime.now())
         generated_paper.save()
         generate_test_or_generic_paper.delay(subject, chapters, breakup, request.user.username, token, 'random')
         return JsonResponse({"message":"success", "token": token})
@@ -204,7 +218,7 @@ def get_generic_paper(request):
         }
 
         token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
-        generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
+        generated_paper = GeneratedTestAndGenericPaper(token=token, submitted_date=datetime.datetime.now())
         generated_paper.save()
 
         generate_test_or_generic_paper.delay(subject, chapters, breakup, request.user.username, token, random_settings)
@@ -281,7 +295,7 @@ def get_customize_paper(request):
             if item in customized_data:
                 del customized_data[item]
         token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
-        generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
+        generated_paper = GeneratedCustomizedPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
         generated_paper.save()
         generate_customized_paper.delay(subject, allowed_chapter_nos, breakup, customized_data, request.user.username, token)
         return JsonResponse({"message":"success", "token": token})

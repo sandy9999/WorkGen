@@ -4,7 +4,8 @@ from . import views
 app_name='searchapp'
 urlpatterns=[
    path('questions_upload',views.add_questions_view,name='questions_upload'),
-   path('generated_documents', views.generated_documents_view, name='generated_documents'),
+   path('generated_customized', views.generated_customized_view, name='generated_customized'),
+   path('generated_test_generic',views.generated_test_and_generic_view,name='generated_test_and_generic_view'),
    path('download_docx', views.download_docx, name='download_docx'),
    path('upload',views.add_questions,name='upload'),
    path('login',views.login_view,name='login'),
