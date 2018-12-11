@@ -79,11 +79,21 @@ class SubjectSplit(models.Model):
         return self.name
 
 
-class GeneratedQuestionPaper(models.Model):
+class GeneratedCustomizedPaper(models.Model):
     token = models.CharField(max_length=100)
     file_path = models.CharField(max_length=200, default=None, null=True)
     is_ready = models.BooleanField(default=False)
     mentor = models.ForeignKey(User, on_delete=models.CASCADE)
+    submitted_date = models.DateTimeField(null=True, default=None)
+
+    def __str__(self):
+        return self.token
+        
+
+class GeneratedTestAndGenericPaper(models.Model):
+    token = models.CharField(max_length=100)
+    file_path = models.CharField(max_length=200, default=None, null=True)
+    is_ready = models.BooleanField(default=False)
     submitted_date = models.DateTimeField(null=True, default=None)
 
     def __str__(self):
