@@ -35,9 +35,6 @@ Student View
 		<i class="dropdown icon"></i>
 		<div class="default text">Select Paper Format</div>
 		<div id="test-breakup-options-parent" class="menu">
-			 <div class="item" data-value="ICSE">ICSE</div>
-			 <div class="item" data-value="CBSE">CBSE</div>
-			 <div class="item" data-value="StateBoard">State Board</div>
 		</div>
 	</div>
 	<br>
@@ -56,7 +53,7 @@ Student View
 		<i class="dropdown icon"></i>
 		<div class="default text">Select Subject</div>
 		<div class="menu">
-			{% for element in data %}
+			{% for element in data %}				
 				<div class="item" data-value="{{element}}">{{element}}</div>
 			{% endfor %}
 		</div>
@@ -167,7 +164,7 @@ Student View
 						<tr>
 							<td>1A (One Mark Textual)</td>
 							<td>
-								<input class="no_of_questions" id="customized-noOfQ1a" type="number" min="0" max="100" step="1" name="noOfQ1" value=0>
+								<input class="no_of_questions" id="customized-noOfQ1a" type="number" min="0" max="100" step="1" name="noOfQ1" value=0>		
 							</td>
 						</tr>
 						<tr>
