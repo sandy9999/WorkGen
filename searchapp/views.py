@@ -22,11 +22,19 @@ from .models import Mentor, Questions, MCQOptions, Subject, GeneratedQuestionPap
 
 logger = logging.getLogger(__name__)
 
-@login_required(login_url='/login')
+
+def home(request):
+    return render(request,'home.html')
+
+
+def contact(request):
+    return render(request,'contact.html')
+
+
 def student_view(request):
     subject_list = Subject.objects.all().values_list('subject_name', flat=True)
     subject_list = list(subject_list)
-    return render(request,'student_view.html',{'data':subject_list, 'is_logged_in': request.user.is_authenticated})
+    return render(request,'student_view.html',{'data':subject_list})
 
 
 def login_view(request):
@@ -38,7 +46,7 @@ def login_view(request):
             return redirect('searchapp:mentor_view')
     else:
         if request.user.is_authenticated:
-            return redirect('/')
+            return redirect('searchapp:mentor_view')
         form=AuthenticationForm()
     return render(request,'login.html',{'form':form})
 
@@ -50,7 +58,7 @@ def logout_view(request):
 
 @login_required(login_url='/login')
 def mentor_view(request):
-    return render(request, 'mentor_view.html', {'is_logged_in': request.user.is_authenticated})
+    return render(request, 'mentor_view.html')
 
 
 @login_required(login_url='/login')

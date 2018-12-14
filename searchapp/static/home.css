@@ -1,6 +1,6 @@
 .dashboard{
-  margin-left:5%;
-  }
+  margin-left:13%;
+}
 .column{
   background:#d5f6b9;
   margin:20px;
@@ -9,6 +9,10 @@
   border-radius:10px; /* regular */
   opacity:0.7;
   text-align:center;
+  font-style: normal;
+}
+#general{
+  background:orange;
 }
 #grid{
   grid-row-gap:70px;
@@ -34,7 +38,7 @@
     word-wrap: break-word;
 }
 .button a:hover {
-   color: black;
+    color: black;
 }
 .button a:active{
   outline:0;

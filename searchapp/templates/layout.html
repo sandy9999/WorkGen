@@ -5,8 +5,7 @@
     <title>{% block title %}{% endblock %}</title>
     {% load static %}
     {% block css %}
-
-    {% endblock %}
+     {% endblock %}
     <link rel="stylesheet" type="text/css" href="{% static 'student_view_style.css' %}"/>
 	<link rel="stylesheet" type="text/css" href="{% static 'pnotify.custom.min.css' %}"/>
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.14/semantic.css"/>
@@ -27,20 +26,11 @@
     <span id="title-text">WorkGen</span>
     </div>
     <ul id="nav">
-        {% if is_logged_in and request.path == '/' %}
-        <li><a href="/mentor_view">Dashboard</a></li>
-        {% else %}
         <li><a href="/">Home</a></li>
-        {% endif %}
         <li><a href="#">About Us</a></li>
         <li><a href="#">How it Works</a></li>
-        <li><a href="#">Contact Us</a></li>
-        {% if is_logged_in %}
-        <li><a href="/logout">Logout</a></li>
-        {% else %}
-        <li><a href="/login">Login</a></li>
-        {% endif %}
-
+        <li><a href="contact">Contact Us</a></li>
+        {% block li %}{% endblock %}
     </ul>
     {% block student_view %}{% endblock %}
 </body>
