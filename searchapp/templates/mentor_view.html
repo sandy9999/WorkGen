@@ -16,13 +16,6 @@ WorkGen
   }
 </script>
 {% endblock %}
-{% block li %}
-  {% if user.is_authenticated %}
-   <li><a href="/logout">Logout</a></li>
-  {% else %}
-   <li><a href="/login">Login</a></li>
-  {% endif %}
-{% endblock %}
 {% block student_view %}
 <br>
 <br>
