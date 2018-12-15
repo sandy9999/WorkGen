@@ -38,6 +38,8 @@ $(document).ready(function(){
 				data: formData,
 				headers: { "X-CSRFToken": csrftoken,},
 				success: function(response) {
+					console.log(response.token);
+
 					$(function(){
 						new PNotify({
 							title: 'Success!',
@@ -45,6 +47,9 @@ $(document).ready(function(){
 							type: 'success'
 						});
 					});
+				if(window.confirm("Do you want to download")){
+						download_token(response.token);
+					}
 				},
 			});
 		} else if (worksheetType == 'generic') {
@@ -76,6 +81,9 @@ $(document).ready(function(){
 							text: 'Your document is currently being generated.',
 							type: 'success'
 						});
+						if(window.confirm('Do you want to download')){
+						download_token(response.token)
+					}
 					});
 				},
 			});
@@ -141,9 +149,9 @@ function upload_click(e) {
 				$(`#${worksheetType}-chapter`).removeClass('hide-display').addClass('show-display');
 				for (var i=0; i<chapters.length; i++) {
 					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapters[i]['chapter_id']}>${chapters[i]['chapter_name']}</div>`);}
-				
+
 				$(`#stud_name-options-parent`).empty();
-				let student_names = response['stud_name'];	
+				let student_names = response['stud_name'];
 				$(`#stud_name`).removeClass('hide-display').addClass('show-display');
 				for (var i=0; i<student_names.length; i++) {
 					$(`#stud_name-options-parent`).append(`<div class="item" data-value=${student_names[i]}>${student_names[i]}</div>`);}
@@ -248,7 +256,7 @@ function upload_click(e) {
 		onChange: function (value, text, $selectedItem) {
 		},
 	});
-	
+
 	$('#stud_name').dropdown({
 		onChange: function (value, text, $selectedItem) {
 		},
@@ -259,3 +267,27 @@ function upload_click(e) {
 
 
 });
+
+function download_token(token) {
+		var request = new XMLHttpRequest();
+		var url = BASE_DIR + '/download_test_and_generic_docx';
+		var params = `token=${token}`;
+		request.open('GET', `${url}?${params}`, true);
+		request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+		request.responseType = 'blob';
+		console.log("here");
+		request.onload = function() {
+			console.log(request.status);
+			console.log(request.response)
+			if(request.status === 200) {
+				console.log("Done");
+				var blob = new Blob([request.response], { type: 'application/pdf' });
+				var link = document.createElement('a');
+				link.href = window.URL.createObjectURL(blob);
+				link.download = "workgen_document.docx";
+				document.body.appendChild(link);
+				link.click();
+			}
+		};
+		request.send();
+	}
