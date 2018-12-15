@@ -38,8 +38,6 @@ $(document).ready(function(){
 				data: formData,
 				headers: { "X-CSRFToken": csrftoken,},
 				success: function(response) {
-					console.log(response.token);
-
 					$(function(){
 						new PNotify({
 							title: 'Success!',
@@ -275,10 +273,7 @@ function download_token(token) {
 		request.open('GET', `${url}?${params}`, true);
 		request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 		request.responseType = 'blob';
-		console.log("here");
 		request.onload = function() {
-			console.log(request.status);
-			console.log(request.response)
 			if(request.status === 200) {
 				console.log("Done");
 				var blob = new Blob([request.response], { type: 'application/pdf' });
