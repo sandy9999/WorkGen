@@ -45,9 +45,7 @@ $(document).ready(function(){
 							type: 'success'
 						});
 					});
-				if(window.confirm("Do you want to download")){
 						download_token(response.token);
-					}
 				},
 			});
 		} else if (worksheetType == 'generic') {
@@ -79,9 +77,7 @@ $(document).ready(function(){
 							text: 'Your document is currently being generated.',
 							type: 'success'
 						});
-						if(window.confirm('Do you want to download')){
-						download_token(response.token)
-					}
+						download_token(response.token);
 					});
 				},
 			});

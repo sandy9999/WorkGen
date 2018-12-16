@@ -189,7 +189,7 @@ def get_test_paper(request):
         token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
         generated_paper = GeneratedTestAndGenericPaper(token=token, submitted_date=datetime.datetime.now())
         generated_paper.save()
-        generate_test_or_generic_paper.delay(subject, chapters, breakup, token, 'random')
+        generate_test_or_generic_paper(subject, chapters, breakup, token, 'random')
         return JsonResponse({"message":"success", "token": token})
 
 
@@ -213,7 +213,7 @@ def get_generic_paper(request):
         generated_paper = GeneratedTestAndGenericPaper(token=token, submitted_date=datetime.datetime.now())
         generated_paper.save()
 
-        generate_test_or_generic_paper.delay(subject, chapters, breakup, token, random_settings)
+        generate_test_or_generic_paper(subject, chapters, breakup, token, random_settings)
 
         return JsonResponse({"message":"success", "token": token})
 
