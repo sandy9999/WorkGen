@@ -15,7 +15,7 @@ Download Generated Documents
   }
   function download_token(token) {
     var request = new XMLHttpRequest();
-    var url = BASE_DIR + '/download_docx';
+    var url = BASE_DIR + '/download_customized_docx';
     var params = `token=${token}`;
     request.open('GET', `${url}?${params}`, true);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');

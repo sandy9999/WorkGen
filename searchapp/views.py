@@ -18,7 +18,7 @@ from docx import Document
 
 from .utils.utils import convert_question_bank,get_type_and_weightage,default_to_regular,convert_marker_data,get_allowed_questions,get_customized_paper
 from .test_paper import generate_test_or_generic_paper, generate_customized_paper
-from .models import Mentor, Questions, MCQOptions, Subject, GeneratedQuestionPaper, SubjectSplit, Chapter
+from .models import Mentor, Questions, MCQOptions, Subject, GeneratedCustomizedPaper, GeneratedTestAndGenericPaper, SubjectSplit, Chapter
 
 logger = logging.getLogger(__name__)
 
@@ -67,9 +67,19 @@ def add_questions_view(request):
 
 
 @login_required(login_url='/login')
-def download_docx(request):
+def download_customized_docx(request):
     token = request.GET['token']
-    doc_obj = GeneratedQuestionPaper.objects.get(mentor=request.user, token=token, is_ready=True)
+    doc_obj = GeneratedCustomizedPaper.objects.get(mentor=request.user, token=token, is_ready=True)
+    document = Document(settings.BASE_DIR + "/" + doc_obj.file_path)
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    response['Content-Disposition'] = 'attachment; filename=workgen_document.docx'
+    document.save(response)
+    return response
+
+
+def download_test_and_generic_docx(request):
+    token = request.GET['token']
+    doc_obj = GeneratedTestAndGenericPaper.objects.get(token=token, is_ready=True)
     document = Document(settings.BASE_DIR + "/" + doc_obj.file_path)
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
     response['Content-Disposition'] = 'attachment; filename=workgen_document.docx'
@@ -79,7 +89,7 @@ def download_docx(request):
 
 @login_required(login_url='/login')
 def generated_documents_view(request):
-    generated_data = GeneratedQuestionPaper.objects.filter(
+    generated_data = GeneratedCustomizedPaper.objects.filter(
         mentor=request.user,
         is_ready=True).values_list(
             'token', 'submitted_date', 'file_path').order_by('-submitted_date').annotate(doc_count=Count('token'))
@@ -177,9 +187,9 @@ def get_test_paper(request):
                 breakup[str(qtype[0])] = [qtype[2], qtype[3]]
         # token is basically used to identify paper
         token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
-        generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
+        generated_paper = GeneratedTestAndGenericPaper(token=token, submitted_date=datetime.datetime.now())
         generated_paper.save()
-        generate_test_or_generic_paper.delay(subject, chapters, breakup, request.user.username, token, 'random')
+        generate_test_or_generic_paper(subject, chapters, breakup, token, 'random')
         return JsonResponse({"message":"success", "token": token})
 
 
@@ -200,10 +210,10 @@ def get_generic_paper(request):
         }
 
         token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
-        generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
+        generated_paper = GeneratedTestAndGenericPaper(token=token, submitted_date=datetime.datetime.now())
         generated_paper.save()
 
-        generate_test_or_generic_paper.delay(subject, chapters, breakup, request.user.username, token, random_settings)
+        generate_test_or_generic_paper(subject, chapters, breakup, token, random_settings)
 
         return JsonResponse({"message":"success", "token": token})
 
@@ -277,7 +287,7 @@ def get_customize_paper(request):
             if item in customized_data:
                 del customized_data[item]
         token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
-        generated_paper = GeneratedQuestionPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
+        generated_paper = GeneratedCustomizedPaper(token=token, mentor=request.user, submitted_date=datetime.datetime.now())
         generated_paper.save()
         generate_customized_paper.delay(subject, allowed_chapter_nos, breakup, customized_data, request.user.username, token)
         return JsonResponse({"message":"success", "token": token})
