@@ -165,8 +165,8 @@ function upload_click(e) {
 	function populate_chapters(value, text, $selectedItem) {
 		let formData = {
 			subject: value,
-		}
-		let worksheetType = $("#worksheetType").dropdown('get value');
+		};
+		let worksheetType = document.getElementById("worksheetType") ? $("#worksheetType").dropdown('get value') : 'paper';
 		if (worksheetType == 'test') {
 			$.ajax({
 				url: BASE_DIR + "/get_test_format",
@@ -177,7 +177,7 @@ function upload_click(e) {
 					let papers = d['papers'];
 					for (var i=0; i<papers.length; i++) {
 						let paperElement = `<div class="item" data-value=${papers[i]}>${papers[i]}</div>`;
-						$('#test-breakup-options-parent').append(paperElement);
+						$(`#${worksheetType}-breakup-options-parent`).append(paperElement);
 					}
 				}
 			});
@@ -190,18 +190,190 @@ function upload_click(e) {
 			success: function(d) {
 				$(`#${worksheetType}-chapter-options-parent`).empty();
 				let chapters = d['chapters'];
+				let subject_breakup = d['subject_breakup'];
 				$(`#${worksheetType}-chapter`).removeClass('hide-display').addClass('show-display');
+				
+				$(`#delete-chapters-button`).removeClass('hide-display').addClass('show-display');
+				$(`#add-chapter`).removeClass('hide-display').addClass('show-display');
+				$(`#subject_splits`).removeClass('hide-display').addClass('show-display');
+				$('h3').removeClass('hide-display').addClass('show-display');
+				$('#add-subject-split').removeClass('hide-display').addClass('show-display');
 				for (var i=0; i<chapters.length; i++) {
 					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapters[i]['chapter_id']}>${chapters[i]['chapter_name']}</div>`);
+				}
+				for (var i=0; i<subject_breakup.length; i++) {
+					$(`#subject_splits tbody`).append(`<tr>
+					<td data-label="Question Type">${subject_breakup[i]['question_type']}</td>
+					<td data-label="Question Weightage">${subject_breakup[i]['question_weightage']}</td>
+					<td data-label="Total Questions">${subject_breakup[i]['total_questions']}</td>
+					<td data-label="Questions to Attempt">${subject_breakup[i]['questions_to_attempt']}</td>
+					<td data-label=""><button id='${subject_breakup[i]['breakup_id']}' class="ui button delete-subject-split">x</button></td>
+				  </tr>`);
 				}
 			}
 		});
 	}
 
+	function add_chapter(e)
+	{
+		var chapter = $('input[name=add-chapter-input]').val().trim();
+		var subject = $("#paper-subject").dropdown('get value');
+		if(chapter.length> 0 && subject.length > 0)
+		{
+			let formData = {
+				"subject": subject,
+				"chapter": chapter
+			};
+
+			$.ajax({
+				url: BASE_DIR + "/add_chapter",
+				method : "get",
+				data: formData,
+				headers: { "X-CSRFToken": csrftoken, crossOrigin: false},
+				success: function(d) {
+					new PNotify({
+						title: 'Success!',
+						text: 'Chapter successfully added',
+						type: 'success'
+					});
+				}
+			});
+		}
+	}
+
+	function delete_chapters(e)
+	{
+		var subject = $("#paper-subject").dropdown('get value');	
+		var chapters = $('#paper-chapter').dropdown('get values');
+		if(chapters.length> 0)
+		{
+			let formData = {
+				"subject": subject,
+				"chapters": chapters
+			};
+
+			$.ajax({
+				url: BASE_DIR + "/delete_chapters",
+				method : "get",
+				data: formData,
+				headers: { "X-CSRFToken": csrftoken, crossOrigin: false},
+				success: function(d) {
+					new PNotify({
+						title: 'Success!',
+						text: 'Chapters successfully deleted',
+						type: 'success'
+					});
+				}
+			});
+		}
+	}
+
+	function add_subject_split(e)
+	{
+		var subject = $("#paper-subject").dropdown('get value');	
+		var question_weightage = $('#question-weightage').dropdown('get values');
+		var question_type = $('#question-type').dropdown('get values');
+		var split_name = $('input[name=split-name]').val().trim();
+		var total_questions = $('input[name=total-questions]').val();
+		var questions_to_attempt = $('input[name=questions-to-attempt]').val();
+		let formData = {
+			"subject": subject,
+			"question_type": question_type,
+			"question_weightage": question_weightage,
+			"split_name": split_name,
+			"total_questions": total_questions,
+			"questions_to_attempt": questions_to_attempt
+		};
+		$.ajax({
+			url: BASE_DIR + "/add_subject_split",
+			method : "get",
+			data: formData,
+			headers: { "X-CSRFToken": csrftoken, crossOrigin: false},
+			success: function(d) {
+				new PNotify({
+					title: 'Success!',
+					text: 'Subject split successfully added',
+					type: 'success'
+				});
+				var subject_splits = document.getElementById('subject_splits');
+				subject_breakup = d['subject_breakup'];
+				var rowCount = subject_splits.rows.length;
+        		for (var i = rowCount - 1; i > 0; i--) {
+					subject_splits.deleteRow(i);
+				}
+				for (var i=0; i<subject_breakup.length; i++) {
+					$(`#subject_splits tbody`).append(`<tr>
+					<td data-label="Question Type">${subject_breakup[i]['question_type']}</td>
+					<td data-label="Question Weightage">${subject_breakup[i]['question_weightage']}</td>
+					<td data-label="Total Questions">${subject_breakup[i]['total_questions']}</td>
+					<td data-label="Questions to Attempt">${subject_breakup[i]['questions_to_attempt']}</td>
+					<td data-label=""><button id='${subject_breakup[i]['breakup_id']}' class="ui button delete-subject-split">x</button></td>
+				  </tr>`);
+				}
+			}
+
+		});
+	}
+
+	$(document).on('click','.delete-subject-split', function() 
+	{
+		
+		var id = this.id;
+		var subject = $("#paper-subject").dropdown('get value');
+		let formData = {
+			"id": id,
+			"subject": subject
+		};
+
+		$.ajax({
+			url: BASE_DIR + "/delete_subject_split",
+			method : "get",
+			data: formData,
+			headers: { "X-CSRFToken": csrftoken, crossOrigin: false},
+			success: function(d) {
+				new PNotify({
+					title: 'Success!',
+					text: 'Subject split successfully deleted',
+					type: 'success'
+				});
+				var subject_splits = document.getElementById('subject_splits');
+				subject_breakup = d['subject_breakup'];
+				var rowCount = subject_splits.rows.length;
+        		for (var i = rowCount - 1; i > 0; i--) {
+					subject_splits.deleteRow(i);
+				}
+				for (var i=0; i<subject_breakup.length; i++) {
+					$(`#subject_splits tbody`).append(`<tr>
+					<td data-label="Question Type">${subject_breakup[i]['question_type']}</td>
+					<td data-label="Question Weightage">${subject_breakup[i]['question_weightage']}</td>
+					<td data-label="Total Questions">${subject_breakup[i]['total_questions']}</td>
+					<td data-label="Questions to Attempt">${subject_breakup[i]['questions_to_attempt']}</td>
+					<td data-label=""><button id='${subject_breakup[i]['breakup_id']}' class="ui button delete-subject-split">x</button></td>
+				  </tr>`);
+				}
+			}
+		});
+	});
+
+
 	// methods for TEST worksheet
 
 	$('#test-subject').dropdown({
 		onChange: populate_chapters,
+	});
+
+	$('#paper-subject').dropdown({
+		onChange: populate_chapters,
+	});
+
+	$('#paper-chapter').dropdown({
+		onChange: function (value, text, $selectedItem) {
+		},
+	});
+
+	$('#paper-breakup').dropdown({
+		onChange: function (value, text, $selectedItem) {
+		},
 	});
 
 	$('#test-chapter').dropdown({
@@ -233,7 +405,7 @@ function upload_click(e) {
 	});
 
 	$('#random-setting').dropdown({
-	})
+	});
 
 	// methods for CUSTOMIZED worksheet
 
@@ -258,8 +430,15 @@ function upload_click(e) {
 
 	$('#upload').click(upload_click);
 	$("#submit").click(submit_click);
+	$("#add-chapter-button").click(add_chapter);
+	$("#add-split-button").click(add_subject_split);
+	$("#delete-chapters-button").click(delete_chapters);
+	
+	$('#question-type').dropdown({
+	});
 
-
+	$('#question-weightage').dropdown({
+	});
 });
 
 function download_token(token) {

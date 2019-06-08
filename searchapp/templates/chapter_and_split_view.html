@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Edit Chapters and Subject Splits
+{% endblock %}
+{% block li %}
+ {% if user.is_authenticated %}
+  <li><a href="/mentor_view">Mentor Dashboard</a></li>
+  {% else %}
+  <li><a href="/login">Login</a></li>
+	{% endif %}
+{% endblock %}
+{% block student_view %}
+	<br>
+	<div id="paper-subject" class="ui selection dropdown subject show-display">
+		<input name="subject" type="hidden">
+		<i class="dropdown icon"></i>
+		<div class="default text">Select Subject</div>
+		<div class="menu">
+			{% for element in data %}
+			<div class="item" data-value="{{element}}">{{element}}</div>
+			{% endfor %}
+		</div>
+	</div>
+	<br>
+	<!--
+	<div id="paper-breakup" class="ui selection dropdown subject show-display">
+		<input name="breakup" type="hidden">
+		<i class="dropdown icon"></i>
+		<div class="default text">Select Paper Format</div>
+		<div id="paper-breakup-options-parent" class="menu">
+			 <div class="item" data-value="ICSE">ICSE</div>
+			 <div class="item" data-value="CBSE">CBSE</div>
+			 <div class="item" data-value="StateBoard">State Board</div>
+		</div>
+	</div>
+	-->
+	<br>
+	<div id="paper-chapter" class="ui fluid multiple search selection dropdown chapter hide-display">
+		<input name="chapter" type="hidden">
+		<i class="dropdown icon"></i>
+		<div class="default text">Select chapter</div>
+		<div id="paper-chapter-options-parent" class="menu">
+		</div>
+	</div>
+	<button id="delete-chapters-button" class="ui button hide-display">Delete chapters</button>
+	<div id="add-chapter" class="hide-display">
+	<div class="ui input">
+		<input type="text" name="add-chapter-input" placeholder="Add Chapter">
+	</div>
+	<button id="add-chapter-button" class="ui button">+</button>
+	</div>
+	<br/>
+	<h3 class="hide-display">Delete Subject Splits</h3>
+	<table class="ui celled table hide-display" id="subject_splits">
+		<thead>
+		  <tr><th>Question Type</th>
+		  <th>Question Weightage</th>
+		   <th>Total Questions</th>
+		   <th>Questions to Attempt</th>
+		   <th></th>
+		</tr></thead>
+		<tbody>
+		</tbody>
+	  </table>
+	<br/>
+	<br/>
+	<div id="add-subject-split" class="hide-display">
+	<div class="ui input" id="split-name">
+			<input type="text" name="split-name" placeholder="Split Name">
+	</div>
+	<br/>
+	<br/>
+	<div id="question-weightage" class="ui selection dropdown">
+		<input name="question-weightage" type="hidden">
+		<i class="dropdown icon"></i>
+		<div class="default text">Select Question Weightage</div>
+		<div class="menu">
+			{% for element in question_weightage_choices %}
+			<div class="item" data-value="{{element.0}}">{{element.1}}</div>
+			{% endfor %}
+		</div>
+	</div>
+	<br/>
+	<br/>
+	<div id="question-type" class="ui selection dropdown">
+		<input name="question-type" type="hidden">
+		<i class="dropdown icon"></i>
+		<div class="default text">Select Question Type</div>
+		<div class="menu">
+			{% for element in question_type_choices %}
+			<div class="item" data-value="{{element.0}}">{{element.1}}</div>
+			{% endfor %}
+		</div>
+	</div>
+	<br/>
+	<br/>
+	<div class="ui input" id="total-questions">
+		<input type="number" name="total-questions" placeholder="Total Questions">
+	</div>
+	<div class="ui input" id="questions-to-attempt">
+			<input type="number" name="questions-to-attempt" placeholder="Questions to Attempt">
+	</div>
+	<button id="add-split-button" class="ui button">Add subject split</button>
+	</div>
+	<br/>
+			{% endblock %}

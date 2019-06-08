@@ -6,6 +6,45 @@
 	display:block;
 }
 
+#add-chapter {
+	margin-top:5%;
+	margin-left:auto;
+	margin-right:auto;
+	text-align:center;
+	display:block;
+}
+
+#subject_splits {
+	width:75%;
+	margin:auto;
+}
+
+#delete-chapters-button {
+	margin-top:5%;
+	margin-left:auto;
+	margin-right:auto;
+	text-align:center;
+}
+
+/*#question-type {
+	text-align: center;
+	width:50%;
+}
+*/
+#add-subject-split {
+	text-align: center;
+}
+
+#total-questions {
+	/*margin-left:10%;*/
+	margin-right:5%;
+}
+
+#questions-to-attempt {
+	/*margin-left:auto;*/
+	margin-right:5%;
+}
+
 #title-div {
 	text-align: center;
 	margin-top: 30px;
@@ -218,4 +257,9 @@ input[type="file"] {
 	width:50%;
 	display:block;
 	margin-bottom:2%;
+}
+
+h3
+{
+	text-align:center;
 }
