@@ -170,13 +170,30 @@ def get_chapters(request):
             # name=papertype,
             subject__subject_name__iexact=subject_name).values_list(
                 'id',
+                'name',
+            )
+        json_data = {
+            'chapters': [{'chapter_id': x[0], 'chapter_name': x[1]} for x in chapters],
+            'subject_breakup': [{'breakup_id': x[0], 'breakup_name': x[1]} for x in subject_breakup ]
+        }
+        return JsonResponse(json_data)
+
+def display_split_table(request):
+    if request.method == 'GET':
+        subject_name = request.GET['subject']
+        split_ids = request.GET.getlist('splits[]')
+        subject_breakup = SubjectSplit.objects.filter(
+            id__in=split_ids,
+            subject__subject_name__iexact=subject_name).values_list(
+                'id',
                 'question_weightage',
                 'question_type',
                 'total_questions',
-                'questions_to_attempt')
+                'questions_to_attempt',
+                'name'
+            )
         json_data = {
-            'chapters': [{'chapter_id': x[0], 'chapter_name': x[1]} for x in chapters],
-            'subject_breakup': [{'breakup_id': x[0], 'question_weightage_id': x[1], 'question_weightage': Questions.QUESTION_WEIGHTAGE_CHOICES[x[1]-1][1], 'question_type_id': x[2], 'question_type': Questions.QUESTION_TYPE_CHOICES[x[2]-1][1], 'total_questions': x[3], 'questions_to_attempt': x[4]}  for x in subject_breakup ]
+            'subject_breakup': [{'breakup_id': x[0], 'question_weightage_id': x[1], 'question_weightage': Questions.QUESTION_WEIGHTAGE_CHOICES[x[1]-1][1], 'question_type_id': x[2], 'question_type': Questions.QUESTION_TYPE_CHOICES[x[2]-1][1], 'total_questions': x[3], 'questions_to_attempt': x[4], 'name': x[5]}  for x in subject_breakup ]
         }
         return JsonResponse(json_data)
 
@@ -186,17 +203,7 @@ def delete_subject_split(request):
         breakup_id = request.GET['id']
         subject_name = request.GET['subject']
         SubjectSplit.objects.filter(id=breakup_id).delete()
-        subject_breakup = SubjectSplit.objects.filter(
-            subject__subject_name__iexact=subject_name).values_list(
-                'id',
-                'question_weightage',
-                'question_type',
-                'total_questions',
-                'questions_to_attempt')
-        json_data = {
-            'subject_breakup': [{'breakup_id': x[0], 'question_weightage_id': x[1], 'question_weightage': Questions.QUESTION_WEIGHTAGE_CHOICES[x[1]-1][1], 'question_type_id': x[2], 'question_type': Questions.QUESTION_TYPE_CHOICES[x[2]-1][1], 'total_questions': x[3], 'questions_to_attempt': x[4]}  for x in subject_breakup ]
-        }
-        return JsonResponse(json_data)
+        return JsonResponse({"message": "success"})
 
 @login_required(login_url='/login')
 def add_subject_split(request):
@@ -212,18 +219,7 @@ def add_subject_split(request):
         except Subject.DoesNotExist:
             raise Exception("{} is not a valid subject in the database. Please check for typos / entry in the database".format(subject_name))
         SubjectSplit.objects.create(name=split_name,subject=subject,question_weightage=question_weightage,question_type=question_type,total_questions=total_questions,questions_to_attempt=questions_to_attempt)
-        subject_breakup = SubjectSplit.objects.filter(
-            # name=papertype,
-            subject__subject_name__iexact=subject_name).values_list(
-                'id',
-                'question_weightage',
-                'question_type',
-                'total_questions',
-                'questions_to_attempt')
-        json_data = {
-            'subject_breakup': [{'breakup_id': x[0], 'question_weightage_id': x[1], 'question_weightage': Questions.QUESTION_WEIGHTAGE_CHOICES[x[1]-1][1], 'question_type_id': x[2], 'question_type': Questions.QUESTION_TYPE_CHOICES[x[2]-1][1], 'total_questions': x[3], 'questions_to_attempt': x[4]}  for x in subject_breakup ]
-        }
-        return JsonResponse(json_data)
+        return JsonResponse({"message": "success"})
 
 @login_required(login_url='/login')
 def add_chapter(request):
