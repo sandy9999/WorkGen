@@ -191,15 +191,17 @@ function upload_click(e) {
 				$(`#${worksheetType}-chapter-options-parent`).empty();
 				let chapters = d['chapters'];
 				let subject_breakup = d['subject_breakup'];
-				$(`#${worksheetType}-chapter`).removeClass('hide-display').addClass('show-display');
-				
-				$(`#delete-chapters-button`).removeClass('hide-display').addClass('show-display');
-				$(`#add-chapter`).removeClass('hide-display').addClass('show-display');
+				$(`#chapter-operations`).removeClass('hide-display').addClass('show-display');
 				$(`#subject_splits`).removeClass('hide-display').addClass('show-display');
 				$('h3').removeClass('hide-display').addClass('show-display');
 				$('#add-subject-split').removeClass('hide-display').addClass('show-display');
 				for (var i=0; i<chapters.length; i++) {
 					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapters[i]['chapter_id']}>${chapters[i]['chapter_name']}</div>`);
+				}
+				var subject_splits = document.getElementById('subject_splits');
+				var rowCount = subject_splits.rows.length;
+        		for (var i = rowCount - 1; i > 0; i--) {
+					subject_splits.deleteRow(i);
 				}
 				for (var i=0; i<subject_breakup.length; i++) {
 					$(`#subject_splits tbody`).append(`<tr>

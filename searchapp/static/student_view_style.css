@@ -6,25 +6,26 @@
 	display:block;
 }
 
-#add-chapter {
+/*#add-chapter {
 	margin-top:5%;
 	margin-left:auto;
 	margin-right:auto;
 	text-align:center;
 	display:block;
-}
+}*/
 
 #subject_splits {
 	width:75%;
 	margin:auto;
 }
 
-#delete-chapters-button {
-	margin-top:5%;
-	margin-left:auto;
-	margin-right:auto;
-	text-align:center;
-}
+/*#paper-chapter {
+	float:right;
+}*/
+
+/*#delete-chapters-button {
+	margin:auto;
+}*/
 
 /*#question-type {
 	text-align: center;
@@ -56,6 +57,11 @@
 	color: orange;
 	font-family: 'Raleway', sans-serif;
 }
+
+/*.text-center
+{
+	text-align:center;
+}*/
 
 .show-display {
 	display: block !important;
