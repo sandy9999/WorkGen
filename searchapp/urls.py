@@ -17,6 +17,7 @@ urlpatterns=[
    path('get_chapters', views.get_chapters, name='get_chapters'),
    path('add_chapter', views.add_chapter, name='add_chapter'),
    path('delete_chapters', views.delete_chapters, name='delete_chapters'),
+   path('display_split_table', views.display_split_table, name='display_split_table'),
    path('delete_subject_split', views.delete_subject_split, name='delete_subject_split'),
    path('add_subject_split', views.add_subject_split, name='add_subject_split'),
    path('get_test_paper', views.get_test_paper, name='get_test_paper'),
