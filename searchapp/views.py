@@ -169,21 +169,21 @@ def get_chapters(request):
         subject_breakup = SubjectSplit.objects.filter(
             # name=papertype,
             subject__subject_name__iexact=subject_name).values_list(
-                'id',
                 'name',
-            )
+            ).distinct()
+        #print(subject_breakup)
         json_data = {
             'chapters': [{'chapter_id': x[0], 'chapter_name': x[1]} for x in chapters],
-            'subject_breakup': [{'breakup_id': x[0], 'breakup_name': x[1]} for x in subject_breakup ]
+            'subject_breakup': [{ 'breakup_name': x[0] } for x in subject_breakup ]
         }
         return JsonResponse(json_data)
 
 def display_split_table(request):
     if request.method == 'GET':
         subject_name = request.GET['subject']
-        split_ids = request.GET.getlist('splits[]')
+        split_names = request.GET.getlist('splits[]')
         subject_breakup = SubjectSplit.objects.filter(
-            id__in=split_ids,
+            name__in=split_names,
             subject__subject_name__iexact=subject_name).values_list(
                 'id',
                 'question_weightage',
@@ -191,7 +191,7 @@ def display_split_table(request):
                 'total_questions',
                 'questions_to_attempt',
                 'name'
-            )
+            ).order_by('name')
         json_data = {
             'subject_breakup': [{'breakup_id': x[0], 'question_weightage_id': x[1], 'question_weightage': Questions.QUESTION_WEIGHTAGE_CHOICES[x[1]-1][1], 'question_type_id': x[2], 'question_type': Questions.QUESTION_TYPE_CHOICES[x[2]-1][1], 'total_questions': x[3], 'questions_to_attempt': x[4], 'name': x[5]}  for x in subject_breakup ]
         }

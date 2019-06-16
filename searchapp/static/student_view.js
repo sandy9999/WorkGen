@@ -194,6 +194,7 @@ function upload_click(e) {
 				$(`#paper-subject-splits-options-parent`).empty();
 				let chapters = d['chapters'];
 				let subject_breakup = d['subject_breakup'];
+				console.log(subject_breakup);
 				$(`#subject_splits`).removeClass('show-display').addClass('hide-display');
 				$('h3').removeClass('show-display').addClass('hide-display');
 				$(`#chapter-operations`).removeClass('hide-display').addClass('show-display');
@@ -202,7 +203,7 @@ function upload_click(e) {
 					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapters[i]['chapter_id']}>${chapters[i]['chapter_name']}</div>`);
 				}
 				for (var i=0; i<subject_breakup.length; i++) {
-					$(`#paper-subject-splits-options-parent`).append(`<div class="item" data-value=${subject_breakup[i]['breakup_id']}>${subject_breakup[i]['breakup_name']}</div>`);
+					$(`#paper-subject-splits-options-parent`).append(`<div class="item" data-value=${subject_breakup[i]['breakup_name']}>${subject_breakup[i]['breakup_name']}</div>`);
 				}
 			}
 		});

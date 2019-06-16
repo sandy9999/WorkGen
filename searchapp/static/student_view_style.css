@@ -6,43 +6,20 @@
 	display:block;
 }
 
-/*#add-chapter {
-	margin-top:5%;
-	margin-left:auto;
-	margin-right:auto;
-	text-align:center;
-	display:block;
-}*/
-
 #subject_splits {
-	width:75%;
+	width:65%;
 	margin:auto;
 }
 
-/*#paper-chapter {
-	float:right;
-}*/
-
-/*#delete-chapters-button {
-	margin:auto;
-}*/
-
-/*#question-type {
-	text-align: center;
-	width:50%;
-}
-*/
 #add-subject-split {
 	text-align: center;
 }
 
 #total-questions {
-	/*margin-left:10%;*/
 	margin-right:5%;
 }
 
 #questions-to-attempt {
-	/*margin-left:auto;*/
 	margin-right:5%;
 }
 
@@ -57,11 +34,6 @@
 	color: orange;
 	font-family: 'Raleway', sans-serif;
 }
-
-/*.text-center
-{
-	text-align:center;
-}*/
 
 .show-display {
 	display: block !important;
