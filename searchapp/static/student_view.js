@@ -368,6 +368,8 @@ function upload_click(e) {
 		onChange: populate_chapters,
 	});
 
+	$('#paper-subject').dropdown('clear');
+
 	$('#paper-subject').dropdown({
 		onChange: populate_chapters,
 	});
