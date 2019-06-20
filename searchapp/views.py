@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.db.models import Count
 from collections import defaultdict
+from openpyxl.writer.excel import save_virtual_workbook
 from django.conf import settings
 
 import logging
@@ -16,9 +17,29 @@ import hashlib
 import random
 from docx import Document
 
-from .utils.utils import convert_question_bank,get_type_and_weightage,default_to_regular,convert_marker_data,get_allowed_questions,get_customized_paper
-from .test_paper import generate_test_or_generic_paper, generate_customized_paper
-from .models import Mentor, Questions, MCQOptions, Subject, GeneratedCustomizedPaper, GeneratedTestAndGenericPaper, SubjectSplit, Chapter
+from .utils.utils import (
+    convert_question_bank,
+    get_type_and_weightage,
+    default_to_regular,
+    convert_marker_data,
+    get_allowed_questions,
+    get_customized_paper,
+    generate_dummy_tracker,
+)
+from .test_paper import (
+    generate_test_or_generic_paper,
+    generate_customized_paper,
+)
+from .models import (
+    Mentor,
+    Questions,
+    MCQOptions,
+    Subject,
+    GeneratedCustomizedPaper,
+    GeneratedTestAndGenericPaper,
+    SubjectSplit, 
+    Chapter
+)
 
 logger = logging.getLogger(__name__)
 
@@ -397,3 +418,13 @@ def generate_optional_inputs(request):
         allowed_chapters = Chapter.objects.filter(id__in=allowed_chapter_nos).values_list('id', 'chapter_name')
         allowed_chapters = [{'chapter_id': x[0], 'chapter_name': x[1]} for x in allowed_chapters]
         return JsonResponse({"message":"success","chapters":allowed_chapters,"stud_name":student_name_list,"qtype":allowed_qtype})
+
+def get_dummy_workbook(request):
+    if request.method == 'GET':
+        split_name = request.GET['split_name']
+        subject_name = request.GET['subject_name']
+        subject_split_list = SubjectSplit.objects.filter(subject__subject_name__iexact=subject_name, name__iexact=split_name)
+        split_list = list(subject_split_list)
+
+        dummy_workbook = generate_dummy_tracker(subject_name, split_list)
+        response = HttpResponse(save_virtual_workbook(dummy_workbook), content_type='application/vnd.ms-excel')
