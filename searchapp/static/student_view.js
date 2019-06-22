@@ -23,7 +23,6 @@ $(document).ready(function(){
 	function submit_click(e) {
 		let worksheetType = $("#worksheetType").dropdown('get value');
 		if (worksheetType == 'test') {
-			console.log("submit click called");
 			let subject = $("#test-subject").dropdown('get value');
 			let chapters = $('#test-chapter').dropdown('get values');
 			let papertype = $('#test-breakup').dropdown('get value');
@@ -309,8 +308,7 @@ function upload_click(e) {
  }
 
   function saveByteArray(reportName, byte, type) {
-	let blob = new Blob([byte], {type: type});
-	console.log(reportName);
+		let blob = new Blob([byte], {type: type});
     saveAs(blob, reportName);
   };
   
@@ -335,7 +333,6 @@ function upload_click(e) {
 			data: formData,
 			headers: { "X-CSRFToken": csrftoken, crossOrigin: false},
 			success: function(response) {
-        console.log(response);
         let sampleArr = base64ToArrayBuffer(response);
         saveByteArray("dummy_tracker.xlsx", sampleArr, 'multipart/form-data');
       }
@@ -510,7 +507,6 @@ function download_token(token) {
 		request.responseType = 'blob';
 		request.onload = function() {
 			if(request.status === 200) {
-				console.log("Done");
 				let blob = new Blob([request.response], { type: 'application/pdf' });
 				let link = document.createElement('a');
 				link.href = window.URL.createObjectURL(blob);
