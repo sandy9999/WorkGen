@@ -419,12 +419,13 @@ def generate_optional_inputs(request):
         allowed_chapters = [{'chapter_id': x[0], 'chapter_name': x[1]} for x in allowed_chapters]
         return JsonResponse({"message":"success","chapters":allowed_chapters,"stud_name":student_name_list,"qtype":allowed_qtype})
 
-def get_dummy_workbook(request):
+def get_dummy_tracker(request):
     if request.method == 'GET':
         split_name = request.GET['split_name']
         subject_name = request.GET['subject_name']
         subject_split_list = SubjectSplit.objects.filter(subject__subject_name__iexact=subject_name, name__iexact=split_name)
         split_list = list(subject_split_list)
-
+        import base64
         dummy_workbook = generate_dummy_tracker(subject_name, split_list)
-        response = HttpResponse(save_virtual_workbook(dummy_workbook), content_type='application/vnd.ms-excel')
+        base64_response = base64.b64encode(save_virtual_workbook(dummy_workbook)).rstrip(b'\n=')
+        return HttpResponse(base64_response, content_type='multipart/form-data')

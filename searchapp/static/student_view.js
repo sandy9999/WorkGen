@@ -295,7 +295,52 @@ function upload_click(e) {
 			}
 
 		});
-	}
+  }
+
+  function base64ToArrayBuffer(base64) {
+    let binaryString = window.atob(base64.replace(/\s/g, ''));
+    let binaryLen = binaryString.length;
+    let bytes = new Uint8Array(binaryLen);
+    for (let i = 0; i < binaryLen; i++) {
+       let ascii = binaryString.charCodeAt(i);
+       bytes[i] = ascii;
+    }
+    return bytes;
+ }
+
+  function saveByteArray(reportName, byte, type) {
+	let blob = new Blob([byte], {type: type});
+	console.log(reportName);
+    saveAs(blob, reportName);
+  };
+  
+  function download_tracker(e) {
+    let subject = $("#paper-subject").dropdown('get value');
+    let splits = $('#paper-subject-splits').dropdown('get values');
+    if (splits.length != 1) {
+      new PNotify({
+        title: 'Error',
+        text: 'We currently support only one subject split at a time for dummy tracker download',
+        type: 'error'
+      });
+      return;
+    }
+		let formData = {
+			"subject_name": subject,
+			"split_name": splits[0],
+		};
+		$.ajax({
+      url: BASE_DIR + "/get_dummy_tracker",
+      method : "get",
+			data: formData,
+			headers: { "X-CSRFToken": csrftoken, crossOrigin: false},
+			success: function(response) {
+        console.log(response);
+        let sampleArr = base64ToArrayBuffer(response);
+        saveByteArray("dummy_tracker.xlsx", sampleArr, 'multipart/form-data');
+      }
+    });
+  }
 
 	function display_split_table(e)
 	{
@@ -444,7 +489,8 @@ function upload_click(e) {
 	$("#submit").click(submit_click);
 	$("#add-chapter-button").click(add_chapter);
 	$("#delete-chapters-button").click(delete_chapters);
-	$("#display-splits-button").click(display_split_table);
+  $("#display-splits-button").click(display_split_table);
+  $("#download-tracker-button").click(download_tracker);
 	$("#add-split-button").click(add_subject_split);
 	
 	

@@ -206,41 +206,46 @@ def generate_dummy_tracker(subject_name, subject_split):
         :returns: Generated workbook object
         :rtype: openpyxl.Workbook
     """
+    char_array = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     dummy_workbook = op.Workbook()
-    dummy_worksheet = dummy_workbook.active()
+    dummy_worksheet = dummy_workbook.active
 
     dummy_worksheet.title = "Tracker Record"
     dummy_worksheet["A1"] = subject_name
     dummy_worksheet["A2"] = "Chapter Number"
     dummy_worksheet["A3"] = "Akshay"
 
+    bold_style = op.styles.Font(size=10, bold=True)
+    dummy_worksheet["A1"].font = bold_style
+    dummy_worksheet["A2"].font = bold_style
+
     thin = op.styles.Side(border_style="thin", color="000000")
     styles_border = op.styles.Border(top=thin, left=thin, right=thin, bottom=thin)
     styles_fillPeach = op.styles.PatternFill("solid", fgColor="fff2cc")
     styles_fillGreen = op.styles.PatternFill("solid", fgColor="e2efda")
 
-    counter = 0
+    style_counter = 0
     start_position = 1
-    end_position = 2
+    end_position = 1
     for split_object in subject_split:
         start_position = end_position
         end_position = start_position + split_object.total_questions
 
-        counter += 1
-        styles_currentFill = styles_fillPeach if counter % 2 else styles_fillGreen
+        style_counter += 1
+        styles_currentFill = styles_fillPeach if style_counter % 2 else styles_fillGreen
 
-        dummy_worksheet.merge_cells("A{}:A{}".format(start_position, end_position-1))
-        dummy_worksheet["A{}".format(start_position)].border = styles_border
-        dummy_worksheet["A{}".format(start_position)].fill = styles_currentFill
+        dummy_worksheet.merge_cells("{}1:{}1".format(char_array[start_position], char_array[end_position-1]))
+        dummy_worksheet["{}1".format(char_array[start_position])].border = styles_border
+        dummy_worksheet["{}1".format(char_array[start_position])].fill = styles_currentFill
 
         for i in range(start_position, end_position):
-            dummy_worksheet["B{}".format(i)] = 0
-            dummy_worksheet["B{}".format(i)].border = styles_border
-            dummy_worksheet["B{}".format(i)].fill = styles_currentFill
+            dummy_worksheet["{}2".format(char_array[i])] = 0
+            dummy_worksheet["{}2".format(char_array[i])].border = styles_border
+            dummy_worksheet["{}2".format(char_array[i])].fill = styles_currentFill
 
-            dummy_worksheet["C{}".format(i)] = 0
-            dummy_worksheet["C{}".format(i)].border = styles_border
-            dummy_worksheet["C{}".format(i)].fill = styles_currentFill
+            dummy_worksheet["{}3".format(char_array[i])] = 0
+            dummy_worksheet["{}3".format(char_array[i])].border = styles_border
+            dummy_worksheet["{}3".format(char_array[i])].fill = styles_currentFill
 
     return dummy_workbook
 
