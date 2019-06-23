@@ -3,7 +3,6 @@ from . import views
 
 app_name='searchapp'
 urlpatterns=[
-   
    path('questions_upload',views.add_questions_view,name='questions_upload'),
    path('generated_documents', views.generated_documents_view, name='generated_documents'),
    path('download_customized_docx', views.download_customized_docx, name='download_customized_docx'),
@@ -26,5 +25,6 @@ urlpatterns=[
    path('get_customize_paper',views.get_customize_paper, name='get_customize_paper'),
    path('generate_optional_inputs',views.generate_optional_inputs,name = 'generate_optional_inputs'),
    path('',views.home, name='home'),
-   path('contact',views.contact)
+   path('contact',views.contact),
+   path('get_dummy_tracker', views.get_dummy_tracker),
 ]

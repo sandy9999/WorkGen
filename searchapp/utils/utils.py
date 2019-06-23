@@ -1,5 +1,6 @@
 import openpyxl as op
 from collections import defaultdict
+from datetime import datetime
 from random import sample
 
 def default_to_regular(d):
@@ -192,6 +193,62 @@ def convert_question_bank(question_bank_path):
             except Exception as e:
                 break
     return subject_to_chapter_to_question
+
+
+def generate_dummy_tracker(subject_name, subject_split):
+    """
+        Generate a workbook which has one tracket sheet with one dummy student
+        :param subject_name: Name of subject to which subject_split belongs to
+        :param subject_split: List of SubjectSplit objects
+        :type subject_name: str
+        :type subject_split: list
+
+        :returns: Generated workbook object
+        :rtype: openpyxl.Workbook
+    """
+    char_array = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    dummy_workbook = op.Workbook()
+    dummy_worksheet = dummy_workbook.active
+
+    dummy_worksheet.title = "Tracker Record"
+    dummy_worksheet["A1"] = subject_name
+    dummy_worksheet["A2"] = "Chapter Number"
+    dummy_worksheet["A3"] = "Akshay"
+
+    bold_style = op.styles.Font(size=10, bold=True)
+    dummy_worksheet["A1"].font = bold_style
+    dummy_worksheet["A2"].font = bold_style
+
+    thin = op.styles.Side(border_style="thin", color="000000")
+    styles_border = op.styles.Border(top=thin, left=thin, right=thin, bottom=thin)
+    styles_fillPeach = op.styles.PatternFill("solid", fgColor="fff2cc")
+    styles_fillGreen = op.styles.PatternFill("solid", fgColor="e2efda")
+
+    style_counter = 0
+    start_position = 1
+    end_position = 1
+    for split_object in subject_split:
+        start_position = end_position
+        end_position = start_position + split_object.total_questions
+
+        style_counter += 1
+        styles_currentFill = styles_fillPeach if style_counter % 2 else styles_fillGreen
+
+        dummy_worksheet.merge_cells("{}1:{}1".format(char_array[start_position], char_array[end_position-1]))
+        dummy_worksheet["{}1".format(char_array[start_position])].border = styles_border
+        dummy_worksheet["{}1".format(char_array[start_position])].fill = styles_currentFill
+
+        for i in range(start_position, end_position):
+            dummy_worksheet["{}2".format(char_array[i])] = 0
+            dummy_worksheet["{}2".format(char_array[i])].border = styles_border
+            dummy_worksheet["{}2".format(char_array[i])].fill = styles_currentFill
+
+            dummy_worksheet["{}3".format(char_array[i])] = 0
+            dummy_worksheet["{}3".format(char_array[i])].border = styles_border
+            dummy_worksheet["{}3".format(char_array[i])].fill = styles_currentFill
+
+    return dummy_workbook
+
 
 if __name__ == "__main__":
     science_breakup = {
