@@ -31,6 +31,7 @@ $(document).ready(function(){
 				"papertype": papertype,
 				"chapters[]": chapters
 			}
+
 			$.ajax({
 				url: BASE_DIR + "/get_test_paper",
 				method : "get",
@@ -162,10 +163,10 @@ function upload_click(e) {
 }
 }
 	function populate_chapters(value, text, $selectedItem) {
-		let formData = {
-			"subject": $("#paper-subject").dropdown('get value')
-		};
 		let worksheetType = document.getElementById("worksheetType") ? $("#worksheetType").dropdown('get value') : 'paper';
+		let formData = {
+			"subject": $(`#${worksheetType}-subject`).dropdown('get value')
+		};
 		if (worksheetType == 'test') {
 			$.ajax({
 				url: BASE_DIR + "/get_test_format",
@@ -187,21 +188,29 @@ function upload_click(e) {
 			data: formData,
 			headers: { "X-CSRFToken": csrftoken, crossOrigin: false},
 			success: function(response) {
-				$('#paper-chapter').dropdown('clear');
-				$('#paper-subject-splits').dropdown('clear');
 				$(`#${worksheetType}-chapter-options-parent`).empty();
-				$(`#paper-subject-splits-options-parent`).empty();
+				$(`#${worksheetType}-chapter`).removeClass('hide-display').addClass('show-display');
+				
 				let chapters = response['chapters'];
-				let subject_breakup = response['subject_breakup'];
-				$(`#subject_splits`).removeClass('show-display').addClass('hide-display');
-				$('h3').removeClass('show-display').addClass('hide-display');
-				$(`#chapter-operations`).removeClass('hide-display').addClass('show-display');
-				$('#add-subject-split').removeClass('hide-display').addClass('show-display');
+				
 				for (let i=0; i<chapters.length; i++) {
 					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapters[i]['chapter_id']}>${chapters[i]['chapter_name']}</div>`);
 				}
-				for (let i=0; i<subject_breakup.length; i++) {
-					$(`#paper-subject-splits-options-parent`).append(`<div class="item" data-value=${subject_breakup[i]['breakup_name']}>${subject_breakup[i]['breakup_name']}</div>`);
+				if(worksheetType == 'paper')
+				{
+					$('#paper-subject-splits').dropdown('clear');
+					
+					$(`#paper-subject-splits-options-parent`).empty();
+					
+					let subject_breakup = response['subject_breakup'];
+					$(`#subject_splits`).removeClass('show-display').addClass('hide-display');
+					$('h3').removeClass('show-display').addClass('hide-display');
+					$(`#chapter-operations`).removeClass('hide-display').addClass('show-display');
+					$('#add-subject-split').removeClass('hide-display').addClass('show-display');
+					
+					for (let i=0; i<subject_breakup.length; i++) {
+						$(`#paper-subject-splits-options-parent`).append(`<div class="item" data-value=${subject_breakup[i]['breakup_name']}>${subject_breakup[i]['breakup_name']}</div>`);
+					}
 				}
 			}
 		});
