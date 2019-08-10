@@ -30,7 +30,7 @@ def generate_test_or_generic_paper(subject, chapters, subject_breakup, token, so
         total_list = Questions.objects.filter(question_type=q_type,
             question_weightage=weightage,
             chapter__in=Chapter.objects.filter(id__in=chapters)).values_list('text',flat=True)
-        total_list = list(total_list)
+        total_list = list(total_list)        
         total_question_no = min(total_question_no,len(total_list))
         final_list = random.sample(total_list,total_question_no)
         row={
