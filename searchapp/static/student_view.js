@@ -495,8 +495,8 @@ function upload_click(e) {
 	$("#submit").click(submit_click);
 	$("#add-chapter-button").click(add_chapter);
 	$("#delete-chapters-button").click(delete_chapters);
-  $("#display-splits-button").click(display_split_table);
-  $("#download-tracker-button").click(download_tracker);
+    $("#display-splits-button").click(display_split_table);
+  	$("#download-tracker-button").click(download_tracker);
 	$("#add-split-button").click(add_subject_split);
 	
 	
