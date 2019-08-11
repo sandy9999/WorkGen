@@ -57,8 +57,8 @@ def generate_customized_paper(subject, chapters, subject_breakup, data, mentor, 
     it returns a list of dicts of form==>{stud_name_1: [{'question_type':'','question':'','attempt':''},{},{}],stud_name_2: [{'question_type':'','question':'','attempt':''},{},{}]}
     '''
     final_dict = {}
-    for key in data:
-        test_paper_dict = form_test_paper_dictionary(subject, data[key], subject_breakup)
-        final_dict.update({key: test_paper_dict})
+    for student_name in data:
+        test_paper_dict = form_test_paper_dictionary(subject, data[student_name], subject_breakup)
+        final_dict.update({student_name: test_paper_dict})
     filepath = convert_customized_to_doc(final_dict, subject)
     GeneratedCustomizedPaper.objects.filter(mentor__username=mentor, token=token).update(file_path=filepath, is_ready=True)

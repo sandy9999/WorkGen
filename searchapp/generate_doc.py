@@ -4,7 +4,7 @@ import os
 
 qtype_to_section = {"1A": "A", "1B": "B", "2": "C", "3": "D", "5": "E"}
 
-def no_of_questions(questions_mapping, question_type):
+def get_no_of_questions(questions_mapping, question_type):
     count = 0
     for row in questions_mapping:
         if row.get('question_type') == question_type:
@@ -15,8 +15,8 @@ def no_of_questions(questions_mapping, question_type):
 def add_headings(document, subject):
     heading = document.add_heading("EXAM")
     heading.alignment = 1
-    heading2 = document.add_heading(subject,level = 2)
-    heading2.alignment = 1
+    subject_heading = document.add_heading(subject,level = 2)
+    subject_heading.alignment = 1
     para = document.add_paragraph()
     run = para.add_run()
     run.add_break()
@@ -45,14 +45,14 @@ def add_questions(document, questions_mapping, question_type, question_no, no_of
 def convert_customized_to_doc(questions_mapping, subject):
     document = Document()
     for name in questions_mapping:
-        pp = document.add_paragraph()
-        stud_name = pp.add_run("Name: " + name)
-        stud_name.add_break()
+        para = document.add_paragraph()
+        student_name = para.add_run("Name: " + name)
+        student_name.add_break()
         add_headings(document, subject)
         question_no = 0
         for qtype in qtype_to_section:
-            ct = no_of_questions(questions_mapping[name], qtype)
-            question_no = add_questions(document, questions_mapping[name], qtype, question_no, ct)
+            no_of_questions = get_no_of_questions(questions_mapping[name], qtype)
+            question_no = add_questions(document, questions_mapping[name], qtype, question_no, no_of_questions)
         document.add_page_break()
     filename = "question_worksheet_" + datetime.datetime.now().__str__() + ".docx"
     filepath = os.path.join('searchapp/static/docs', filename)
@@ -64,8 +64,8 @@ def convert_to_doc(questions_mapping, subject):
     add_headings(document, subject)
     question_no = 0
     for qtype in qtype_to_section:
-        ct = no_of_questions(questions_mapping, qtype)
-        question_no = add_questions(document, questions_mapping, qtype, question_no, ct)
+        no_of_questions = get_no_of_questions(questions_mapping, qtype)
+        question_no = add_questions(document, questions_mapping, qtype, question_no, no_of_questions)
     filename = "question_worksheet_" + datetime.datetime.now().__str__() + ".docx"
     filepath = os.path.join('searchapp/static/docs', filename)
     document.save(filepath)
