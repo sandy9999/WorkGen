@@ -157,28 +157,32 @@ def convert_question_bank(question_bank_path):
 
         :param question_bank_path: path of the question bank excel file
         :type question_bank_path: str
-        :returns: dictionary of chapter_number => (dictionary of question_type => list of questions)
+        :returns: dictionary of board =>( grade => (subject => (chapter_number => (dictionary of question_type => list of questions))))
         :rtype: dict
 
         :example return:
-            {
-                'Science': {
-                    (1, 'Gravitation') : {
-                        '1A': [('Gravitation is caused by ______', 'Textbook'), ('There are ___ laws of Kepler', None), ('Earth has a radius of ___', None)],
-                        ...
-                    },
-                    (2, 'Sun'): {
-                        '1A': [],
-                        '1B': [],
-                        '2': [],
-                        '3': [],
-                        '4': []
-                    }
-                }
+            {  'ICSE': {
+                    10:{
+                    'Science': {
+                        (1, 'Gravitation') : {
+                            '1A': [('Gravitation is caused by ______', 'Textbook'), ('There are ___ laws of Kepler', None), ('Earth has a radius of ___', None)],
+                            ...
+                            },
+                            (2, 'Sun'): {
+                            '1A': [],
+                            '1B': [],
+                            '2': [],
+                            '3': [],
+                            '4': []
+                            }
+                      }
+                 }
+            }
+        }
 
     """
     question_bank = op.load_workbook(question_bank_path).worksheets[0]
-    subject_to_chapter_to_question = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: list([]))))
+    board_to_grade_to_subject_to_chapter_to_question = defaultdict(lambda: (defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: list([])))))))
     row_no = -1
     for row in question_bank.rows:
         row_no += 1
@@ -186,20 +190,19 @@ def convert_question_bank(question_bank_path):
             pass
         else:
             try:
-                subject = row[0].value.lower()
-                chapter_no = int(row[1].value)
-                chapter_name = row[2].value
-                question_type = row[3].value
-                question_type = str(int(question_type)) if (
-                            type(question_type) == type(1.0) or type(question_type) == type(1)) else \
-                    question_type.lower()
-                question_text = row[4].value
-                question_source = row[5].value
-                subject_to_chapter_to_question[subject][(chapter_no, chapter_name)][question_type].append(
-                    (question_text, question_source))
+                board = row[0].value
+                grade = int(row[1].value)
+                subject = row[2].value.lower()
+                chapter_no = int(row[3].value)
+                chapter_name = row[4].value
+                question_type = row[5].value
+                question_type = str(int(question_type)) if (type(question_type) == type(1.0) or type(question_type) == type(1)) else question_type.lower()
+                question_text = row[6].value
+                question_source = row[7].value
+                board_to_grade_to_subject_to_chapter_to_question[board][grade][subject][(chapter_no, chapter_name)][question_type].append((question_text, question_source))
             except Exception as e:
                 break
-    return subject_to_chapter_to_question
+    return board_to_grade_to_subject_to_chapter_to_question
 
 
 def generate_dummy_tracker(subject_name, subject_split, split_type_mapping):

@@ -32,6 +32,8 @@ from .test_paper import (
 )
 from .models import (
     Mentor,
+    Board,
+    Grade,
     Questions,
     MCQOptions,
     Subject,
@@ -144,11 +146,10 @@ def add_questions(request):
         if request.FILES:
             file_obj = request.FILES['datafile']
             default_dict = convert_question_bank(file_obj)
-            subject_to_chapter_to_question = default_to_regular(default_dict)
+            board_to_grade_to_subject_to_chapter_to_question=default_to_regular(default_dict)
             try:
-                add_to_database(subject_to_chapter_to_question, request.user)
-                return render(request, 'mentor_view.html',
-                              {'pop': " the questions have been added successfully", 'flag': '0'})
+                add_to_database(board_to_grade_to_subject_to_chapter_to_question, request.user)
+                return render(request,'mentor_view.html',{'pop':" the questions have been added successfully",'flag':'0'})
             except Exception as e:
                 logger.error(str(e))
                 return render(request, 'question_upload_mentor.html', {'error': str(e), 'flag': '1'})
@@ -156,37 +157,49 @@ def add_questions(request):
             return render(request, 'question_upload_mentor.html', {'error': "no file selected", 'flag': '1'})
 
 
-def add_to_database(subject_to_chapter_to_question, user):
+def add_to_database(board_to_grade_to_subject_to_chapter_to_question, user):
     mentor = Mentor.objects.get(username=user.username)
-    for subject_name in subject_to_chapter_to_question:
+    for board in board_to_grade_to_subject_to_chapter_to_question:
         try:
-            subject = Subject.objects.get(subject_name=subject_name)
+            board_object = Board.objects.get(board=board)
         except Exception as e:
-            logger.error("No such subject")
+            logger.error("No such board")
             return
-        chapter_to_question = subject_to_chapter_to_question[subject_name]
-        for chapter_tuple in chapter_to_question:
-            chapter_no = chapter_tuple[0]
-            chapter_name = chapter_tuple[1]
-            questions_dict = chapter_to_question[chapter_tuple]
+        grade_to_subject_to_chapter_to_question = board_to_grade_to_subject_to_chapter_to_question[board]
+        for grade in grade_to_subject_to_chapter_to_question:
             try:
-                with transaction.atomic():
-                    for question_type in questions_dict:
-                        questions_list = questions_dict[question_type]
-                        q_type, weightage = get_type_and_weightage(question_type)
-                        for i in range(len(questions_list)):
-                            q = Questions(
-                                chapter=Chapter.objects.get(chapter_name=chapter_name),
-                                question_type=q_type,
-                                question_weightage=weightage,
-                                text=questions_list[i][0],
-                                uploaded_by=mentor,
-                                source=questions_list[i][1])
-                            q.save()
-            except Chapter.DoesNotExist as e:
-                raise Exception(
-                    "{} is not a valid chapter in the database. Please check for typos / entry in the database".format(
-                        chapter_name))
+                grade_object = Grade.objects.get(grade=grade,board=board_object)
+            except Exception as e:
+                logger.error("No such grade")
+                return
+            subject_to_chapter_to_question = grade_to_subject_to_chapter_to_question[grade]
+            for subject_name in subject_to_chapter_to_question:
+                try:
+                    subject_object = Subject.objects.get(subject_name=subject_name,grade=grade_object)
+                except Exception as e:
+                    logger.error("No such subject")
+                    return
+                chapter_to_question = subject_to_chapter_to_question[subject_name]
+                for chapter_tuple in chapter_to_question:
+                    chapter_no = chapter_tuple[0]
+                    chapter_name = chapter_tuple[1]
+                    questions_dict = chapter_to_question[chapter_tuple]
+                    try:
+                         with transaction.atomic():
+                            for question_type in questions_dict:
+                                questions_list = questions_dict[question_type]
+                                q_type, weightage = get_type_and_weightage(question_type)
+                                for i in range(len(questions_list)):
+                                     q = Questions(
+                                     chapter=Chapter.objects.get(chapter_name=chapter_name),
+                                     question_type=q_type,
+                                     question_weightage=weightage,
+                                     text=questions_list[i][0],
+                                     uploaded_by=mentor,
+                                     source=questions_list[i][1])
+                                     q.save()
+                    except Chapter.DoesNotExist as e:
+                        raise Exception("{} is not a valid chapter in the database. Please check for typos / entry in the database".format(chapter_name))
 
 
 def get_chapters(request):
