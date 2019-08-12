@@ -20,9 +20,37 @@ class Mentor(models.Model):
     def __str__(self):
         return self.username
 
+class Board(models.Model):
+    BOARD_TYPE_CHOICES = (
+        ('CBSE',  'CBSE'),
+        ('ICSE', 'ICSE'),
+    )
+    board = models.CharField(max_length=4,choices=BOARD_TYPE_CHOICES, default='CBSE',unique=True)
+
+    def __str__(self):
+        return self.board
+
+class MinMaxFloat(models.IntegerField):
+    def __init__(self, min_value=None, max_value=None, *args, **kwargs):
+        self.min_value, self.max_value = min_value, max_value
+        super(MinMaxFloat, self).__init__(*args, **kwargs)
+
+    def formfield(self, **kwargs):
+        defaults = {'min_value': self.min_value, 'max_value' : self.max_value}
+        defaults.update(kwargs)
+        return super(MinMaxFloat, self).formfield(**defaults)
+
+class Grade(models.Model):
+    grade = MinMaxFloat(min_value=1, max_value=12, default=10)
+    board = models.ForeignKey('Board', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.grade)
+
 
 class Subject(models.Model):
-    subject_name = models.CharField(max_length=100, unique=True, blank=False, null=False)
+    subject_name = models.CharField(max_length=100, blank=False, null=False)
+    grade = models.ForeignKey('Grade', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.subject_name

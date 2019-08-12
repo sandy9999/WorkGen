@@ -17,6 +17,8 @@ class QuestionsFilter(admin.ModelAdmin):
 
 
 admin.site.register(Mentor)
+admin.site.register(Board)
+admin.site.register(Grade)
 admin.site.register(Subject)
 admin.site.register(GeneratedCustomizedPaper)
 admin.site.register(GeneratedTestAndGenericPaper)
