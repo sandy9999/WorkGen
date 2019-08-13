@@ -63,7 +63,11 @@ def student_view(request):
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
+<<<<<<< HEAD
         if (form.is_valid()):
+=======
+        if(form.is_valid()):
+>>>>>>> [Uploading Questions]: Fix PEP8 issues
             user = form.get_user()
             login(request, user)
             return redirect('searchapp:mentor_view')
@@ -90,9 +94,7 @@ def chapter_and_split_view(request):
     subject_list = list(subject_list)
     question_weightage_choices = Questions.QUESTION_WEIGHTAGE_CHOICES
     question_type_choices = Questions.QUESTION_TYPE_CHOICES
-    return render(request, 'chapter_and_split_view.html',
-                  {'data': subject_list, 'question_weightage_choices': question_weightage_choices,
-                   'question_type_choices': question_type_choices})
+    return render(request, 'chapter_and_split_view.html', {'data': subject_list, 'question_weightage_choices': question_weightage_choices, 'question_type_choices': question_type_choices})
 
 
 @login_required(login_url='/login')
@@ -103,9 +105,11 @@ def add_questions_view(request):
 @login_required(login_url='/login')
 def download_customized_docx(request):
     token = request.GET['token']
-    doc_obj = GeneratedCustomizedPaper.objects.get(mentor=request.user, token=token, is_ready=True)
+    doc_obj = GeneratedCustomizedPaper.objects.get(
+        mentor=request.user, token=token, is_ready=True)
     document = Document(settings.BASE_DIR + "/" + doc_obj.file_path)
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
     response['Content-Disposition'] = 'attachment; filename=workgen_document.docx'
     document.save(response)
     return response
@@ -113,9 +117,11 @@ def download_customized_docx(request):
 
 def download_test_and_generic_docx(request):
     token = request.GET['token']
-    doc_obj = GeneratedTestAndGenericPaper.objects.get(token=token, is_ready=True)
+    doc_obj = GeneratedTestAndGenericPaper.objects.get(
+        token=token, is_ready=True)
     document = Document(settings.BASE_DIR + "/" + doc_obj.file_path)
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
     response['Content-Disposition'] = 'attachment; filename=workgen_document.docx'
     document.save(response)
     return response
@@ -146,10 +152,10 @@ def add_questions(request):
         if request.FILES:
             file_obj = request.FILES['datafile']
             default_dict = convert_question_bank(file_obj)
-            board_to_grade_to_subject_to_chapter_to_question=default_to_regular(default_dict)
+            question_bank_dict = default_to_regular(default_dict)
             try:
-                add_to_database(board_to_grade_to_subject_to_chapter_to_question, request.user)
-                return render(request,'mentor_view.html',{'pop':" the questions have been added successfully",'flag':'0'})
+                add_to_database(question_bank_dict, request.user)
+                return render(request, 'mentor_view.html', {'pop': " the questions have been added successfully", 'flag': '0'})
             except Exception as e:
                 logger.error(str(e))
                 return render(request, 'question_upload_mentor.html', {'error': str(e), 'flag': '1'})
@@ -157,55 +163,61 @@ def add_questions(request):
             return render(request, 'question_upload_mentor.html', {'error': "no file selected", 'flag': '1'})
 
 
-def add_to_database(board_to_grade_to_subject_to_chapter_to_question, user):
+def add_to_database(question_bank_dict, user):
     mentor = Mentor.objects.get(username=user.username)
-    for board in board_to_grade_to_subject_to_chapter_to_question:
+    for board in question_bank_dict:
         try:
             board_object = Board.objects.get(board=board)
         except Exception as e:
             logger.error("No such board")
             return
-        grade_to_subject_to_chapter_to_question = board_to_grade_to_subject_to_chapter_to_question[board]
-        for grade in grade_to_subject_to_chapter_to_question:
+        grade_to_question_dict = question_bank_dict[board]
+        for grade in grade_to_question_dict:
             try:
-                grade_object = Grade.objects.get(grade=grade,board=board_object)
+                grade_object = Grade.objects.get(
+                    grade=grade, board=board_object)
             except Exception as e:
                 logger.error("No such grade")
                 return
-            subject_to_chapter_to_question = grade_to_subject_to_chapter_to_question[grade]
-            for subject_name in subject_to_chapter_to_question:
+            subject_to_question_dict = grade_to_question_dict[grade]
+            for subject_name in subject_to_question_dict:
                 try:
-                    subject_object = Subject.objects.get(subject_name=subject_name,grade=grade_object)
+                    subject_object = Subject.objects.get(
+                        subject_name=subject_name, grade=grade_object)
                 except Exception as e:
                     logger.error("No such subject")
                     return
-                chapter_to_question = subject_to_chapter_to_question[subject_name]
+                chapter_to_question = subject_to_question_dict[subject_name]
                 for chapter_tuple in chapter_to_question:
                     chapter_no = chapter_tuple[0]
                     chapter_name = chapter_tuple[1]
                     questions_dict = chapter_to_question[chapter_tuple]
                     try:
-                         with transaction.atomic():
+                        with transaction.atomic():
                             for question_type in questions_dict:
                                 questions_list = questions_dict[question_type]
-                                q_type, weightage = get_type_and_weightage(question_type)
+                                q_type, weightage = get_type_and_weightage(
+                                    question_type)
                                 for i in range(len(questions_list)):
-                                     q = Questions(
-                                     chapter=Chapter.objects.get(chapter_name=chapter_name),
-                                     question_type=q_type,
-                                     question_weightage=weightage,
-                                     text=questions_list[i][0],
-                                     uploaded_by=mentor,
-                                     source=questions_list[i][1])
-                                     q.save()
+                                    q = Questions(
+                                        chapter=Chapter.objects.get(
+                                            chapter_name=chapter_name),
+                                        question_type=q_type,
+                                        question_weightage=weightage,
+                                        text=questions_list[i][0],
+                                        uploaded_by=mentor,
+                                        source=questions_list[i][1])
+                                    q.save()
                     except Chapter.DoesNotExist as e:
-                        raise Exception("{} is not a valid chapter in the database. Please check for typos / entry in the database".format(chapter_name))
+                        raise Exception(
+                            "{} is not a valid chapter in the database. Please check for typos / entry in the database".format(chapter_name))
 
 
 def get_chapters(request):
     if request.method == 'GET':
         subject_name = request.GET['subject']
-        chapters = Chapter.objects.filter(subject__subject_name__iexact=subject_name).values_list('id', 'chapter_name')
+        chapters = Chapter.objects.filter(
+            subject__subject_name__iexact=subject_name).values_list('id', 'chapter_name')
         # papertype = request.GET['papertype']
         subject_breakup = SubjectSplit.objects.filter(
             # name=papertype,
@@ -280,7 +292,7 @@ def add_chapter(request):
         subject_name = request.GET['subject']
         chapter_name = request.GET['chapter']
         try:
-            subject = Subject.objects.get(subject_name=subject_name);
+            subject = Subject.objects.get(subject_name=subject_name)
         except Subject.DoesNotExist:
             raise Exception(
                 "{} is not a valid subject in the database. Please check for typos / entry in the database".format(
@@ -321,10 +333,13 @@ def get_test_paper(request):
             else:
                 breakup[str(qtype[0])] = [qtype[2], qtype[3]]
         # token is basically used to identify paper
-        token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
-        generated_paper = GeneratedTestAndGenericPaper(token=token, submitted_date=datetime.datetime.now())
+        token = hashlib.sha1(datetime.datetime.now(
+        ).__str__().encode('utf-8')).hexdigest()
+        generated_paper = GeneratedTestAndGenericPaper(
+            token=token, submitted_date=datetime.datetime.now())
         generated_paper.save()
-        generate_test_or_generic_paper(subject, chapters, breakup, token, 'random')
+        generate_test_or_generic_paper(
+            subject, chapters, breakup, token, 'random')
         return JsonResponse({"message": "success", "token": token})
 
 
@@ -344,11 +359,14 @@ def get_generic_paper(request):
             '5': [int(sent_breakup[4])] * 2,
         }
 
-        token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
-        generated_paper = GeneratedTestAndGenericPaper(token=token, submitted_date=datetime.datetime.now())
+        token = hashlib.sha1(datetime.datetime.now(
+        ).__str__().encode('utf-8')).hexdigest()
+        generated_paper = GeneratedTestAndGenericPaper(
+            token=token, submitted_date=datetime.datetime.now())
         generated_paper.save()
 
-        generate_test_or_generic_paper(subject, chapters, breakup, token, random_settings)
+        generate_test_or_generic_paper(
+            subject, chapters, breakup, token, random_settings)
 
         return JsonResponse({"message": "success", "token": token})
 
@@ -356,8 +374,8 @@ def get_generic_paper(request):
 def get_test_format(request):
     if request.method == 'GET':
         subject = request.GET['subject']
-        papers = SubjectSplit.objects.filter(subject__subject_name__iexact=subject).values_list('name',
-                                                                                                flat=True).distinct()
+        papers = SubjectSplit.objects.filter(
+            subject__subject_name__iexact=subject).values_list('name', flat=True).distinct()
         return JsonResponse({"papers": list(papers)})
 
 
@@ -399,7 +417,8 @@ def get_customize_paper(request):
             for ques_type in stud_data[student_name]:
                 allowed_qtype.append(ques_type)
         allowed_qtype = list(set(allowed_qtype))
-        filtered_data = get_allowed_questions(stud_data, allowed_qtype, allowed_chapter_nos)
+        filtered_data = get_allowed_questions(
+            stud_data, allowed_qtype, allowed_chapter_nos)
         customized_data = get_customized_paper(filtered_data)
         if len(allowed_chapter_nos) == 1:
             for item in customized_data:
