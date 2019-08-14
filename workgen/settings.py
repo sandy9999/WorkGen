@@ -66,7 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'workgen.context_processors',
+                'workgen.context_processors.export_vars',
             ],
         },
     },
