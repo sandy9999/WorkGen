@@ -9,7 +9,11 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'pnotify.custom.min.css' %}"/>
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.14/semantic.css"/>
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+    {% if WORKGEN_MODE == "dev" %}
+      <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+    {% else %}
+      <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    {% endif %}
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.14/semantic.js"></script>
     <script src="http://cdn.jsdelivr.net/g/filesaver.js"></script>
     <script type="text/javascript" src="{% static 'student_view.js' %}"></script>
