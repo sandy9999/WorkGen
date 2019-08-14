@@ -12,10 +12,10 @@ Edit Chapters and Subject Splits
 {% endblock %}
 {% block student_view %}
 	<br>
-	<div id="paper-subject" class="ui selection dropdown subject show-display">
-		<input name="subject" type="hidden">
+	<div id="paper-board" class="ui selection dropdown board show-display">
+		<input name="board" type="hidden">
 		<i class="dropdown icon"></i>
-		<div class="default text">Select Subject</div>
+		<div class="default text">Select Board</div>
 		<div class="menu">
 			{% for element in data %}
 			<div class="item" data-value="{{element}}">{{element}}</div>
@@ -23,6 +23,22 @@ Edit Chapters and Subject Splits
 		</div>
 	</div>
 	<br>
+  <div id="paper-grade" class="ui selection dropdown grade hide-display">
+		<input name="grade" type="hidden">
+		<i class="dropdown icon"></i>
+		<div class="default text">Select Grade</div>
+		<div id="paper-grade-options-parent" class="menu">
+		</div>
+	</div>
+<br>
+  <div id="paper-subject" class="ui selection dropdown subject hide-display">
+    <input name="subject" type="hidden">
+    <i class="dropdown icon"></i>
+    <div class="default text">Select Subject</div>
+    <div id="paper-subject-options-parent" class="menu">
+    </div>
+  </div>
+<br>
 	<div class="ui grid hide-display" id="chapter-operations">
 			<div class="two wide column"></div>
 			<div class="four wide column">
@@ -75,8 +91,8 @@ Edit Chapters and Subject Splits
 				</tr></thead>
 			<tbody>
 			</tbody>
-		  </table>	
-	
+		  </table>
+
 	<br/>
 	<br/>
 	<div id="add-subject-split" class="hide-display">

@@ -63,11 +63,7 @@ def student_view(request):
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
-<<<<<<< HEAD
         if (form.is_valid()):
-=======
-        if(form.is_valid()):
->>>>>>> [Uploading Questions]: Fix PEP8 issues
             user = form.get_user()
             login(request, user)
             return redirect('searchapp:mentor_view')
@@ -90,11 +86,33 @@ def mentor_view(request):
 
 @login_required(login_url='/login')
 def chapter_and_split_view(request):
-    subject_list = Subject.objects.all().values_list('subject_name', flat=True)
-    subject_list = list(subject_list)
+    board_list = Board.objects.all().values_list('board', flat=True)
+    board_list = list(board_list)
     question_weightage_choices = Questions.QUESTION_WEIGHTAGE_CHOICES
     question_type_choices = Questions.QUESTION_TYPE_CHOICES
-    return render(request, 'chapter_and_split_view.html', {'data': subject_list, 'question_weightage_choices': question_weightage_choices, 'question_type_choices': question_type_choices})
+    return render(request, 'chapter_and_split_view.html', {'data': board_list, 'question_weightage_choices': question_weightage_choices, 'question_type_choices': question_type_choices})
+
+
+@login_required(login_url='/login')
+def get_grades(request):
+    if request.method == 'GET':
+        board = request.GET['board']
+        grades = Grade.objects.filter(
+            board__board=board).values_list('id', 'grade')
+        json_data = {'grade_list': [
+            {'grade_id': x[0], 'grade_name': x[1]} for x in grades]}
+        return JsonResponse(json_data)
+
+
+@login_required(login_url='/login')
+def get_subjects(request):
+    if request.method == 'GET':
+        grade = request.GET['grade']
+        subjects = Subject.objects.filter(
+            grade__id=grade).values_list('id', 'subject_name')
+        json_data = {'subject_list': [
+            {'subject_id': x[0], 'subject_name': x[1]} for x in subjects]}
+        return JsonResponse(json_data)
 
 
 @login_required(login_url='/login')
@@ -215,36 +233,36 @@ def add_to_database(question_bank_dict, user):
 
 def get_chapters(request):
     if request.method == 'GET':
-        subject_name = request.GET['subject']
+        subject = request.GET['subject']
         chapters = Chapter.objects.filter(
-            subject__subject_name__iexact=subject_name).values_list('id', 'chapter_name')
+            subject__id=subject).values_list('id', 'chapter_name')
         # papertype = request.GET['papertype']
         subject_breakup = SubjectSplit.objects.filter(
             # name=papertype,
-            subject__subject_name__iexact=subject_name).values_list(
-            'name',
+            subject__id=subject).values_list(
+                'id', 'name'
         ).distinct()
         # print(subject_breakup)
         json_data = {
             'chapters': [{'chapter_id': x[0], 'chapter_name': x[1]} for x in chapters],
-            'subject_breakup': [{'breakup_name': x[0]} for x in subject_breakup]
+            'subject_breakup': [{'breakup_id': x[0], 'breakup_name': x[1]} for x in subject_breakup]
         }
         return JsonResponse(json_data)
 
 
 def display_split_table(request):
     if request.method == 'GET':
-        subject_name = request.GET['subject']
-        split_names = request.GET.getlist('splits[]')
+        subject = request.GET['subject']
+        split_ids = request.GET.getlist('splits[]')
         subject_breakup = SubjectSplit.objects.filter(
-            name__in=split_names,
-            subject__subject_name__iexact=subject_name).values_list(
-            'id',
-            'question_weightage',
-            'question_type',
-            'total_questions',
-            'questions_to_attempt',
-            'name'
+            id__in=split_ids,
+            subject__id=subject).values_list(
+                'id',
+                'question_weightage',
+                'question_type',
+                'total_questions',
+                'questions_to_attempt',
+                'name'
         ).order_by('name')
         json_data = {
             'subject_breakup': [{'breakup_id': x[0], 'question_weightage_id': x[1],
@@ -260,7 +278,6 @@ def display_split_table(request):
 def delete_subject_split(request):
     if request.method == 'GET':
         breakup_id = request.GET['id']
-        subject_name = request.GET['subject']
         SubjectSplit.objects.filter(id=breakup_id).delete()
         return JsonResponse({"message": "success"})
 
@@ -269,13 +286,15 @@ def delete_subject_split(request):
 def add_subject_split(request):
     if request.method == 'GET':
         split_name = request.GET['split_name']
-        subject_name = request.GET['subject']
+        subject = request.GET['subject']
         question_type = request.GET['question_type']
         question_weightage = request.GET['question_weightage']
         total_questions = request.GET['total_questions']
         questions_to_attempt = request.GET['questions_to_attempt']
         try:
-            subject = Subject.objects.get(subject_name=subject_name)
+            # filter returns a query set which is converted to a list and then the first element is picked up.
+            subject_name = list(Subject.objects.filter(
+                id=subject).values_list('subject_name', flat=True))[0]
         except Subject.DoesNotExist:
             raise Exception(
                 "{} is not a valid subject in the database. Please check for typos / entry in the database".format(
@@ -289,10 +308,12 @@ def add_subject_split(request):
 @login_required(login_url='/login')
 def add_chapter(request):
     if request.method == 'GET':
-        subject_name = request.GET['subject']
+        subject = request.GET['subject']
         chapter_name = request.GET['chapter']
         try:
-            subject = Subject.objects.get(subject_name=subject_name)
+            # filter returns a query set which is converted to a list and then the first element is picked up.
+            subject_name = list(Subject.objects.filter(
+                id=subject).values_list('subject_name', flat=True))[0]
         except Subject.DoesNotExist:
             raise Exception(
                 "{} is not a valid subject in the database. Please check for typos / entry in the database".format(
@@ -304,7 +325,7 @@ def add_chapter(request):
 @login_required(login_url='/login')
 def delete_chapters(request):
     if request.method == 'GET':
-        subject_name = request.GET['subject']
+        subject = request.GET['subject']
         chapters = request.GET.getlist('chapters[]')
         for chapter in chapters:
             Chapter.objects.filter(subject__subject_name__iexact=subject_name, id=chapter).delete()

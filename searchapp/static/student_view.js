@@ -162,6 +162,51 @@ function upload_click(e) {
 	});
 }
 }
+
+function populate_grades(value,text, $selectedItem) {
+	let boardData = {
+		"board": $("#paper-board").dropdown('get value')
+	};
+	let worksheetType = document.getElementById("worksheetType") ? $("#worksheetType").dropdown('get value') : 'paper';
+	$.ajax({
+		url: BASE_DIR + "/get_grades",
+		method : "get",
+		data: boardData,
+		headers: { "X-CSRFToken": csrftoken, crossOrigin: false},
+		success: function(response) {
+			$(`#${worksheetType}-grade-options-parent`).empty();
+			$(`#${worksheetType}-grade`).removeClass('hide-display').addClass('show-display');
+			let grades = response['grade_list'];
+			for (let i=0; i<grades.length; i++) {
+				let gradeElement = `<div class="item" data-value=${grades[i]['grade_id']}>${grades[i]['grade_name']}</div>`;
+				$(`#${worksheetType}-grade-options-parent`).append(gradeElement);
+			}
+		}
+	});
+}
+
+function populate_subjects(value,text, $selectedItem) {
+	let gradeData = {
+		"grade": $("#paper-grade").dropdown('get value')
+	};
+	let worksheetType = document.getElementById("worksheetType") ? $("#worksheetType").dropdown('get value') : 'paper';
+	$.ajax({
+		url: BASE_DIR + "/get_subjects",
+		method : "get",
+		data: gradeData,
+		headers: { "X-CSRFToken": csrftoken, crossOrigin: false},
+		success: function(response) {
+			$(`#${worksheetType}-subject-options-parent`).empty();
+			$(`#${worksheetType}-subject`).removeClass('hide-display').addClass('show-display');
+			let subjects = response['subject_list'];
+			for (let i=0; i<subjects.length; i++) {
+				let subjectElement = `<div class="item" data-value=${subjects[i]['subject_id']}>${subjects[i]['subject_name']}</div>`;
+				$(`#${worksheetType}-subject-options-parent`).append(subjectElement);
+			}
+		}
+	});
+}
+
 	function populate_chapters(value, text, $selectedItem) {
 		let worksheetType = document.getElementById("worksheetType") ? $("#worksheetType").dropdown('get value') : 'paper';
 		let formData = {
@@ -190,26 +235,26 @@ function upload_click(e) {
 			success: function(response) {
 				$(`#${worksheetType}-chapter-options-parent`).empty();
 				$(`#${worksheetType}-chapter`).removeClass('hide-display').addClass('show-display');
-				
+
 				let chapters = response['chapters'];
-				
+
 				for (let i=0; i<chapters.length; i++) {
 					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapters[i]['chapter_id']}>${chapters[i]['chapter_name']}</div>`);
 				}
 				if(worksheetType == 'paper')
 				{
 					$('#paper-subject-splits').dropdown('clear');
-					
+
 					$(`#paper-subject-splits-options-parent`).empty();
-					
+
 					let subject_breakup = response['subject_breakup'];
 					$(`#subject_splits`).removeClass('show-display').addClass('hide-display');
 					$('h3').removeClass('show-display').addClass('hide-display');
 					$(`#chapter-operations`).removeClass('hide-display').addClass('show-display');
 					$('#add-subject-split').removeClass('hide-display').addClass('show-display');
-					
+
 					for (let i=0; i<subject_breakup.length; i++) {
-						$(`#paper-subject-splits-options-parent`).append(`<div class="item" data-value=${subject_breakup[i]['breakup_name']}>${subject_breakup[i]['breakup_name']}</div>`);
+						$(`#paper-subject-splits-options-parent`).append(`<div class="item" data-value=${subject_breakup[i]['breakup_id']}>${subject_breakup[i]['breakup_name']}</div>`);
 					}
 				}
 			}
@@ -246,7 +291,7 @@ function upload_click(e) {
 
 	function delete_chapters(e)
 	{
-		let subject = $("#paper-subject").dropdown('get value');	
+		let subject = $("#paper-subject").dropdown('get value');
 		let chapters = $('#paper-chapter').dropdown('get values');
 		if(chapters.length> 0)
 		{
@@ -274,7 +319,7 @@ function upload_click(e) {
 
 	function add_subject_split(e)
 	{
-		let subject = $("#paper-subject").dropdown('get value');	
+		let subject = $("#paper-subject").dropdown('get value');
 		let question_weightage = $('#question-weightage').dropdown('get values');
 		let question_type = $('#question-type').dropdown('get values');
 		let split_name = $('input[name=split-name]').val().trim();
@@ -320,7 +365,7 @@ function upload_click(e) {
 		let blob = new Blob([byte], {type: type});
     saveAs(blob, reportName);
   };
-  
+
   function download_tracker(e) {
     let subject = $("#paper-subject").dropdown('get value');
     let splits = $('#paper-subject-splits').dropdown('get values');
@@ -351,7 +396,7 @@ function upload_click(e) {
 	function display_split_table(e)
 	{
 		let subject = $("#paper-subject").dropdown('get value');
-		let splits = $('#paper-subject-splits').dropdown('get values');	
+		let splits = $('#paper-subject-splits').dropdown('get values');
 		let formData = {
 			"subject": subject,
 			"splits": splits
@@ -385,14 +430,12 @@ function upload_click(e) {
 		});
 	}
 
-	$(document).on('click','.delete-subject-split', function() 
+	$(document).on('click','.delete-subject-split', function()
 	{
-		
+
 		let id = this.id;
-		let subject = $("#paper-subject").dropdown('get value');
 		let formData = {
 			"id": id,
-			"subject": subject
 		};
 
 		$.ajax({
@@ -418,7 +461,15 @@ function upload_click(e) {
 		onChange: populate_chapters,
 	});
 
-	$('#paper-subject').dropdown('clear');
+	$('#paper-board').dropdown('clear');
+
+	$('#paper-board').dropdown({
+		onChange: populate_grades,
+	});
+
+	$('#paper-grade').dropdown({
+		onChange: populate_subjects,
+	});
 
 	$('#paper-subject').dropdown({
 		onChange: populate_chapters,
@@ -498,8 +549,8 @@ function upload_click(e) {
     $("#display-splits-button").click(display_split_table);
   	$("#download-tracker-button").click(download_tracker);
 	$("#add-split-button").click(add_subject_split);
-	
-	
+
+
 	$('#question-type').dropdown({
 	});
 
