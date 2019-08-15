@@ -62,17 +62,33 @@ Student View
 </div>
 
 <div id="generic-div" style="display: none;">
-	<div id="generic-subject" class="ui selection dropdown subject show-display">
-		<input name="subject" type="hidden">
-		<i class="dropdown icon"></i>
-		<div class="default text">Select Subject</div>
-		<div class="menu">
-			{% for element in data %}
-				<div class="item" data-value="{{element}}">{{element}}</div>
-			{% endfor %}
-		</div>
-	</div>
-	<br>
+  <div id="generic-board" class="ui selection dropdown board show-display">
+    <input name="board" type="hidden">
+    <i class="dropdown icon"></i>
+    <div class="default text">Select board</div>
+    <div class="menu">
+      {% for element in data %}
+      <div class="item" data-value="{{element}}">{{element}}</div>
+      {% endfor %}
+    </div>
+  </div>
+  <br>
+  <div id="generic-grade" class="ui selection dropdown grade hide-display">
+    <input name="grade" type="hidden">
+    <i class="dropdown icon"></i>
+    <div class="default text">Select grade</div>
+    <div id="generic-grade-options-parent" class="menu">
+    </div>
+  </div>
+  <br>
+  <div id="generic-subject" class="ui selection dropdown subject hide-display">
+    <input name="subject" type="hidden">
+    <i class="dropdown icon"></i>
+    <div class="default text">Select subject</div>
+    <div id="generic-subject-options-parent" class="menu">
+    </div>
+  </div>
+  <br>
 	<div id="generic-chapter" class="ui fluid multiple search selection dropdown chapter hide-display">
 		<input name="chapter" type="hidden">
 		<i class="dropdown icon"></i>

@@ -511,6 +511,15 @@ function populate_subjects(value,text, $selectedItem) {
 
 
 	// methods for GENERIC worksheet
+	$('#generic-board').dropdown('clear');
+
+	$('#generic-board').dropdown({
+		onChange: populate_grades,
+	});
+
+	$('#generic-grade').dropdown({
+		onChange: populate_subjects,
+	});
 
 	$('#generic-subject').dropdown({
 		onChange: populate_chapters,

@@ -369,6 +369,9 @@ def get_generic_paper(request):
     if request.method == "GET":
         breakup = {}
         subject = request.GET['subject']
+        # filter returns a query set which is converted to a list and then the first element is picked up.
+        subject_name = list(Subject.objects.filter(
+            id=subject).values_list('subject_name', flat=True))[0]
         chapters = request.GET.getlist('chapters[]')
         sent_breakup = request.GET.getlist('breakup[]')
         random_settings = request.GET['random_setting']
@@ -388,7 +391,7 @@ def get_generic_paper(request):
         generated_paper.save()
 
         generate_test_or_generic_paper(
-            subject, chapters, breakup, token, random_settings)
+            subject_name, chapters, breakup, token, random_settings)
 
         return JsonResponse({"message": "success", "token": token})
 
