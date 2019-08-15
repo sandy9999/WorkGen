@@ -55,9 +55,9 @@ def contact(request):
 
 
 def student_view(request):
-    subject_list = Subject.objects.all().values_list('subject_name', flat=True)
-    subject_list = list(subject_list)
-    return render(request, 'student_view.html', {'data': subject_list})
+    board_list = Board.objects.all().values_list('board', flat=True)
+    board_list = list(board_list)
+    return render(request, 'student_view.html', {'data': board_list})
 
 
 def login_view(request):
@@ -236,13 +236,10 @@ def get_chapters(request):
         subject = request.GET['subject']
         chapters = Chapter.objects.filter(
             subject__id=subject).values_list('id', 'chapter_name')
-        # papertype = request.GET['papertype']
         subject_breakup = SubjectSplit.objects.filter(
-            # name=papertype,
             subject__id=subject).values_list(
                 'id', 'name'
         ).distinct()
-        # print(subject_breakup)
         json_data = {
             'chapters': [{'chapter_id': x[0], 'chapter_name': x[1]} for x in chapters],
             'subject_breakup': [{'breakup_id': x[0], 'breakup_name': x[1]} for x in subject_breakup]
@@ -335,15 +332,19 @@ def delete_chapters(request):
 def get_test_paper(request):
     if request.method == 'GET':
         subject = request.GET['subject']
+        # board is used to decide the breakup of questions in test paper.
+        board = request.GET['board']
         chapters = request.GET.getlist('chapters[]')
-        papertype = request.GET['papertype']
+        # filter returns a query set which is converted to a list and then the first element is picked up.
+        subject_name = list(Subject.objects.filter(
+            id=subject).values_list('subject_name', flat=True))[0]
         subject_breakup = SubjectSplit.objects.filter(
-            name=papertype,
-            subject__subject_name__iexact=subject).values_list(
-            'question_weightage',
-            'question_type',
-            'total_questions',
-            'questions_to_attempt')
+            name=board,
+            subject__id=subject).values_list(
+                'question_weightage',
+                'question_type',
+                'total_questions',
+                'questions_to_attempt')
         breakup = {}
         for qtype in subject_breakup:
             if qtype[0] == 1:
@@ -360,7 +361,7 @@ def get_test_paper(request):
             token=token, submitted_date=datetime.datetime.now())
         generated_paper.save()
         generate_test_or_generic_paper(
-            subject, chapters, breakup, token, 'random')
+            subject_name, chapters, breakup, token, 'random')
         return JsonResponse({"message": "success", "token": token})
 
 

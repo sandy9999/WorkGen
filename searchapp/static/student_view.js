@@ -25,10 +25,10 @@ $(document).ready(function(){
 		if (worksheetType == 'test') {
 			let subject = $("#test-subject").dropdown('get value');
 			let chapters = $('#test-chapter').dropdown('get values');
-			let papertype = $('#test-breakup').dropdown('get value');
+			let board = $('#test-board').dropdown('get value');
 			let formData = {
 				"subject": subject,
-				"papertype": papertype,
+				"board": board,
 				"chapters[]": chapters
 			}
 
@@ -164,10 +164,10 @@ function upload_click(e) {
 }
 
 function populate_grades(value,text, $selectedItem) {
-	let boardData = {
-		"board": $("#paper-board").dropdown('get value')
-	};
 	let worksheetType = document.getElementById("worksheetType") ? $("#worksheetType").dropdown('get value') : 'paper';
+	let boardData = {
+		"board": $(`#${worksheetType}-board`).dropdown('get value')
+	};
 	$.ajax({
 		url: BASE_DIR + "/get_grades",
 		method : "get",
@@ -186,10 +186,10 @@ function populate_grades(value,text, $selectedItem) {
 }
 
 function populate_subjects(value,text, $selectedItem) {
-	let gradeData = {
-		"grade": $("#paper-grade").dropdown('get value')
-	};
 	let worksheetType = document.getElementById("worksheetType") ? $("#worksheetType").dropdown('get value') : 'paper';
+	let gradeData = {
+		"grade": $(`#${worksheetType}-grade`).dropdown('get value')
+	};
 	$.ajax({
 		url: BASE_DIR + "/get_subjects",
 		method : "get",
@@ -456,6 +456,15 @@ function populate_subjects(value,text, $selectedItem) {
 
 
 	// methods for TEST worksheet
+	$('#test-board').dropdown('clear');
+
+	$('#test-board').dropdown({
+		onChange: populate_grades,
+	});
+
+	$('#test-grade').dropdown({
+		onChange: populate_subjects,
+	});
 
 	$('#test-subject').dropdown({
 		onChange: populate_chapters,
