@@ -8,31 +8,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'student_view_style.css' %}"/>
 	<link rel="stylesheet" type="text/css" href="{% static 'pnotify.custom.min.css' %}"/>
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.14/semantic.css"/>
-    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-    {% if WORKGEN_MODE == "dev" %}
-      <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
-    {% else %}
-      <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
-    {% endif %}
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.14/semantic.js"></script>
-    <script src="https://cdn.jsdelivr.net/g/filesaver.js"></script>
-    <script type="text/javascript" src="{% static 'student_view.js' %}"></script>
-	<script type="text/javascript" src="{% static 'pnotify.custom.min.js' %}"></script>
-    <script>
-        var csrftoken = "{{ csrf_token }}";
-        var BASE_DIR = "http://localhost:8000";
-    </script>
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-131546255-1"></script>
-	<script>
-	  window.dataLayer = window.dataLayer || [];
-	  function gtag(){dataLayer.push(arguments);}
-	  gtag('js', new Date());
-
-	  gtag('config', 'UA-131546255-1');
-	</script>
-
-</script>
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 {% block js %}{% endblock %}
 </head>
 <body>
@@ -56,4 +32,24 @@
     </ul>
     {% block student_view %}{% endblock %}
 </body>
+{% if WORKGEN_MODE == "dev" %}
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+{% else %}
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+{% endif %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.14/semantic.js"></script>
+<script src="https://cdn.jsdelivr.net/g/filesaver.js"></script>
+<script type="text/javascript" src="{% static 'student_view.js' %}"></script>
+<script type="text/javascript" src="{% static 'pnotify.custom.min.js' %}"></script>
+<script>
+    var csrftoken = "{{ csrf_token }}";
+    var BASE_DIR = "http://localhost:8000";
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-131546255-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-131546255-1');
+</script>
 </html>
