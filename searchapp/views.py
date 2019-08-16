@@ -426,6 +426,6 @@ def get_dummy_tracker(request):
         subject_split_list = SubjectSplit.objects.filter(subject__subject_name__iexact=subject_name, name__iexact=split_name)
         split_list = list(subject_split_list)
         import base64
-        dummy_workbook = generate_dummy_tracker(subject_name, split_list)
+        dummy_workbook = generate_dummy_tracker(subject_name, split_list, Questions.QUESTION_TYPE_CHOICES)
         base64_response = base64.b64encode(save_virtual_workbook(dummy_workbook)).rstrip(b'\n=')
         return HttpResponse(base64_response, content_type='multipart/form-data')

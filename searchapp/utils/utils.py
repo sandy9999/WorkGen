@@ -195,7 +195,7 @@ def convert_question_bank(question_bank_path):
     return subject_to_chapter_to_question
 
 
-def generate_dummy_tracker(subject_name, subject_split):
+def generate_dummy_tracker(subject_name, subject_split, split_type_mapping):
     """
         Generate a workbook which has one tracket sheet with one dummy student
         :param subject_name: Name of subject to which subject_split belongs to
@@ -206,7 +206,13 @@ def generate_dummy_tracker(subject_name, subject_split):
         :returns: Generated workbook object
         :rtype: openpyxl.Workbook
     """
-    char_array = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
+      "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+    char_array = []
+    for ch in alphabets :
+      char_array += [ch + ele for ele in alphabets]
+    char_array = alphabets + char_array
+
     dummy_workbook = op.Workbook()
     dummy_worksheet = dummy_workbook.active
 
@@ -223,6 +229,7 @@ def generate_dummy_tracker(subject_name, subject_split):
     styles_border = op.styles.Border(top=thin, left=thin, right=thin, bottom=thin)
     styles_fillPeach = op.styles.PatternFill("solid", fgColor="fff2cc")
     styles_fillGreen = op.styles.PatternFill("solid", fgColor="e2efda")
+    styles_centerAlignment = op.styles.Alignment(horizontal='center')
 
     style_counter = 0
     start_position = 1
@@ -235,6 +242,11 @@ def generate_dummy_tracker(subject_name, subject_split):
         styles_currentFill = styles_fillPeach if style_counter % 2 else styles_fillGreen
 
         dummy_worksheet.merge_cells("{}1:{}1".format(char_array[start_position], char_array[end_position-1]))
+        dummy_worksheet["{}1".format(char_array[start_position])] = "{} Mark - {}".format(
+          split_object.question_weightage,
+          split_type_mapping[split_object.question_type - 1][1],
+        )
+        dummy_worksheet["{}1".format(char_array[start_position])].alignment = styles_centerAlignment
         dummy_worksheet["{}1".format(char_array[start_position])].border = styles_border
         dummy_worksheet["{}1".format(char_array[start_position])].fill = styles_currentFill
 
