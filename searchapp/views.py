@@ -407,6 +407,7 @@ def get_test_format(request):
 def get_customize_paper(request):
     if request.method == 'POST':
         subject = request.POST['subject']
+        # filter returns a query set which is converted to a list and then the first element is picked up.
         subject_name = list(Subject.objects.filter(
             id=subject).values_list('subject_name', flat=True))[0]
         chapters = map(int, request.POST.getlist('chapters[]')[0].split(','))
@@ -512,11 +513,16 @@ def generate_optional_inputs(request):
 def get_dummy_tracker(request):
     if request.method == 'GET':
         split_name = request.GET['split_name']
-        subject_name = request.GET['subject_name']
-        subject_split_list = SubjectSplit.objects.filter(subject__subject_name__iexact=subject_name,
-                                                         name__iexact=split_name)
+        subject = request.GET['subject']
+        # filter returns a query set which is converted to a list and then the first element is picked up.
+        subject_name = list(Subject.objects.filter(
+            id=subject).values_list('subject_name', flat=True))[0]
+        subject_split_list = SubjectSplit.objects.filter(
+            subject__id=subject, name__iexact=split_name)
         split_list = list(subject_split_list)
         import base64
-        dummy_workbook = generate_dummy_tracker(subject_name, split_list, Questions.QUESTION_TYPE_CHOICES)
-        base64_response = base64.b64encode(save_virtual_workbook(dummy_workbook)).rstrip(b'\n=')
+        dummy_workbook = generate_dummy_tracker(
+            subject_name, split_list, Questions.QUESTION_TYPE_CHOICES)
+        base64_response = base64.b64encode(
+            save_virtual_workbook(dummy_workbook)).rstrip(b'\n=')
         return HttpResponse(base64_response, content_type='multipart/form-data')

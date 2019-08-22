@@ -378,7 +378,7 @@ function populate_subjects(value,text, $selectedItem) {
       return;
     }
 		let formData = {
-			"subject_name": subject,
+			"subject": subject,
 			"split_name": splits[0],
 		};
 		$.ajax({
