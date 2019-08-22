@@ -470,6 +470,18 @@ function populate_subjects(value,text, $selectedItem) {
 		onChange: populate_chapters,
 	});
 
+	$('#test-chapter').dropdown({
+		onChange: function (value, text, $selectedItem) {
+		},
+	});
+
+	$('#test-breakup').dropdown({
+		onChange: function (value, text, $selectedItem) {
+		},
+	});
+
+
+  //methods for SUBJECT SPLITS.
 	$('#paper-board').dropdown('clear');
 
 	$('#paper-board').dropdown({
@@ -495,16 +507,6 @@ function populate_subjects(value,text, $selectedItem) {
 	});
 
 	$('#paper-breakup').dropdown({
-		onChange: function (value, text, $selectedItem) {
-		},
-	});
-
-	$('#test-chapter').dropdown({
-		onChange: function (value, text, $selectedItem) {
-		},
-	});
-
-	$('#test-breakup').dropdown({
 		onChange: function (value, text, $selectedItem) {
 		},
 	});
@@ -540,6 +542,15 @@ function populate_subjects(value,text, $selectedItem) {
 	});
 
 	// methods for CUSTOMIZED worksheet
+	$('#customized-board').dropdown('clear');
+
+	$('#customized-board').dropdown({
+		onChange: populate_grades,
+	});
+
+	$('#customized-grade').dropdown({
+		onChange: populate_subjects,
+	});
 
 	$('#customized-subject').dropdown({
 		onChange: populate_chapters,

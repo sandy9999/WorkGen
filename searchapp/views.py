@@ -407,6 +407,8 @@ def get_test_format(request):
 def get_customize_paper(request):
     if request.method == 'POST':
         subject = request.POST['subject']
+        subject_name = list(Subject.objects.filter(
+            id=subject).values_list('subject_name', flat=True))[0]
         chapters = map(int, request.POST.getlist('chapters[]')[0].split(','))
         sent_breakup = request.POST.getlist('breakup[]')
         sent_breakup = sent_breakup[0].split(',')
@@ -472,8 +474,8 @@ def get_customize_paper(request):
         generated_paper = GeneratedCustomizedPaper(token=token, mentor=request.user,
                                                    submitted_date=datetime.datetime.now())
         generated_paper.save()
-        generate_customized_paper.delay(subject, allowed_chapter_nos, breakup, customized_data, request.user.username,
-                                        token)
+        generate_customized_paper.delay(
+            subject_name, allowed_chapter_nos, breakup, customized_data, request.user.username, token)
         return JsonResponse({"message": "success", "token": token})
 
 

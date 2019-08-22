@@ -155,17 +155,33 @@ Student View
 		</div>
 	</div>
 	<div id="customized-div" style="display: none;">
-		<div id="customized-subject" class="ui selection dropdown subject show-display">
-			<input name="subject" type="hidden">
-			<i class="dropdown icon"></i>
-			<div class="default text">Select Subject</div>
-			<div class="menu">
-				{% for element in data %}
-				<div class="item" data-value="{{element}}">{{element}}</div>
-				{% endfor %}
-			</div>
-		</div>
-		<br>
+    <div id="customized-board" class="ui selection dropdown board show-display">
+      <input name="board" type="hidden">
+      <i class="dropdown icon"></i>
+      <div class="default text">Select board</div>
+      <div class="menu">
+        {% for element in data %}
+        <div class="item" data-value="{{element}}">{{element}}</div>
+        {% endfor %}
+      </div>
+    </div>
+    <br>
+    <div id="customized-grade" class="ui selection dropdown grade hide-display">
+      <input name="grade" type="hidden">
+      <i class="dropdown icon"></i>
+      <div class="default text">Select grade</div>
+      <div id="customized-grade-options-parent" class="menu">
+      </div>
+    </div>
+    <br>
+    <div id="customized-subject" class="ui selection dropdown subject hide-display">
+      <input name="subject" type="hidden">
+      <i class="dropdown icon"></i>
+      <div class="default text">Select subject</div>
+      <div id="customized-subject-options-parent" class="menu">
+      </div>
+    </div>
+    <br>
 		<div id="fileinput"><input type="file" name="datafile" accept=".xlx,.xlsx" id="realfile"/></div>
 		<button id="upload">Upload</button>
 		<br>
