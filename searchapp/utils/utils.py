@@ -92,7 +92,7 @@ def convert_marker_data(marker_path, subject_breakup):
                 student_to_answer[student][question_type] = questions_of_given_type
                 question_type_start_row += total_questions
                 question_type = header_row[question_type_start_row].value
-    return student_to_answer, list(set([int(val.value) for val in chapter_row if type(val.value) == type(1.0)]))
+    return student_to_answer, list(set([int(val.value) for val in chapter_row if type(val.value) == type(1)]))
 
 
 def get_allowed_questions(data, allowed_qtypes, allowed_chapters):
@@ -187,7 +187,7 @@ def convert_question_bank(question_bank_path):
         }
 
     """
-    question_bank = op.load_workbook(question_bank_path).worksheets[0]
+    question_bank = op.load_workbook(question_bank_path).worksheets[2]
     question_bank_dict = defaultdict(lambda: (defaultdict(lambda: defaultdict(
         lambda: defaultdict(lambda: defaultdict(lambda: list([])))))))
     row_no = -1
