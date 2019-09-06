@@ -141,14 +141,15 @@ function upload_click(e) {
 				$(`#${worksheetType}-chapter-options-parent`).empty();
 				let chapters = response['chapters'];
 				$(`#${worksheetType}-chapter`).removeClass('hide-display').addClass('show-display');
-				for (let i=0; i<chapters.length; i++) {
-					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapters[i]['chapter_id']}>${chapters[i]['chapter_name']}</div>`);}
-
+				chapters.forEach(function(chapter){
+					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapter['chapter_id']}>${chapter['chapter_name']}</div>`);
+				})
 				$(`#stud_name-options-parent`).empty();
 				let student_names = response['stud_name'];
 				$(`#stud_name`).removeClass('hide-display').addClass('show-display');
-				for (let i=0; i<student_names.length; i++) {
-					$(`#stud_name-options-parent`).append(`<div class="item" data-value=${student_names[i]}>${student_names[i]}</div>`);}
+				student_names.forEach(function(student_name){
+						$(`#stud_name-options-parent`).append(`<div class="item" data-value=${student_name}>${student_name}</div>`);
+				})
 				$("#customized-qtype").removeClass("hide-display").addClass("show-display");
 				$(function(){
 					new PNotify({
@@ -177,10 +178,10 @@ function populate_grades(value,text, $selectedItem) {
 			$(`#${worksheetType}-grade-options-parent`).empty();
 			$(`#${worksheetType}-grade`).removeClass('hide-display').addClass('show-display');
 			let grades = response['grade_list'];
-			for (let i=0; i<grades.length; i++) {
-				let gradeElement = `<div class="item" data-value=${grades[i]['grade_id']}>${grades[i]['grade_name']}</div>`;
+			grades.forEach(function(grade){
+				let gradeElement = `<div class="item" data-value=${grade['grade_id']}>${grade['grade_name']}</div>`;
 				$(`#${worksheetType}-grade-options-parent`).append(gradeElement);
-			}
+			})
 		}
 	});
 }
@@ -199,10 +200,10 @@ function populate_subjects(value,text, $selectedItem) {
 			$(`#${worksheetType}-subject-options-parent`).empty();
 			$(`#${worksheetType}-subject`).removeClass('hide-display').addClass('show-display');
 			let subjects = response['subject_list'];
-			for (let i=0; i<subjects.length; i++) {
-				let subjectElement = `<div class="item" data-value=${subjects[i]['subject_id']}>${subjects[i]['subject_name']}</div>`;
+			subjects.forEach(function(subject){
+				let subjectElement = `<div class="item" data-value=${subject['subject_id']}>${subject['subject_name']}</div>`;
 				$(`#${worksheetType}-subject-options-parent`).append(subjectElement);
-			}
+			})
 		}
 	});
 }
@@ -220,10 +221,10 @@ function populate_subjects(value,text, $selectedItem) {
 				headers: { "X-CSRFToken": csrftoken, crossOrigin: false},
 				success: function(response) {
 					let papers = response['papers'];
-					for (let i=0; i<papers.length; i++) {
-						let paperElement = `<div class="item" data-value=${papers[i]}>${papers[i]}</div>`;
+					papers.forEach(function(paper){
+						let paperElement = `<div class="item" data-value=${paper}>${paper}</div>`;
 						$(`#${worksheetType}-breakup-options-parent`).append(paperElement);
-					}
+					})
 				}
 			});
 		}
@@ -238,9 +239,9 @@ function populate_subjects(value,text, $selectedItem) {
 
 				let chapters = response['chapters'];
 
-				for (let i=0; i<chapters.length; i++) {
-					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapters[i]['chapter_id']}>${chapters[i]['chapter_name']}</div>`);
-				}
+				chapters.forEach(function(chapter){
+					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapter['chapter_id']}>${chapter['chapter_name']}</div>`);
+				})
 				if(worksheetType == 'paper')
 				{
 					$('#paper-subject-splits').dropdown('clear');
@@ -253,9 +254,9 @@ function populate_subjects(value,text, $selectedItem) {
 					$(`#chapter-operations`).removeClass('hide-display').addClass('show-display');
 					$('#add-subject-split').removeClass('hide-display').addClass('show-display');
 
-					for (let i=0; i<subject_breakup.length; i++) {
-						$(`#paper-subject-splits-options-parent`).append(`<div class="item" data-value=${subject_breakup[i]['breakup_id']}>${subject_breakup[i]['breakup_name']}</div>`);
-					}
+					subject_breakup.forEach(function(breakup){
+						$(`#paper-subject-splits-options-parent`).append(`<div class="item" data-value=${breakup['breakup_id']}>${breakup['breakup_name']}</div>`);
+					})
 				}
 			}
 		});
