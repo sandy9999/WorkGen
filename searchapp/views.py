@@ -93,7 +93,6 @@ def chapter_and_split_view(request):
     return render(request, 'chapter_and_split_view.html', {'data': board_list, 'question_weightage_choices': question_weightage_choices, 'question_type_choices': question_type_choices})
 
 
-@login_required(login_url='/login')
 def get_grades(request):
     if request.method == 'GET':
         board = request.GET['board']
@@ -104,7 +103,6 @@ def get_grades(request):
         return JsonResponse(json_data)
 
 
-@login_required(login_url='/login')
 def get_subjects(request):
     if request.method == 'GET':
         grade = request.GET['grade']
