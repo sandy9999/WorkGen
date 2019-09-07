@@ -4,6 +4,7 @@ import os
 
 qtype_to_section = {"1A": "A", "1B": "B", "2": "C", "3": "D", "5": "E"}
 
+
 def get_no_of_questions(questions_mapping, question_type):
     count = 0
     for row in questions_mapping:
@@ -12,26 +13,28 @@ def get_no_of_questions(questions_mapping, question_type):
                 count = count+1
     return count
 
+
 def add_headings(document, subject):
     heading = document.add_heading("EXAM")
     heading.alignment = 1
-    subject_heading = document.add_heading(subject,level = 2)
+    subject_heading = document.add_heading(subject, level=2)
     subject_heading.alignment = 1
     para = document.add_paragraph()
     run = para.add_run()
     run.add_break()
 
+
 def add_questions(document, questions_mapping, question_type, question_no, no_of_questions):
-    section=document.add_paragraph()
-    section.add_run("Section " + qtype_to_section[question_type]).bold=True
+    section = document.add_paragraph()
+    section.add_run("Section " + qtype_to_section[question_type]).bold = True
     section.alignment = 1
     subsection = document.add_paragraph()
     subsection.add_run(str(no_of_questions) + " questions of " + question_type[0] + " marks each")
     subsection.alignment = 1
     for row in questions_mapping:
-        if row.get('question_type')== question_type:
+        if row.get('question_type') == question_type:
             p = document.add_paragraph()
-            p.add_run("Attempt only "+str(min(row['attempt'],no_of_questions))+" questions").italic=True
+            p.add_run("Attempt only "+str(min(row['attempt'], no_of_questions))+" questions").italic = True
             p.alignment = 1
             for question in row['question']:
                 question_no = question_no+1
@@ -41,6 +44,7 @@ def add_questions(document, questions_mapping, question_type, question_no, no_of
     run = para.add_run()
     run.add_break()
     return question_no
+
 
 def convert_customized_to_doc(questions_mapping, subject):
     document = Document()
@@ -58,6 +62,7 @@ def convert_customized_to_doc(questions_mapping, subject):
     filepath = os.path.join('searchapp/static/docs', filename)
     document.save(filepath)
     return filepath
+
 
 def convert_to_doc(questions_mapping, subject):
     document = Document()

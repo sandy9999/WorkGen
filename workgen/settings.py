@@ -157,12 +157,12 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['file',],
+            'handlers': ['file'],
             'propagate': True,
             'level': 'DEBUG',
         },
         'searchapp': {
-            'handlers': ['file2',],
+            'handlers': ['file2'],
             'propagate': True,
             'level': 'DEBUG',
         }
@@ -173,3 +173,5 @@ CORS_ORIGIN_WHITELIST = (
     'localhost:8000',
     '127.0.0.1:8000',
 )
+
+LOGIN_URL = '/login'

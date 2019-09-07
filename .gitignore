@@ -5,6 +5,17 @@ dump.rdb
 *.vscode
 *.sublime-project
 *.sublime-workspace
+.idea
+env/
 .DS_Store
 tags
 !tags/
+
+
+# environment files and dirs
+*.bashrc
+bin
+lib
+lib64
+share
+pyvenv.cfg

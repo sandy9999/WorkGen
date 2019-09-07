@@ -3,6 +3,7 @@ from collections import defaultdict
 from datetime import datetime
 from random import sample
 
+
 def default_to_regular(d):
     """
         This function converts a nested defaultdict to a dict
@@ -15,6 +16,7 @@ def default_to_regular(d):
     if isinstance(d, defaultdict):
         d = {k: default_to_regular(v) for k, v in d.items()}
     return d
+
 
 def convert_marker_data(marker_path, subject_breakup):
     """

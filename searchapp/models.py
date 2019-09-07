@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-
 class Mentor(models.Model):
     REGULAR = 1
     SUPERADMIN = 2
@@ -18,12 +17,16 @@ class Mentor(models.Model):
     full_name = models.CharField(max_length=40)
     created_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.username
 
 
 class Subject(models.Model):
     subject_name = models.CharField(max_length=100, unique=True, blank=False, null=False)
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.subject_name
@@ -59,12 +62,16 @@ class Questions(models.Model):
     question_type = models.IntegerField(choices=QUESTION_TYPE_CHOICES, null=True)
     uploaded_by = models.ForeignKey('Mentor', on_delete=models.CASCADE)
     text = models.TextField(null=False, blank=False)
-    source = models.TextField(null = True, blank=True)
+    source = models.TextField(null=True, blank=True)
+
+    objects = models.Manager()
 
 
 class MCQOptions(models.Model):
     question_id = models.ForeignKey('Questions', on_delete=models.CASCADE)
     option_value = models.CharField(max_length=100)
+
+    objects = models.Manager()
 
 
 class SubjectSplit(models.Model):
@@ -74,6 +81,8 @@ class SubjectSplit(models.Model):
     question_type = models.IntegerField(choices=Questions.QUESTION_TYPE_CHOICES, null=True)
     total_questions = models.IntegerField(default=0)
     questions_to_attempt = models.IntegerField(default=0)
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.name
@@ -86,6 +95,8 @@ class GeneratedCustomizedPaper(models.Model):
     mentor = models.ForeignKey(User, on_delete=models.CASCADE)
     submitted_date = models.DateTimeField(null=True, default=None)
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.token
 
@@ -96,6 +107,8 @@ class GeneratedTestAndGenericPaper(models.Model):
     is_ready = models.BooleanField(default=False)
     submitted_date = models.DateTimeField(null=True, default=None)
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.token
 
@@ -103,6 +116,8 @@ class GeneratedTestAndGenericPaper(models.Model):
 class Chapter(models.Model):
     subject = models.ForeignKey('Subject', on_delete=models.CASCADE)
     chapter_name = models.CharField(max_length=100)
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.chapter_name
