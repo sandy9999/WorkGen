@@ -510,6 +510,10 @@ function upload_click(e) {
 
 	$('#question-weightage').dropdown({
 	});
+
+	//Reset Add Subject Split Dropdowns
+	$('#qtype-default').html("Select Question Type");
+	$('#qweight-default').html("Select Question Weightage");
 });
 
 function download_token(token) {
