@@ -300,6 +300,11 @@ function upload_click(e) {
 					type: 'success'
 				});
 				populate_chapters();
+				$('input[name=split-name]').val("");
+				$('input[name=total-questions]').val("");
+				$('input[name=questions-to-attempt]').val("");
+				$('#qweight-default').html("Select Question Weightage");
+				$('#qtype-default').html("Select Question Type");
 			}
 
 		});

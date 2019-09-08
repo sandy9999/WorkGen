@@ -88,7 +88,7 @@ Edit Chapters and Subject Splits
 	<div id="question-weightage" class="ui selection dropdown">
 		<input name="question-weightage" type="hidden">
 		<i class="dropdown icon"></i>
-		<div class="default text">Select Question Weightage</div>
+		<div class="default text" id="qweight-default">Select Question Weightage</div>
 		<div class="menu">
 			{% for element in question_weightage_choices %}
 			<div class="item" data-value="{{element.0}}">{{element.1}}</div>
@@ -100,7 +100,7 @@ Edit Chapters and Subject Splits
 	<div id="question-type" class="ui selection dropdown">
 		<input name="question-type" type="hidden">
 		<i class="dropdown icon"></i>
-		<div class="default text">Select Question Type</div>
+		<div class="default text" id="qtype-default">Select Question Type</div>
 		<div class="menu">
 			{% for element in question_type_choices %}
 			<div class="item" data-value="{{element.0}}">{{element.1}}</div>
