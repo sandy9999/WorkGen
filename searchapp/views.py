@@ -294,7 +294,7 @@ def add_subject_split(request):
             raise Exception(
                 "{} is not a valid subject in the database. Please check for typos / entry in the database".format(
                     subject_name))
-        SubjectSplit.objects.create(name=split_name, subject=subject, question_weightage=question_weightage,
+        SubjectSplit.objects.create(name=split_name, subject_id=subject, question_weightage=question_weightage,
                                     question_type=question_type, total_questions=total_questions,
                                     questions_to_attempt=questions_to_attempt)
         return JsonResponse({"message": "success"})
@@ -313,7 +313,7 @@ def add_chapter(request):
             raise Exception(
                 "{} is not a valid subject in the database. Please check for typos / entry in the database".format(
                     subject_name))
-        Chapter.objects.create(chapter_name=chapter_name, subject=subject)
+        Chapter.objects.create(chapter_name=chapter_name, subject_id=subject)
         return JsonResponse({"message": "success"})
 
 
@@ -323,7 +323,7 @@ def delete_chapters(request):
         subject = request.GET['subject']
         chapters = request.GET.getlist('chapters[]')
         for chapter in chapters:
-            Chapter.objects.filter(subject__subject_name__iexact=subject_name, id=chapter).delete()
+            Chapter.objects.filter(subject__id=subject, id=chapter).delete()
         return JsonResponse({"message": "success"})
 
 
