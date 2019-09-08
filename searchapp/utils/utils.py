@@ -3,6 +3,7 @@ from collections import defaultdict
 from datetime import datetime
 from random import sample
 
+
 def default_to_regular(d):
     """
         This function converts a nested defaultdict to a dict
@@ -15,6 +16,7 @@ def default_to_regular(d):
     if isinstance(d, defaultdict):
         d = {k: default_to_regular(v) for k, v in d.items()}
     return d
+
 
 def convert_marker_data(marker_path, subject_breakup):
     """
@@ -90,6 +92,7 @@ def convert_marker_data(marker_path, subject_breakup):
                 question_type = header_row[question_type_start_row].value
     return student_to_answer, list(set([int(val.value) for val in chapter_row if type(val.value) == type(1.0)]))
 
+
 def get_allowed_questions(data, allowed_qtypes, allowed_chapters):
     """
         This function gets the parsed marker data as input and filters out chapters and question types according
@@ -113,6 +116,7 @@ def get_allowed_questions(data, allowed_qtypes, allowed_chapters):
     updated_data = default_to_regular(updated_data)
     return updated_data
 
+
 def get_customized_paper(marker_data):
     """
         This function returns a student wise split up of the customized paper given a particular marker data.
@@ -130,7 +134,7 @@ def get_customized_paper(marker_data):
         lowest_scored_chapters = []
         for question_type in student_data:
             results_per_questiontype = student_data[question_type]
-            ratio_array = [(x[0]/float(question_type[0]), x[2]) for x in results_per_questiontype]
+            ratio_array = [(x[0] / float(question_type[0]), x[2]) for x in results_per_questiontype]
             for result in ratio_array:
                 # if he/she scored less that 70% for that question, add that to the list of chapters to prepare
                 if result[0] < 0.70:
@@ -178,7 +182,7 @@ def convert_question_bank(question_bank_path):
     row_no = -1
     for row in question_bank.rows:
         row_no += 1
-        if (row_no == 0):
+        if row_no == 0:
             pass
         else:
             try:
@@ -186,10 +190,13 @@ def convert_question_bank(question_bank_path):
                 chapter_no = int(row[1].value)
                 chapter_name = row[2].value
                 question_type = row[3].value
-                question_type = str(int(question_type)) if (type(question_type) == type(1.0) or type(question_type) == type(1)) else question_type.lower()
+                question_type = str(int(question_type)) if (
+                            type(question_type) == type(1.0) or type(question_type) == type(1)) else \
+                    question_type.lower()
                 question_text = row[4].value
                 question_source = row[5].value
-                subject_to_chapter_to_question[subject][(chapter_no, chapter_name)][question_type].append((question_text, question_source))
+                subject_to_chapter_to_question[subject][(chapter_no, chapter_name)][question_type].append(
+                    (question_text, question_source))
             except Exception as e:
                 break
     return subject_to_chapter_to_question
@@ -207,10 +214,10 @@ def generate_dummy_tracker(subject_name, subject_split, split_type_mapping):
         :rtype: openpyxl.Workbook
     """
     alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
-      "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+                 "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
     char_array = []
-    for ch in alphabets :
-      char_array += [ch + ele for ele in alphabets]
+    for ch in alphabets:
+        char_array += [ch + ele for ele in alphabets]
     char_array = alphabets + char_array
 
     dummy_workbook = op.Workbook()
@@ -241,10 +248,10 @@ def generate_dummy_tracker(subject_name, subject_split, split_type_mapping):
         style_counter += 1
         styles_currentFill = styles_fillPeach if style_counter % 2 else styles_fillGreen
 
-        dummy_worksheet.merge_cells("{}1:{}1".format(char_array[start_position], char_array[end_position-1]))
+        dummy_worksheet.merge_cells("{}1:{}1".format(char_array[start_position], char_array[end_position - 1]))
         dummy_worksheet["{}1".format(char_array[start_position])] = "{} Mark - {}".format(
-          split_object.question_weightage,
-          split_type_mapping[split_object.question_type - 1][1],
+            split_object.question_weightage,
+            split_type_mapping[split_object.question_type - 1][1],
         )
         dummy_worksheet["{}1".format(char_array[start_position])].alignment = styles_centerAlignment
         dummy_worksheet["{}1".format(char_array[start_position])].border = styles_border

@@ -8,3 +8,15 @@ dump.rdb
 .DS_Store
 tags
 !tags/
+
+
+# environment files and folders
+bin
+lib
+lib64
+*.bashrc
+share
+include
+pyvenv.cfg
+**/__pycache__
+.idea

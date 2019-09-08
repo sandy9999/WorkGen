@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = 'pl808nede6$j)rzr4gx2$-@s+m2cl3a^)hb9uo!v$r-iun@*c+'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -74,7 +72,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'workgen.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
@@ -88,7 +85,6 @@ DATABASES = {
         'PORT': '',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -108,7 +104,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -122,12 +117,10 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
 
 LOGGING = {
     'version': 1,
@@ -136,7 +129,7 @@ LOGGING = {
         'verbose': {
             'format': 'django: [%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s',
             'datefmt': '%d/%b/%Y %H:%M:%S'
-            },
+        },
         'simple': {
             'format': '%(levelname)s %(message)s'
         },
@@ -157,12 +150,12 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['file',],
+            'handlers': ['file', ],
             'propagate': True,
             'level': 'DEBUG',
         },
         'searchapp': {
-            'handlers': ['file2',],
+            'handlers': ['file2', ],
             'propagate': True,
             'level': 'DEBUG',
         }

@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-
 class Mentor(models.Model):
     REGULAR = 1
     SUPERADMIN = 2
@@ -59,7 +58,7 @@ class Questions(models.Model):
     question_type = models.IntegerField(choices=QUESTION_TYPE_CHOICES, null=True)
     uploaded_by = models.ForeignKey('Mentor', on_delete=models.CASCADE)
     text = models.TextField(null=False, blank=False)
-    source = models.TextField(null = True, blank=True)
+    source = models.TextField(null=True, blank=True)
 
 
 class MCQOptions(models.Model):
