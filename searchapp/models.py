@@ -26,12 +26,8 @@ class Mentor(models.Model):
 
 
 class Board(models.Model):
-    BOARD_TYPE_CHOICES = (
-        ('CBSE', 'CBSE'),
-        ('ICSE', 'ICSE'),
-    )
     board = models.CharField(
-        max_length=4, choices=BOARD_TYPE_CHOICES, default='CBSE', unique=True)
+        max_length=4,blank=False, null=False, default='CBSE', unique=True)
 
     def __str__(self):
         return self.board

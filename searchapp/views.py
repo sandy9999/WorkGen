@@ -184,7 +184,10 @@ def add_to_database(question_bank_dict, user):
     for board in question_bank_dict:
         try:
             board_object = Board.objects.get(board=board)
-        except Exception as e:
+        except Board.DoesNotExist:
+            raise Exception(
+                "{} is not a valid board in the database. Please check for typos / entry in the database".format(
+                    board))
             logger.error("No such board")
             return
         grade_to_question_dict = question_bank_dict[board]
@@ -192,7 +195,10 @@ def add_to_database(question_bank_dict, user):
             try:
                 grade_object = Grade.objects.get(
                     grade=grade, board=board_object)
-            except Exception as e:
+            except Grade.DoesNotExist:
+                raise Exception(
+                    "{} is not a valid grade in the database. Please check for typos / entry in the database".format(
+                        grade))
                 logger.error("No such grade")
                 return
             subject_to_question_dict = grade_to_question_dict[grade]
