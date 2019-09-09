@@ -197,8 +197,8 @@ def add_to_database(question_bank_dict, user):
                     grade=grade, board=board_object)
             except Grade.DoesNotExist:
                 raise Exception(
-                    "{} is not a valid grade in the database. Please check for typos / entry in the database".format(
-                        grade))
+                    "{} is not a valid grade in the database for {} board. Please check for typos / entry in the database".format(
+                        grade,board))
                 logger.error("No such grade")
                 return
             subject_to_question_dict = grade_to_question_dict[grade]
@@ -206,7 +206,9 @@ def add_to_database(question_bank_dict, user):
                 try:
                     subject_object = Subject.objects.get(
                         subject_name=subject_name, grade=grade_object)
-                except Exception as e:
+                except Subject.DoesNotExist as e:
+                    raise Exception(
+                        "{} is not a valid subject in the database for {} grade {} board. Please check for typos / entry in the database".format(subject_name,grade,board))
                     logger.error("No such subject")
                     return
                 chapter_to_question = subject_to_question_dict[subject_name]
@@ -232,7 +234,7 @@ def add_to_database(question_bank_dict, user):
                                     q.save()
                     except Chapter.DoesNotExist as e:
                         raise Exception(
-                            "{} is not a valid chapter in the database. Please check for typos / entry in the database".format(chapter_name))
+                            "{} is not a valid chapter in the database for {} subject {} grade {} board. Please check for typos / entry in the database".format(chapter_name,subject_name,grade,board))
 
 
 def get_chapters(request):

@@ -92,8 +92,6 @@ def convert_marker_data(marker_path, subject_breakup):
                 student_to_answer[student][question_type] = questions_of_given_type
                 question_type_start_row += total_questions
                 question_type = header_row[question_type_start_row].value
-                for val in chapter_row:
-                    print(type(val.value))
     return student_to_answer, list(set([int(val.value) for val in chapter_row if type(val.value) == type(1.0)]))
 
 
