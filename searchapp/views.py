@@ -240,10 +240,11 @@ def add_to_database(question_bank_dict, user):
 def get_chapters(request):
     if request.method == 'GET':
         subject = request.GET['subject']
+        board = request.GET['board']
         chapters = Chapter.objects.filter(
             subject__id=subject).values_list('id', 'chapter_name')
         subject_breakup = SubjectSplit.objects.filter(
-            subject__id=subject).values_list(
+            board__board=board).values_list(
                 'id', 'name'
         ).distinct()
         json_data = {
@@ -255,11 +256,11 @@ def get_chapters(request):
 
 def display_split_table(request):
     if request.method == 'GET':
-        subject = request.GET['subject']
+        board = request.GET['board']
         split_ids = request.GET.getlist('splits[]')
         subject_breakup = SubjectSplit.objects.filter(
             id__in=split_ids,
-            subject__id=subject).values_list(
+            board__board=board).values_list(
                 'id',
                 'question_weightage',
                 'question_type',
@@ -289,20 +290,20 @@ def delete_subject_split(request):
 def add_subject_split(request):
     if request.method == 'GET':
         split_name = request.GET['split_name']
-        subject = request.GET['subject']
+        board = request.GET['board']
         question_type = request.GET['question_type']
         question_weightage = request.GET['question_weightage']
         total_questions = request.GET['total_questions']
         questions_to_attempt = request.GET['questions_to_attempt']
         try:
             # filter returns a query set which is converted to a list and then the first element is picked up.
-            subject_name = list(Subject.objects.filter(
-                id=subject).values_list('subject_name', flat=True))[0]
-        except Subject.DoesNotExist:
+            board_id = list(Board.objects.filter(
+                board=board).values_list('id', flat=True))[0]
+        except Board.DoesNotExist:
             raise Exception(
-                "{} is not a valid subject in the database. Please check for typos / entry in the database".format(
-                    subject_name))
-        SubjectSplit.objects.create(name=split_name, subject_id=subject, question_weightage=question_weightage,
+                "{} is not a valid board in the database. Please check for typos / entry in the database".format(
+                    board_name))
+        SubjectSplit.objects.create(name=split_name, board_id=board_id, question_weightage=question_weightage,
                                     question_type=question_type, total_questions=total_questions,
                                     questions_to_attempt=questions_to_attempt)
         return JsonResponse({"message": "success"})
@@ -344,8 +345,7 @@ def get_test_paper(request):
         subject_name = list(Subject.objects.filter(
             id=subject).values_list('subject_name', flat=True))[0]
         subject_breakup = SubjectSplit.objects.filter(
-            name=paper_breakup,
-            subject__id=subject).values_list(
+            id=paper_breakup).values_list(
                 'question_weightage',
                 'question_type',
                 'total_questions',
@@ -399,14 +399,6 @@ def get_generic_paper(request):
             subject_name, chapters, breakup, token, random_settings)
 
         return JsonResponse({"message": "success", "token": token})
-
-
-def get_test_format(request):
-    if request.method == 'GET':
-        subject = request.GET['subject']
-        paper_breakup = SubjectSplit.objects.filter(
-            subject__id=subject).values_list('name', flat=True).distinct()
-        return JsonResponse({"paper-breakup": list(paper_breakup)})
 
 
 def get_customize_paper(request):

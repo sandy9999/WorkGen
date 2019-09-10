@@ -23,7 +23,6 @@ urlpatterns = [
     path('add_subject_split', views.add_subject_split, name='add_subject_split'),
     path('get_test_paper', views.get_test_paper, name='get_test_paper'),
     path('get_generic_paper', views.get_generic_paper, name='get_generic_paper'),
-    path('get_test_format', views.get_test_format, name='get_test_format'),
     path('get_customize_paper', views.get_customize_paper, name='get_customize_paper'),
     path('generate_optional_inputs', views.generate_optional_inputs, name='generate_optional_inputs'),
     path('', views.home, name='home'),

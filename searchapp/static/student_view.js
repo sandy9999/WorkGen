@@ -212,25 +212,9 @@ function populate_subjects(value,text, $selectedItem) {
 	function populate_chapters(value, text, $selectedItem) {
 		let worksheetType = document.getElementById("worksheetType") ? $("#worksheetType").dropdown('get value') : 'paper';
 		let formData = {
-			"subject": $(`#${worksheetType}-subject`).dropdown('get value')
+			"subject": $(`#${worksheetType}-subject`).dropdown('get value'),
+			"board": $(`#${worksheetType}-board`).dropdown('get value')
 		};
-		if (worksheetType == 'test') {
-			$.ajax({
-				url: BASE_DIR + "/get_test_format",
-				method : "get",
-				data: formData,
-				headers: { "X-CSRFToken": csrftoken, crossOrigin: false},
-				success: function(response) {
-					$(`#${worksheetType}-breakup-options-parent`).empty();
-					$(`#${worksheetType}-breakup`).removeClass('hide-display').addClass('show-display');
-					let papers = response['paper-breakup'];
-					papers.forEach(function(paper){
-						let paperElement = `<div class="item" data-value=${paper}>${paper}</div>`;
-						$(`#${worksheetType}-breakup-options-parent`).append(paperElement);
-					})
-				}
-			});
-		}
 		$.ajax({
 			url: BASE_DIR + "/get_chapters",
 			method : "get",
@@ -240,18 +224,28 @@ function populate_subjects(value,text, $selectedItem) {
 				$(`#${worksheetType}-chapter-options-parent`).empty();
 				$(`#${worksheetType}-chapter`).removeClass('hide-display').addClass('show-display');
 
+
 				let chapters = response['chapters'];
+				let subject_breakup = response['subject_breakup'];
 
 				chapters.forEach(function(chapter){
 					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapter['chapter_id']}>${chapter['chapter_name']}</div>`);
 				})
+				if(worksheetType == 'test'){
+					$(`#${worksheetType}-breakup-options-parent`).empty();
+					$(`#${worksheetType}-breakup`).removeClass('hide-display').addClass('show-display');
+					subject_breakup.forEach(function(breakup){
+						let paperElement = `<div class="item" data-value=${breakup['breakup_id']}>${breakup['breakup_name']}</div>`;
+						$(`#${worksheetType}-breakup-options-parent`).append(paperElement);
+					})
+				}
+
 				if(worksheetType == 'paper')
 				{
 					$('#paper-subject-splits').dropdown('clear');
 
 					$(`#paper-subject-splits-options-parent`).empty();
 
-					let subject_breakup = response['subject_breakup'];
 					$(`#subject_splits`).removeClass('show-display').addClass('hide-display');
 					$('h3').removeClass('show-display').addClass('hide-display');
 					$(`#chapter-operations`).removeClass('hide-display').addClass('show-display');
@@ -323,14 +317,14 @@ function populate_subjects(value,text, $selectedItem) {
 
 	function add_subject_split(e)
 	{
-		let subject = $("#paper-subject").dropdown('get value');
+		let board = $("#paper-board").dropdown('get value');
 		let question_weightage = $('#question-weightage').dropdown('get values');
 		let question_type = $('#question-type').dropdown('get values');
 		let split_name = $('input[name=split-name]').val().trim();
 		let total_questions = $('input[name=total-questions]').val();
 		var questions_to_attempt = $('input[name=questions-to-attempt]').val();
 		let formData = {
-			"subject": subject,
+			"board": board,
 			"question_type": question_type,
 			"question_weightage": question_weightage,
 			"split_name": split_name,
@@ -399,10 +393,10 @@ function populate_subjects(value,text, $selectedItem) {
 
 	function display_split_table(e)
 	{
-		let subject = $("#paper-subject").dropdown('get value');
+		let board = $("#paper-board").dropdown('get value');
 		let splits = $('#paper-subject-splits').dropdown('get values');
 		let formData = {
-			"subject": subject,
+			"board": board,
 			"splits": splits
 		};
 		$.ajax({
