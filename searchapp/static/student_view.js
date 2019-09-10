@@ -25,10 +25,11 @@ $(document).ready(function(){
 		if (worksheetType == 'test') {
 			let subject = $("#test-subject").dropdown('get value');
 			let chapters = $('#test-chapter').dropdown('get values');
+			let paperBreakup = $('#test-breakup').dropdown('get value');
 			let board = $('#test-board').dropdown('get value');
 			let formData = {
 				"subject": subject,
-				"board": board,
+				"paper-breakup": paperBreakup,
 				"chapters[]": chapters
 			}
 
@@ -220,7 +221,9 @@ function populate_subjects(value,text, $selectedItem) {
 				data: formData,
 				headers: { "X-CSRFToken": csrftoken, crossOrigin: false},
 				success: function(response) {
-					let papers = response['papers'];
+					$(`#${worksheetType}-breakup-options-parent`).empty();
+					$(`#${worksheetType}-breakup`).removeClass('hide-display').addClass('show-display');
+					let papers = response['paper-breakup'];
 					papers.forEach(function(paper){
 						let paperElement = `<div class="item" data-value=${paper}>${paper}</div>`;
 						$(`#${worksheetType}-breakup-options-parent`).append(paperElement);

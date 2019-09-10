@@ -338,14 +338,13 @@ def delete_chapters(request):
 def get_test_paper(request):
     if request.method == 'GET':
         subject = request.GET['subject']
-        # board is used to decide the breakup of questions in test paper.
-        board = request.GET['board']
+        paper_breakup = request.GET['paper-breakup']
         chapters = request.GET.getlist('chapters[]')
         # filter returns a query set which is converted to a list and then the first element is picked up.
         subject_name = list(Subject.objects.filter(
             id=subject).values_list('subject_name', flat=True))[0]
         subject_breakup = SubjectSplit.objects.filter(
-            name=board,
+            name=paper_breakup,
             subject__id=subject).values_list(
                 'question_weightage',
                 'question_type',
@@ -405,9 +404,9 @@ def get_generic_paper(request):
 def get_test_format(request):
     if request.method == 'GET':
         subject = request.GET['subject']
-        papers = SubjectSplit.objects.filter(
-            subject__subject_name__iexact=subject).values_list('name', flat=True).distinct()
-        return JsonResponse({"papers": list(papers)})
+        paper_breakup = SubjectSplit.objects.filter(
+            subject__id=subject).values_list('name', flat=True).distinct()
+        return JsonResponse({"paper-breakup": list(paper_breakup)})
 
 
 def get_customize_paper(request):
