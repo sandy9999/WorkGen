@@ -77,12 +77,12 @@ def logout_view(request):
     return redirect('/')
 
 
-@login_required(login_url='/login')
+@login_required
 def mentor_view(request):
     return render(request, 'mentor_view.html')
 
 
-@login_required(login_url='/login')
+@login_required
 def chapter_and_split_view(request):
     subject_list = Subject.objects.all().values_list('subject_name', flat=True)
     subject_list = list(subject_list)
@@ -93,12 +93,12 @@ def chapter_and_split_view(request):
                    'question_type_choices': question_type_choices})
 
 
-@login_required(login_url='/login')
+@login_required
 def add_questions_view(request):
     return render(request, 'question_upload_mentor.html')
 
 
-@login_required(login_url='/login')
+@login_required
 def download_customized_docx(request):
     token = request.GET['token']
     doc_obj = GeneratedCustomizedPaper.objects.get(mentor=request.user, token=token, is_ready=True)
@@ -119,7 +119,7 @@ def download_test_and_generic_docx(request):
     return response
 
 
-@login_required(login_url='/login')
+@login_required
 def generated_documents_view(request):
     generated_data = GeneratedCustomizedPaper.objects.filter(
         mentor=request.user,
@@ -135,7 +135,7 @@ def generated_documents_view(request):
     return render(request, 'generated_documents.html', {'data': data})
 
 
-@login_required(login_url='/login')
+@login_required
 def add_questions(request):
     error = ""
     if request.method == 'GET':
@@ -231,7 +231,7 @@ def display_split_table(request):
         return JsonResponse(json_data)
 
 
-@login_required(login_url='/login')
+@login_required
 def delete_subject_split(request):
     if request.method == 'GET':
         breakup_id = request.GET['id']
@@ -240,7 +240,7 @@ def delete_subject_split(request):
         return JsonResponse({"message": "success"})
 
 
-@login_required(login_url='/login')
+@login_required
 def add_subject_split(request):
     if request.method == 'GET':
         split_name = request.GET['split_name']
@@ -261,7 +261,7 @@ def add_subject_split(request):
         return JsonResponse({"message": "success"})
 
 
-@login_required(login_url='/login')
+@login_required
 def add_chapter(request):
     if request.method == 'GET':
         subject_name = request.GET['subject']
@@ -276,7 +276,7 @@ def add_chapter(request):
         return JsonResponse({"message": "success"})
 
 
-@login_required(login_url='/login')
+@login_required
 def delete_chapters(request):
     if request.method == 'GET':
         subject_name = request.GET['subject']
