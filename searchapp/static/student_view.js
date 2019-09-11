@@ -235,7 +235,7 @@ function populate_subjects(value,text, $selectedItem) {
 					$(`#${worksheetType}-breakup-options-parent`).empty();
 					$(`#${worksheetType}-breakup`).removeClass('hide-display').addClass('show-display');
 					subject_breakup.forEach(function(breakup){
-						let paperElement = `<div class="item" data-value=${breakup['breakup_id']}>${breakup['breakup_name']}</div>`;
+						let paperElement = `<div class="item" data-value=${breakup}>${breakup}</div>`;
 						$(`#${worksheetType}-breakup-options-parent`).append(paperElement);
 					})
 				}
@@ -252,7 +252,7 @@ function populate_subjects(value,text, $selectedItem) {
 					$('#add-subject-split').removeClass('hide-display').addClass('show-display');
 
 					subject_breakup.forEach(function(breakup){
-						$(`#paper-subject-splits-options-parent`).append(`<div class="item" data-value=${breakup['breakup_id']}>${breakup['breakup_name']}</div>`);
+						$(`#paper-subject-splits-options-parent`).append(`<div class="item" data-value=${breakup}>${breakup}</div>`);
 					})
 				}
 			}

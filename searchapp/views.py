@@ -243,13 +243,13 @@ def get_chapters(request):
         board = request.GET['board']
         chapters = Chapter.objects.filter(
             subject__id=subject).values_list('id', 'chapter_name')
-        subject_breakup = SubjectSplit.objects.filter(
+        subject_breakup = list(SubjectSplit.objects.filter(
             board__board=board).values_list(
-                'id', 'name'
-        ).distinct()
+                'name'
+        ).distinct())
         json_data = {
             'chapters': [{'chapter_id': x[0], 'chapter_name': x[1]} for x in chapters],
-            'subject_breakup': [{'breakup_id': x[0], 'breakup_name': x[1]} for x in subject_breakup]
+            'subject_breakup': subject_breakup,
         }
         return JsonResponse(json_data)
 
@@ -257,9 +257,9 @@ def get_chapters(request):
 def display_split_table(request):
     if request.method == 'GET':
         board = request.GET['board']
-        split_ids = request.GET.getlist('splits[]')
+        split_names = request.GET.getlist('splits[]')
         subject_breakup = SubjectSplit.objects.filter(
-            id__in=split_ids,
+            name__in=split_names,
             board__board=board).values_list(
                 'id',
                 'question_weightage',
@@ -345,7 +345,7 @@ def get_test_paper(request):
         subject_name = list(Subject.objects.filter(
             id=subject).values_list('subject_name', flat=True))[0]
         subject_breakup = SubjectSplit.objects.filter(
-            id=paper_breakup).values_list(
+            name=paper_breakup).values_list(
                 'question_weightage',
                 'question_type',
                 'total_questions',
