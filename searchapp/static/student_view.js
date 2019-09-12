@@ -282,6 +282,7 @@ function populate_subjects(value,text, $selectedItem) {
 						type: 'success'
 					});
 					populate_chapters();
+					$('input[name="add-chapter-input"]').val('');
 				}
 			});
 		}
@@ -310,6 +311,7 @@ function populate_subjects(value,text, $selectedItem) {
 						type: 'success'
 					});
 					populate_chapters();
+					$('#paper-chapter').dropdown('clear');
 				}
 			});
 		}
@@ -489,6 +491,7 @@ function populate_subjects(value,text, $selectedItem) {
 	$('#paper-board').dropdown('clear');
 	$('#paper-grade').dropdown('clear');
 	$('#paper-subject').dropdown('clear');
+	$('#paper-chapter').dropdown('clear');
 
 	$('#paper-board').dropdown({
 		onChange: populate_grades,
