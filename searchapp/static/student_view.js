@@ -343,6 +343,12 @@ function populate_subjects(value,text, $selectedItem) {
 					type: 'success'
 				});
 				populate_chapters();
+				$('#question-weightage').dropdown('clear');
+				$('#question-type').dropdown('clear');
+				$('input[name="split-name"').val('');
+				$('input[name="total-questions"').val('');
+				$('input[name="questions-to-attempt"').val('');
+
 			}
 
 		});
