@@ -487,6 +487,8 @@ function populate_subjects(value,text, $selectedItem) {
 
   //methods for SUBJECT SPLITS.
 	$('#paper-board').dropdown('clear');
+	$('#paper-grade').dropdown('clear');
+	$('#paper-subject').dropdown('clear');
 
 	$('#paper-board').dropdown({
 		onChange: populate_grades,
