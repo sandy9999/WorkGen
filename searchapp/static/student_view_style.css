@@ -43,16 +43,36 @@
 	display: none !important;
 }
 
+.board {
+	margin-left:auto !important;
+	margin-right:auto !important;
+	width:50% !important;
+}
+
+.grade {
+	margin-left:auto !important;
+	margin-right:auto !important;
+	width:50% !important;
+}
+
 .subject {
 	margin-left:auto !important;
 	margin-right:auto !important;
 	width:50% !important;
 }
+
 .chapter {
 	margin-left:auto !important;
 	margin-right:auto !important;
 	width:50% !important;
 }
+
+.breakup {
+	margin-left:auto !important;
+	margin-right:auto !important;
+	width:50% !important;
+}
+
 .qtype{
 	margin-left:auto !important;
 	margin-right:auto !important;

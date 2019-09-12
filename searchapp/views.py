@@ -32,6 +32,8 @@ from .test_paper import (
 )
 from .models import (
     Mentor,
+    Board,
+    Grade,
     Questions,
     MCQOptions,
     Subject,
@@ -53,9 +55,9 @@ def contact(request):
 
 
 def student_view(request):
-    subject_list = Subject.objects.all().values_list('subject_name', flat=True)
-    subject_list = list(subject_list)
-    return render(request, 'student_view.html', {'data': subject_list})
+    board_list = Board.objects.all().values_list('board', flat=True)
+    board_list = list(board_list)
+    return render(request, 'student_view.html', {'data': board_list})
 
 
 def login_view(request):
@@ -84,13 +86,31 @@ def mentor_view(request):
 
 @login_required
 def chapter_and_split_view(request):
-    subject_list = Subject.objects.all().values_list('subject_name', flat=True)
-    subject_list = list(subject_list)
+    board_list = Board.objects.all().values_list('board', flat=True)
+    board_list = list(board_list)
     question_weightage_choices = Questions.QUESTION_WEIGHTAGE_CHOICES
     question_type_choices = Questions.QUESTION_TYPE_CHOICES
-    return render(request, 'chapter_and_split_view.html',
-                  {'data': subject_list, 'question_weightage_choices': question_weightage_choices,
-                   'question_type_choices': question_type_choices})
+    return render(request, 'chapter_and_split_view.html', {'data': board_list, 'question_weightage_choices': question_weightage_choices, 'question_type_choices': question_type_choices})
+
+
+def get_grades(request):
+    if request.method == 'GET':
+        board = request.GET['board']
+        grades = Grade.objects.filter(
+            board__board=board).values_list('id', 'grade')
+        json_data = {'grade_list': [
+            {'grade_id': x[0], 'grade_name': x[1]} for x in grades]}
+        return JsonResponse(json_data)
+
+
+def get_subjects(request):
+    if request.method == 'GET':
+        grade = request.GET['grade']
+        subjects = Subject.objects.filter(
+            grade__id=grade).values_list('id', 'subject_name')
+        json_data = {'subject_list': [
+            {'subject_id': x[0], 'subject_name': x[1]} for x in subjects]}
+        return JsonResponse(json_data)
 
 
 @login_required
@@ -101,9 +121,11 @@ def add_questions_view(request):
 @login_required
 def download_customized_docx(request):
     token = request.GET['token']
-    doc_obj = GeneratedCustomizedPaper.objects.get(mentor=request.user, token=token, is_ready=True)
+    doc_obj = GeneratedCustomizedPaper.objects.get(
+        mentor=request.user, token=token, is_ready=True)
     document = Document(settings.BASE_DIR + "/" + doc_obj.file_path)
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
     response['Content-Disposition'] = 'attachment; filename=workgen_document.docx'
     document.save(response)
     return response
@@ -111,9 +133,11 @@ def download_customized_docx(request):
 
 def download_test_and_generic_docx(request):
     token = request.GET['token']
-    doc_obj = GeneratedTestAndGenericPaper.objects.get(token=token, is_ready=True)
+    doc_obj = GeneratedTestAndGenericPaper.objects.get(
+        token=token, is_ready=True)
     document = Document(settings.BASE_DIR + "/" + doc_obj.file_path)
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
     response['Content-Disposition'] = 'attachment; filename=workgen_document.docx'
     document.save(response)
     return response
@@ -144,11 +168,10 @@ def add_questions(request):
         if request.FILES:
             file_obj = request.FILES['datafile']
             default_dict = convert_question_bank(file_obj)
-            subject_to_chapter_to_question = default_to_regular(default_dict)
+            question_bank_dict = default_to_regular(default_dict)
             try:
-                add_to_database(subject_to_chapter_to_question, request.user)
-                return render(request, 'mentor_view.html',
-                              {'pop': " the questions have been added successfully", 'flag': '0'})
+                add_to_database(question_bank_dict, request.user)
+                return render(request, 'mentor_view.html', {'pop': " the questions have been added successfully", 'flag': '0'})
             except Exception as e:
                 logger.error(str(e))
                 return render(request, 'question_upload_mentor.html', {'error': str(e), 'flag': '1'})
@@ -156,70 +179,94 @@ def add_questions(request):
             return render(request, 'question_upload_mentor.html', {'error': "no file selected", 'flag': '1'})
 
 
-def add_to_database(subject_to_chapter_to_question, user):
+def add_to_database(question_bank_dict, user):
     mentor = Mentor.objects.get(username=user.username)
-    for subject_name in subject_to_chapter_to_question:
+    for board in question_bank_dict:
         try:
-            subject = Subject.objects.get(subject_name=subject_name)
-        except Exception as e:
-            logger.error("No such subject")
+            board_object = Board.objects.get(board=board)
+        except Board.DoesNotExist:
+            raise Exception(
+                "{} is not a valid board in the database. Please check for typos / entry in the database".format(
+                    board))
+            logger.error("No such board")
             return
-        chapter_to_question = subject_to_chapter_to_question[subject_name]
-        for chapter_tuple in chapter_to_question:
-            chapter_no = chapter_tuple[0]
-            chapter_name = chapter_tuple[1]
-            questions_dict = chapter_to_question[chapter_tuple]
+        grade_to_question_dict = question_bank_dict[board]
+        for grade in grade_to_question_dict:
             try:
-                with transaction.atomic():
-                    for question_type in questions_dict:
-                        questions_list = questions_dict[question_type]
-                        q_type, weightage = get_type_and_weightage(question_type)
-                        for i in range(len(questions_list)):
-                            q = Questions(
-                                chapter=Chapter.objects.get(chapter_name=chapter_name),
-                                question_type=q_type,
-                                question_weightage=weightage,
-                                text=questions_list[i][0],
-                                uploaded_by=mentor,
-                                source=questions_list[i][1])
-                            q.save()
-            except Chapter.DoesNotExist as e:
+                grade_object = Grade.objects.get(
+                    grade=grade, board=board_object)
+            except Grade.DoesNotExist:
                 raise Exception(
-                    "{} is not a valid chapter in the database. Please check for typos / entry in the database".format(
-                        chapter_name))
+                    "{} is not a valid grade in the database for {} board. Please check for typos / entry in the database".format(
+                        grade,board))
+                logger.error("No such grade")
+                return
+            subject_to_question_dict = grade_to_question_dict[grade]
+            for subject_name in subject_to_question_dict:
+                try:
+                    subject_object = Subject.objects.get(
+                        subject_name=subject_name, grade=grade_object)
+                except Subject.DoesNotExist as e:
+                    raise Exception(
+                        "{} is not a valid subject in the database for {} grade {} board. Please check for typos / entry in the database".format(subject_name,grade,board))
+                    logger.error("No such subject")
+                    return
+                chapter_to_question = subject_to_question_dict[subject_name]
+                for chapter_tuple in chapter_to_question:
+                    chapter_no = chapter_tuple[0]
+                    chapter_name = chapter_tuple[1]
+                    questions_dict = chapter_to_question[chapter_tuple]
+                    try:
+                        with transaction.atomic():
+                            for question_type in questions_dict:
+                                questions_list = questions_dict[question_type]
+                                q_type, weightage = get_type_and_weightage(
+                                    question_type)
+                                for i in range(len(questions_list)):
+                                    q = Questions(
+                                        chapter=Chapter.objects.get(
+                                            chapter_name=chapter_name),
+                                        question_type=q_type,
+                                        question_weightage=weightage,
+                                        text=questions_list[i][0],
+                                        uploaded_by=mentor,
+                                        source=questions_list[i][1])
+                                    q.save()
+                    except Chapter.DoesNotExist as e:
+                        raise Exception(
+                            "{} is not a valid chapter in the database for {} subject {} grade {} board. Please check for typos / entry in the database".format(chapter_name,subject_name,grade,board))
 
 
 def get_chapters(request):
     if request.method == 'GET':
-        subject_name = request.GET['subject']
-        chapters = Chapter.objects.filter(subject__subject_name__iexact=subject_name).values_list('id', 'chapter_name')
-        # papertype = request.GET['papertype']
-        subject_breakup = SubjectSplit.objects.filter(
-            # name=papertype,
-            subject__subject_name__iexact=subject_name).values_list(
-            'name',
-        ).distinct()
-        # print(subject_breakup)
+        subject = request.GET['subject']
+        board = request.GET['board']
+        chapters = Chapter.objects.filter(
+            subject__id=subject).values_list('id', 'chapter_name')
+        subject_breakup = list(SubjectSplit.objects.filter(
+            board__board=board).values_list(
+                'name'
+        ).distinct())
         json_data = {
             'chapters': [{'chapter_id': x[0], 'chapter_name': x[1]} for x in chapters],
-            'subject_breakup': [{'breakup_name': x[0]} for x in subject_breakup]
+            'subject_breakup': subject_breakup,
         }
         return JsonResponse(json_data)
 
 
 def display_split_table(request):
     if request.method == 'GET':
-        subject_name = request.GET['subject']
+        board = request.GET['board']
         split_names = request.GET.getlist('splits[]')
         subject_breakup = SubjectSplit.objects.filter(
             name__in=split_names,
-            subject__subject_name__iexact=subject_name).values_list(
-            'id',
-            'question_weightage',
-            'question_type',
-            'total_questions',
-            'questions_to_attempt',
-            'name'
+            board__board=board).values_list(
+                'id',
+                'question_weightage',
+                'question_type',
+                'total_questions',
+                'questions_to_attempt',
+                'name'
         ).order_by('name')
         json_data = {
             'subject_breakup': [{'breakup_id': x[0], 'question_weightage_id': x[1],
@@ -235,7 +282,6 @@ def display_split_table(request):
 def delete_subject_split(request):
     if request.method == 'GET':
         breakup_id = request.GET['id']
-        subject_name = request.GET['subject']
         SubjectSplit.objects.filter(id=breakup_id).delete()
         return JsonResponse({"message": "success"})
 
@@ -244,18 +290,20 @@ def delete_subject_split(request):
 def add_subject_split(request):
     if request.method == 'GET':
         split_name = request.GET['split_name']
-        subject_name = request.GET['subject']
+        board = request.GET['board']
         question_type = request.GET['question_type']
         question_weightage = request.GET['question_weightage']
         total_questions = request.GET['total_questions']
         questions_to_attempt = request.GET['questions_to_attempt']
         try:
-            subject = Subject.objects.get(subject_name=subject_name)
-        except Subject.DoesNotExist:
+            # filter returns a query set which is converted to a list and then the first element is picked up.
+            board_id = list(Board.objects.filter(
+                board=board).values_list('id', flat=True))[0]
+        except Board.DoesNotExist:
             raise Exception(
-                "{} is not a valid subject in the database. Please check for typos / entry in the database".format(
-                    subject_name))
-        SubjectSplit.objects.create(name=split_name, subject=subject, question_weightage=question_weightage,
+                "{} is not a valid board in the database. Please check for typos / entry in the database".format(
+                    board_name))
+        SubjectSplit.objects.create(name=split_name, board_id=board_id, question_weightage=question_weightage,
                                     question_type=question_type, total_questions=total_questions,
                                     questions_to_attempt=questions_to_attempt)
         return JsonResponse({"message": "success"})
@@ -264,40 +312,44 @@ def add_subject_split(request):
 @login_required
 def add_chapter(request):
     if request.method == 'GET':
-        subject_name = request.GET['subject']
+        subject = request.GET['subject']
         chapter_name = request.GET['chapter']
         try:
-            subject = Subject.objects.get(subject_name=subject_name);
+            # filter returns a query set which is converted to a list and then the first element is picked up.
+            subject_name = list(Subject.objects.filter(
+                id=subject).values_list('subject_name', flat=True))[0]
         except Subject.DoesNotExist:
             raise Exception(
                 "{} is not a valid subject in the database. Please check for typos / entry in the database".format(
                     subject_name))
-        Chapter.objects.create(chapter_name=chapter_name, subject=subject)
+        Chapter.objects.create(chapter_name=chapter_name, subject_id=subject)
         return JsonResponse({"message": "success"})
 
 
 @login_required
 def delete_chapters(request):
     if request.method == 'GET':
-        subject_name = request.GET['subject']
+        subject = request.GET['subject']
         chapters = request.GET.getlist('chapters[]')
         for chapter in chapters:
-            Chapter.objects.filter(subject__subject_name__iexact=subject_name, id=chapter).delete()
+            Chapter.objects.filter(subject__id=subject, id=chapter).delete()
         return JsonResponse({"message": "success"})
 
 
 def get_test_paper(request):
     if request.method == 'GET':
         subject = request.GET['subject']
+        paper_breakup = request.GET['paper-breakup']
         chapters = request.GET.getlist('chapters[]')
-        papertype = request.GET['papertype']
+        # filter returns a query set which is converted to a list and then the first element is picked up.
+        subject_name = list(Subject.objects.filter(
+            id=subject).values_list('subject_name', flat=True))[0]
         subject_breakup = SubjectSplit.objects.filter(
-            name=papertype,
-            subject__subject_name__iexact=subject).values_list(
-            'question_weightage',
-            'question_type',
-            'total_questions',
-            'questions_to_attempt')
+            name=paper_breakup).values_list(
+                'question_weightage',
+                'question_type',
+                'total_questions',
+                'questions_to_attempt')
         breakup = {}
         for qtype in subject_breakup:
             if qtype[0] == 1:
@@ -308,10 +360,13 @@ def get_test_paper(request):
             else:
                 breakup[str(qtype[0])] = [qtype[2], qtype[3]]
         # token is basically used to identify paper
-        token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
-        generated_paper = GeneratedTestAndGenericPaper(token=token, submitted_date=datetime.datetime.now())
+        token = hashlib.sha1(datetime.datetime.now(
+        ).__str__().encode('utf-8')).hexdigest()
+        generated_paper = GeneratedTestAndGenericPaper(
+            token=token, submitted_date=datetime.datetime.now())
         generated_paper.save()
-        generate_test_or_generic_paper(subject, chapters, breakup, token, 'random')
+        generate_test_or_generic_paper(
+            subject_name, chapters, breakup, token, 'random')
         return JsonResponse({"message": "success", "token": token})
 
 
@@ -319,6 +374,9 @@ def get_generic_paper(request):
     if request.method == "GET":
         breakup = {}
         subject = request.GET['subject']
+        # filter returns a query set which is converted to a list and then the first element is picked up.
+        subject_name = list(Subject.objects.filter(
+            id=subject).values_list('subject_name', flat=True))[0]
         chapters = request.GET.getlist('chapters[]')
         sent_breakup = request.GET.getlist('breakup[]')
         random_settings = request.GET['random_setting']
@@ -331,26 +389,24 @@ def get_generic_paper(request):
             '5': [int(sent_breakup[4])] * 2,
         }
 
-        token = hashlib.sha1(datetime.datetime.now().__str__().encode('utf-8')).hexdigest()
-        generated_paper = GeneratedTestAndGenericPaper(token=token, submitted_date=datetime.datetime.now())
+        token = hashlib.sha1(datetime.datetime.now(
+        ).__str__().encode('utf-8')).hexdigest()
+        generated_paper = GeneratedTestAndGenericPaper(
+            token=token, submitted_date=datetime.datetime.now())
         generated_paper.save()
 
-        generate_test_or_generic_paper(subject, chapters, breakup, token, random_settings)
+        generate_test_or_generic_paper(
+            subject_name, chapters, breakup, token, random_settings)
 
         return JsonResponse({"message": "success", "token": token})
-
-
-def get_test_format(request):
-    if request.method == 'GET':
-        subject = request.GET['subject']
-        papers = SubjectSplit.objects.filter(subject__subject_name__iexact=subject).values_list('name',
-                                                                                                flat=True).distinct()
-        return JsonResponse({"papers": list(papers)})
 
 
 def get_customize_paper(request):
     if request.method == 'POST':
         subject = request.POST['subject']
+        # filter returns a query set which is converted to a list and then the first element is picked up.
+        subject_name = list(Subject.objects.filter(
+            id=subject).values_list('subject_name', flat=True))[0]
         chapters = map(int, request.POST.getlist('chapters[]')[0].split(','))
         sent_breakup = request.POST.getlist('breakup[]')
         sent_breakup = sent_breakup[0].split(',')
@@ -386,7 +442,8 @@ def get_customize_paper(request):
             for ques_type in stud_data[student_name]:
                 allowed_qtype.append(ques_type)
         allowed_qtype = list(set(allowed_qtype))
-        filtered_data = get_allowed_questions(stud_data, allowed_qtype, allowed_chapter_nos)
+        filtered_data = get_allowed_questions(
+            stud_data, allowed_qtype, allowed_chapter_nos)
         customized_data = get_customized_paper(filtered_data)
         if len(allowed_chapter_nos) == 1:
             for item in customized_data:
@@ -415,8 +472,8 @@ def get_customize_paper(request):
         generated_paper = GeneratedCustomizedPaper(token=token, mentor=request.user,
                                                    submitted_date=datetime.datetime.now())
         generated_paper.save()
-        generate_customized_paper.delay(subject, allowed_chapter_nos, breakup, customized_data, request.user.username,
-                                        token)
+        generate_customized_paper.delay(
+            subject_name, allowed_chapter_nos, breakup, customized_data, request.user.username, token)
         return JsonResponse({"message": "success", "token": token})
 
 
@@ -453,11 +510,16 @@ def generate_optional_inputs(request):
 def get_dummy_tracker(request):
     if request.method == 'GET':
         split_name = request.GET['split_name']
-        subject_name = request.GET['subject_name']
-        subject_split_list = SubjectSplit.objects.filter(subject__subject_name__iexact=subject_name,
-                                                         name__iexact=split_name)
+        subject = request.GET['subject']
+        # filter returns a query set which is converted to a list and then the first element is picked up.
+        subject_name = list(Subject.objects.filter(
+            id=subject).values_list('subject_name', flat=True))[0]
+        subject_split_list = SubjectSplit.objects.filter(
+            subject__id=subject, name__iexact=split_name)
         split_list = list(subject_split_list)
         import base64
-        dummy_workbook = generate_dummy_tracker(subject_name, split_list, Questions.QUESTION_TYPE_CHOICES)
-        base64_response = base64.b64encode(save_virtual_workbook(dummy_workbook)).rstrip(b'\n=')
+        dummy_workbook = generate_dummy_tracker(
+            subject_name, split_list, Questions.QUESTION_TYPE_CHOICES)
+        base64_response = base64.b64encode(
+            save_virtual_workbook(dummy_workbook)).rstrip(b'\n=')
         return HttpResponse(base64_response, content_type='multipart/form-data')
