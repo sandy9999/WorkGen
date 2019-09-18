@@ -452,6 +452,32 @@ function populate_subjects(value,text, $selectedItem) {
 		});
 	});
 
+	function get_question_types()
+	{
+		let chapters = $("#generic-chapter").dropdown('get values');
+		let formData = {
+			chapters: chapters,
+		};
+		$.ajax({
+			url: BASE_DIR + "/get_question_types",
+			method: "get",
+			data: formData,
+			dataType: 'json',
+			headers: { "X-CSRFToken": csrftoken,},
+			success: function(response){
+				for(i=0; i<response.data.length; i++){
+					var count=response.data[i];
+					var rowCount=i+1;
+					var rowId="generic-row"+rowCount;
+					if(count==0) 
+						$('#'+rowId+':visible').hide();
+					else
+						$('#'+rowId+':hidden').show();
+				}
+			}
+		})
+	}
+
 
 	// methods for TEST worksheet
 	$('#test-board').dropdown('clear');
@@ -527,7 +553,13 @@ function populate_subjects(value,text, $selectedItem) {
 
 	$('#generic-chapter').dropdown({
 		onChange: function (value, text, $selectedItem) {
-			$("#generic-qtype").removeClass("hide-display").addClass("show-display");
+			let chapters=$('#generic-chapter').dropdown('get values');
+			if(chapters){
+				$("#generic-qtype").removeClass("hide-display").addClass("show-display");
+				get_question_types();
+			}
+			else
+				$("#generic-qtype").removeClass("show-display").addClass("hide-display");
 		},
 	});
 
