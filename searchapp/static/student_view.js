@@ -117,6 +117,14 @@ $(document).ready(function(){
 						});
 					});
 				},
+				error: err => {
+					new PNotify({
+						title: err.responseJSON.error,
+						text: 'Click here to login',
+						type: 'error',
+					});
+					$('.brighttheme-error').click(() => window.location.href = '/login?next=/student_view')
+				}
 		});
 	}
 }
@@ -127,7 +135,7 @@ function upload_click(e) {
 		let subject = $("#customized-subject").dropdown('get value');
 		let file_data = $('#realfile').prop("files")[0];
 		let formData = new FormData();
-		formData.append("file",file_data);
+		formData.append("file", file_data);
 		formData.append('subject',subject);
 		$.ajax({
 			enctype: 'multipart/form-data',
