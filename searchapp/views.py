@@ -61,17 +61,20 @@ def student_view(request):
 
 
 def login_view(request):
+    next_url = request.GET.get('next') if request.GET.get('next') else ''
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
-        if (form.is_valid()):
+        if form.is_valid():
             user = form.get_user()
             login(request, user)
+            if next_url:
+                return redirect(next_url)
             return redirect('searchapp:mentor_view')
     else:
         if request.user.is_authenticated:
             return redirect('searchapp:mentor_view')
         form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'login.html', {'form': form, 'next': next_url})
 
 
 def logout_view(request):
@@ -402,12 +405,18 @@ def get_generic_paper(request):
 
 
 def get_customize_paper(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "To access customised paper, you need to be logged in"}, status=401)
     if request.method == 'POST':
         subject = request.POST['subject']
         # filter returns a query set which is converted to a list and then the first element is picked up.
         subject_name = list(Subject.objects.filter(
             id=subject).values_list('subject_name', flat=True))[0]
-        chapters = map(int, request.POST.getlist('chapters[]')[0].split(','))
+        chapters = request.POST.getlist('chapters[]')[0].split(',')
+        if chapters[0]:
+            chapters = map(int, chapters)
+        else:
+            chapters = []
         sent_breakup = request.POST.getlist('breakup[]')
         sent_breakup = sent_breakup[0].split(',')
         sent_breakup = [int(x) for x in sent_breakup]
@@ -433,7 +442,6 @@ def get_customize_paper(request):
                 '5': [sent_breakup[4]] * 2,
             }
         data = convert_marker_data(file_obj, breakup)
-
         stud_data = data[0]
         allowed_chapter_nos = data[1]
         allowed_chapter_nos = list(set(allowed_chapter_nos) - set(chapters))
