@@ -11,7 +11,7 @@ def form_test_paper_dictionary(subject, chapters, subject_breakup):
     for question_type in subject_breakup:
         final_list = []
         total_question_no = subject_breakup[question_type][0]
-        q_type, weightage = get_type_and_weightage(question_type)
+        weightage, q_type = get_type_and_weightage(question_type)
         total_list = Questions.objects.filter(question_type=q_type,
                                               question_weightage=weightage,
                                               chapter__in=Chapter.objects.filter(id__in=chapters)).values_list(
