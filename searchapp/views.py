@@ -336,28 +336,6 @@ def delete_chapters(request):
         return JsonResponse({"message": "success"})
 
 
-def get_question_types(request):
-    if request.method == 'GET':
-        chapters = request.GET.getlist('chapters[]')
-        noOfQ1a=0
-        noOfQ1b=0
-        noOfQ2=0
-        noOfQ3=0
-        noOfQ4=0
-        noOfQ5=0
-
-        for chapter in chapters:
-            noOfQ1a+=Questions.objects.filter(chapter__id=chapter,question_weightage=1,question_type=1).count()
-            noOfQ1b+=Questions.objects.filter(chapter__id=chapter,question_weightage=1,question_type=2).count()
-            noOfQ2+=Questions.objects.filter(chapter__id=chapter,question_weightage=2).count()
-            noOfQ3+=Questions.objects.filter(chapter__id=chapter,question_weightage=3).count()
-            noOfQ4+=Questions.objects.filter(chapter__id=chapter,question_weightage=4).count()
-            noOfQ5+=Questions.objects.filter(chapter__id=chapter,question_weightage=5).count()
-        qTypeCount=[noOfQ1a,noOfQ1b,noOfQ2,noOfQ3,noOfQ4,noOfQ5]
-        return JsonResponse({"data": qTypeCount})
-
-
-
 def get_test_paper(request):
     if request.method == 'GET':
         subject = request.GET['subject']
