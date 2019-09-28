@@ -596,6 +596,10 @@ function populate_subjects(value,text, $selectedItem) {
 	});
 });
 
+function set_paper_type(type){
+	window.location.href="student_view" + "?type=" + type;
+}
+
 function download_token(token) {
 		let request = new XMLHttpRequest();
 		let url = BASE_DIR + '/download_test_and_generic_docx';
