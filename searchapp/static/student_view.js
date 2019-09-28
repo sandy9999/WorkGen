@@ -1,23 +1,24 @@
 $(document).ready(function(){
 
 	// on selecting type of worksheet
-	$('#worksheetType').dropdown({
-		onChange: function (value, text, $selectedItem) {
-			if(value == 'test') {
-				$("#test-div").show();
-				$("#generic-div").hide();
-				$("#customized-div").hide();
-			} else if(value == 'generic') {
-				$("#test-div").hide();
-				$("#generic-div").show();
-				$("#customized-div").hide();
-			} else if(value == 'customized') {
-				$("#test-div").hide();
-				$("#generic-div").hide();
-				$("#customized-div").show();
-			}
-		},
-	});
+	function display_form_sections (value) {
+		if(value == 'test') {
+			$('#worksheetType').text('Test Paper');
+			$("#test-div").show();
+			$("#generic-div").hide();
+			$("#customized-div").hide();
+		} else if(value == 'generic') {
+			$('#worksheetType').text('Generic Paper');
+			$("#test-div").hide();
+			$("#generic-div").show();
+			$("#customized-div").hide();
+		} else if(value == 'customized') {
+			$('#worksheetType').text('Customized Paper');
+			$("#test-div").hide();
+			$("#generic-div").hide();
+			$("#customized-div").show();
+		}
+	}
 
 	// function called when submit button clicked
 	function submit_click(e) {
@@ -579,6 +580,14 @@ function populate_subjects(value,text, $selectedItem) {
 		onChange: function (value, text, $selectedItem) {
 		},
 	});
+
+	if(window.location.pathname == "/student_view"){
+		const urlParams = new URLSearchParams(window.location.search);
+		let value = urlParams.get('type');
+		if(['test','generic','customized'].includes(value))
+			display_form_sections(value);
+		else window.location.href="/";
+	}
 
 	$('#upload').click(upload_click);
 	$("#submit").click(submit_click);

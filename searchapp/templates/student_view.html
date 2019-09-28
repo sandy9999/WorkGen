@@ -12,19 +12,10 @@ Student View
 {% endblock %}
 {% block student_view %}
 <!-- Select worksheet type -->
-<div id="worksheetType" class="ui selection dropdown">
-	<input name="worksheetType" type="hidden">
-	<i class="dropdown icon"></i>
-	<div class="default text">Select Worksheet Type</div>
-	<div class="menu">
-		<div class="item" data-value="test">Test Paper</div>
-		<div class="item" data-value="generic">Generic Worksheet</div>
-		<div class="item" data-value="customized">Customized Worksheet</div>
-	</div>
-</div>
+<div id="worksheetType"></div>
 <br>
 
-<div id="test-div" style="display: none;">
+<div id="test-div">
 	<div id="test-board" class="ui selection dropdown board show-display">
 		<input name="board" type="hidden">
 		<i class="dropdown icon"></i>
