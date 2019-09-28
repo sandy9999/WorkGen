@@ -56,7 +56,8 @@ def convert_customized_to_doc(questions_mapping, subject):
         question_no = 0
         for qtype in qtype_to_section:
             no_of_questions = get_no_of_questions(questions_mapping[name], qtype)
-            question_no = add_questions(document, questions_mapping[name], qtype, question_no, no_of_questions)
+            if no_of_questions != 0:
+                question_no = add_questions(document, questions_mapping[name], qtype, question_no, no_of_questions)
         document.add_page_break()
     filename = "question_worksheet_" + datetime.datetime.now().__str__() + ".docx"
     filepath = os.path.join('searchapp/static/docs', filename)
@@ -70,7 +71,8 @@ def convert_to_doc(questions_mapping, subject):
     question_no = 0
     for qtype in qtype_to_section:
         no_of_questions = get_no_of_questions(questions_mapping, qtype)
-        question_no = add_questions(document, questions_mapping, qtype, question_no, no_of_questions)
+        if no_of_questions != 0:
+            question_no = add_questions(document, questions_mapping, qtype, question_no, no_of_questions)
     filename = "question_worksheet_" + datetime.datetime.now().__str__() + ".docx"
     filepath = os.path.join('searchapp/static/docs', filename)
     document.save(filepath)
