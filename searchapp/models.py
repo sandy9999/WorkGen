@@ -89,7 +89,7 @@ class Questions(models.Model):
     question_weightage = models.IntegerField(
         choices=QUESTION_WEIGHTAGE_CHOICES, null=True)
     question_type = models.IntegerField(
-        choices=QUESTION_TYPE_CHOICES, null=True)
+        choices=QUESTION_TYPE_CHOICES, null=True, default=TEXT)
     uploaded_by = models.ForeignKey('Mentor', on_delete=models.CASCADE)
     text = models.TextField(null=False, blank=False)
     source = models.TextField(null=True, blank=True)
@@ -106,7 +106,7 @@ class SubjectSplit(models.Model):
     question_weightage = models.IntegerField(
         choices=Questions.QUESTION_WEIGHTAGE_CHOICES, null=True)
     question_type = models.IntegerField(
-        choices=Questions.QUESTION_TYPE_CHOICES, null=True)
+        choices=Questions.QUESTION_TYPE_CHOICES, null=True, default=Questions.TEXT)
     total_questions = models.IntegerField(default=0)
     questions_to_attempt = models.IntegerField(default=0)
 
