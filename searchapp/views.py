@@ -243,13 +243,13 @@ def get_chapters(request):
         board = request.GET['board']
         chapters = Chapter.objects.filter(
             subject__id=subject).values_list('id', 'chapter_name')
-        subject_breakup = list(SubjectSplit.objects.filter(
+        subject_breakup = SubjectSplit.objects.filter(
             board__board=board).values_list(
-                'name'
-        ).distinct())
+                'name', 'question_weightage', 'question_type', 'total_questions', 'questions_to_attempt'
+        )
         json_data = {
             'chapters': [{'chapter_id': x[0], 'chapter_name': x[1]} for x in chapters],
-            'subject_breakup': subject_breakup,
+            'subject_breakup': [{'name': x[0], 'question_weightage': x[1], 'question_type': x[2], 'total_questions': x[3], 'questions_to_attempt': x[4]} for x in subject_breakup],
         }
         return JsonResponse(json_data)
 

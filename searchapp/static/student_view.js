@@ -235,7 +235,14 @@ function populate_subjects(value,text, $selectedItem) {
 					$(`#${worksheetType}-breakup-options-parent`).empty();
 					$(`#${worksheetType}-breakup`).removeClass('hide-display').addClass('show-display');
 					subject_breakup.forEach(function(breakup){
-						let paperElement = `<div class="item" data-value=${breakup}>${breakup}</div>`;
+						let paperElement = `<div class="item" data-value=${breakup['name']}>
+												<span class="text">${breakup['name']}</span>
+												<span class="description">
+													Marks: ${breakup['question_weightage']} &emsp; 
+													Type: ${breakup['question_type']} &emsp; 
+													Attempt ${breakup['questions_to_attempt']} out of ${breakup['total_questions']}
+												</span>
+											</div>`;
 						$(`#${worksheetType}-breakup-options-parent`).append(paperElement);
 					})
 				}
