@@ -22,7 +22,11 @@ $(document).ready(function(){
 
 	// function called when submit button clicked
 	function submit_click(e) {
-		let worksheetType = $("#worksheetType").dropdown('get value');
+		let worksheet = $("#worksheetType").text();
+		var worksheetType;
+		if(worksheet == "Test Paper") worksheetType="test";
+		else if(worksheet == "Generic Paper") worksheetType="generic";
+		else if(worksheet == "Customized Paper") worksheetType='customized';
 		if (worksheetType == 'test') {
 			let subject = $("#test-subject").dropdown('get value');
 			let chapters = $('#test-chapter').dropdown('get values');
@@ -123,7 +127,11 @@ $(document).ready(function(){
 }
 
 function upload_click(e) {
-	let worksheetType = $("#worksheetType").dropdown('get value');
+	let worksheet = $("#worksheetType").text();
+	var worksheetType;
+		if(worksheet == "Test Paper") worksheetType="test";
+		else if(worksheet == "Generic Paper") worksheetType="generic";
+		else if(worksheet == "Customized Paper") worksheetType='customized';
 	if (worksheetType == 'customized') {
 		let subject = $("#customized-subject").dropdown('get value');
 		let file_data = $('#realfile').prop("files")[0];
@@ -167,7 +175,11 @@ function upload_click(e) {
 }
 
 function populate_grades(value,text, $selectedItem) {
-	let worksheetType = document.getElementById("worksheetType") ? $("#worksheetType").dropdown('get value') : 'paper';
+	let worksheet = document.getElementById("worksheetType") ? $("#worksheetType").text() : 'paper';
+	var worksheetType;
+		if(worksheet == "Test Paper") worksheetType="test";
+		else if(worksheet == "Generic Paper") worksheetType="generic";
+		else if(worksheet == "Customized Paper") worksheetType='customized';
 	let boardData = {
 		"board": $(`#${worksheetType}-board`).dropdown('get value')
 	};
@@ -189,7 +201,11 @@ function populate_grades(value,text, $selectedItem) {
 }
 
 function populate_subjects(value,text, $selectedItem) {
-	let worksheetType = document.getElementById("worksheetType") ? $("#worksheetType").dropdown('get value') : 'paper';
+	let worksheet = document.getElementById("worksheetType") ? $("#worksheetType").text() : 'paper';
+	var worksheetType;
+		if(worksheet == "Test Paper") worksheetType="test";
+		else if(worksheet == "Generic Paper") worksheetType="generic";
+		else if(worksheet == "Customized Paper") worksheetType='customized';
 	let gradeData = {
 		"grade": $(`#${worksheetType}-grade`).dropdown('get value')
 	};
@@ -211,7 +227,11 @@ function populate_subjects(value,text, $selectedItem) {
 }
 
 	function populate_chapters(value, text, $selectedItem) {
-		let worksheetType = document.getElementById("worksheetType") ? $("#worksheetType").dropdown('get value') : 'paper';
+		let worksheet = document.getElementById("worksheetType") ? $("#worksheetType").text() : 'paper';
+		var worksheetType;
+		if(worksheet == "Test Paper") worksheetType="test";
+		else if(worksheet == "Generic Paper") worksheetType="generic";
+		else if(worksheet == "Customized Paper") worksheetType='customized';
 		let formData = {
 			"subject": $(`#${worksheetType}-subject`).dropdown('get value'),
 			"board": $(`#${worksheetType}-board`).dropdown('get value')
