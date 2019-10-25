@@ -412,11 +412,7 @@ def get_customize_paper(request):
         # filter returns a query set which is converted to a list and then the first element is picked up.
         subject_name = list(Subject.objects.filter(
             id=subject).values_list('subject_name', flat=True))[0]
-        chapters = request.POST.getlist('chapters[]')[0].split(',')
-        if chapters[0]:
-            chapters = map(int, chapters)
-        else:
-            chapters = []
+        chapters = map(int, request.POST.getlist('chapters[]')[0].split(','))
         sent_breakup = request.POST.getlist('breakup[]')
         sent_breakup = sent_breakup[0].split(',')
         sent_breakup = [int(x) for x in sent_breakup]
