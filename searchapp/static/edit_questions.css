@@ -1,0 +1,16 @@
+.selectable-field {
+    /* padding: 1em 1em; */
+    display: flex;
+    justify-content: space-between;
+}
+.selectable-field:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: rgba(0, 0, 0, 0.95);
+}
+.pencil {
+    cursor: pointer;
+    transition: 0.3s;
+}
+.pencil:hover {
+    font-size: 1.2em;
+}

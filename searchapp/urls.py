@@ -12,6 +12,7 @@ urlpatterns = [
     path('logout', views.logout_view, name='logout'),
     path('mentor_view', views.mentor_view, name='mentor_view'),
     path('student_view', views.student_view, name='student_view'),
+    path('edit_questions', views.edit_questions, name='edit_questions'),
     path('chapter_and_split_view', views.chapter_and_split_view, name='chapter_and_split_view'),
     path('get_chapters', views.get_chapters, name='get_chapters'),
     path('add_chapter', views.add_chapter, name='add_chapter'),

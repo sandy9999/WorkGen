@@ -15,6 +15,7 @@ import logging
 import datetime
 import hashlib
 import random
+import json
 from docx import Document
 
 from .utils.utils import (
@@ -61,10 +62,44 @@ def student_view(request):
     return render(request, 'student_view.html', {'data': board_list})
 
 
+def edit_questions(request):
+    if request.method == 'GET':
+        board_list = list(Board.objects.all().values_list('board', flat=True))
+        chapters = list(Chapter.objects.all().values_list('chapter_name', flat=True))
+        subjects = list(Subject.objects.all().values_list('subject_name', flat=True))
+        grades = list(Grade.objects.all().values_list('grade', flat=True))
+        question_weightage = [i[0] for i in Questions.QUESTION_WEIGHTAGE_CHOICES]
+        question_types = [i[1] for i in Questions.QUESTION_TYPE_CHOICES]
+        questions = [{
+            'id': question.id,
+            'board': question.chapter.subject.grade.board.board,
+            'grade': str(question.chapter.subject.grade.grade),
+            'subject': question.chapter.subject.subject_name,
+            'chapter': question.chapter.chapter_name,
+            'question_type': question_types[question.question_type - 1],
+            'question_weightage': question.question_weightage,
+            'text': question.text
+        } for question in Questions.objects.all() if question.question_type < 4]
+        return render(request, 'edit_questions.html', {'boards': board_list, 'chapters': chapters, 'subjects': subjects,
+                                                       'question_weightage': question_weightage, 'grades': grades,
+                                                       'question_types': question_types,
+                                                       'questions': json.dumps(questions)})
+    elif request.method == 'POST':
+        data = request.POST.dict()
+        try:
+            question = Questions.objects.get(id=data['id'])
+            print(question.text)
+            question.text = data['text']
+            question.save()
+        except Questions.DoesNotExist:
+            return JsonResponse({'error': f'The question with id {data["id"]} is not found'}, status=404)
+        return JsonResponse({'id': int(data['id']), 'text': data['text']})
+
+
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
-        if (form.is_valid()):
+        if form.is_valid():
             user = form.get_user()
             login(request, user)
             return redirect('searchapp:mentor_view')

@@ -29,6 +29,8 @@ class Board(models.Model):
     board = models.CharField(
         max_length=4,blank=False, null=False, default='CBSE', unique=True)
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.board
 
@@ -48,6 +50,8 @@ class Grade(models.Model):
     grade = MinMaxFloat(min_value=1, max_value=12, default=10)
     board = models.ForeignKey('Board', on_delete=models.CASCADE)
 
+    objects = models.Manager()
+
     def __str__(self):
         return str(self.grade)
 
@@ -55,6 +59,8 @@ class Grade(models.Model):
 class Subject(models.Model):
     subject_name = models.CharField(max_length=100, blank=False, null=False)
     grade = models.ForeignKey('Grade', on_delete=models.CASCADE)
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.subject_name
@@ -93,6 +99,8 @@ class Questions(models.Model):
     uploaded_by = models.ForeignKey('Mentor', on_delete=models.CASCADE)
     text = models.TextField(null=False, blank=False)
     source = models.TextField(null=True, blank=True)
+
+    objects = models.Manager()
 
 
 class MCQOptions(models.Model):
@@ -138,6 +146,8 @@ class GeneratedTestAndGenericPaper(models.Model):
 class Chapter(models.Model):
     subject = models.ForeignKey('Subject', on_delete=models.CASCADE)
     chapter_name = models.CharField(max_length=100)
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.chapter_name
