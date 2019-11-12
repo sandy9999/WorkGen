@@ -17,6 +17,10 @@ $(document).ready(() => {
     $('#question_weightage').dropdown({
         onChange: value => filter(value, 'question_weightage')
     });
+    $('#text').keyup(function (e) { 
+        e.preventDefault();
+        filter(e.target.value, 'text');
+    });
     $('.modal .actions .deny').click(function(e) {
         e.target.parentElement.previousElementSibling.children[0].value = '';
     })
@@ -38,6 +42,11 @@ $(document).ready(() => {
                     return question
                 })
                 filter(null, 'chapter')
+                new PNotify({
+                    title: 'Success!',
+                    text: 'Question successfully edited in the database',
+                    type: 'success'
+                });
             },
             error: err => {
                 new PNotify({
@@ -59,7 +68,8 @@ let filters = {
     subject: [],
     chapter: [],
     question_type: [],
-    question_weightage: []
+    question_weightage: [],
+    text: ''
 }
 
 const fill_rows = questions => {
@@ -91,15 +101,13 @@ const fill_rows = questions => {
 
 const filter = (value, field) => {
     if (value !== null) {
-        const values = value.split(',');
+        const values = field != 'text' ? value.split(',') : [value];
+        // console.log(values)
         filters[field] = values;
     }
     if (filters[field].includes("")) filters[field] = []
-    if (field == 'question_weightage') {
-        filters[field] = filters[field].map(x => parseInt(x, 10));
-    }
-    console.log(value)
-    console.log(filters)
+    // console.log(value)
+    // console.log(filters)
     let filtered_questions = questions.filter(question => {
         let removed = false;
         // console.log(question)
@@ -108,7 +116,12 @@ const filter = (value, field) => {
             // console.log(filter)
             // console.log(question[filter])
             // console.log(filters[filter].length != 0 && !filters[filter].includes(question[filter]))
-            if (filters[filter].length != 0 && !filters[filter].includes(question[filter])) {
+            if (filter == 'text') {
+                if (filters[filter].length != 0 && !question[filter].toLowerCase().includes(filters[filter][0].toLowerCase())) {
+                    removed = true;
+                }
+            }
+            else if (filters[filter].length != 0 && !filters[filter].includes(question[filter])) {
                 removed = true;
             }
         })

@@ -64,10 +64,10 @@ def student_view(request):
 
 def edit_questions(request):
     if request.method == 'GET':
-        board_list = list(Board.objects.all().values_list('board', flat=True))
-        chapters = list(Chapter.objects.all().values_list('chapter_name', flat=True))
-        subjects = list(Subject.objects.all().values_list('subject_name', flat=True))
-        grades = list(Grade.objects.all().values_list('grade', flat=True))
+        board_list = Board.objects.all().values_list('board', flat=True)
+        chapters = Chapter.objects.all().values_list('chapter_name', flat=True).distinct()
+        subjects = Subject.objects.all().values_list('subject_name', flat=True).distinct()
+        grades = Grade.objects.all().values_list('grade', flat=True).distinct()
         question_weightage = [i[0] for i in Questions.QUESTION_WEIGHTAGE_CHOICES]
         question_types = [i[1] for i in Questions.QUESTION_TYPE_CHOICES]
         questions = [{
@@ -77,7 +77,7 @@ def edit_questions(request):
             'subject': question.chapter.subject.subject_name,
             'chapter': question.chapter.chapter_name,
             'question_type': question_types[question.question_type - 1],
-            'question_weightage': question.question_weightage,
+            'question_weightage': str(question.question_weightage),
             'text': question.text
         } for question in Questions.objects.all() if question.question_type < 4]
         return render(request, 'edit_questions.html', {'boards': board_list, 'chapters': chapters, 'subjects': subjects,
