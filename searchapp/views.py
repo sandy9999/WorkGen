@@ -93,6 +93,30 @@ def chapter_and_split_view(request):
     return render(request, 'chapter_and_split_view.html', {'data': board_list, 'question_weightage_choices': question_weightage_choices, 'question_type_choices': question_type_choices})
 
 
+def add_board(request):
+    if request.method == 'POST':
+        board = request.POST.dict()['board']
+        try:
+            board = Board.objects.get(board=board)
+            return JsonResponse(dict(error='The board is already in the database'), status=401)
+        except Board.DoesNotExist:
+            Board.objects.create(board=board)
+            return JsonResponse(dict(status='ok'))
+
+
+def add_grade(request):
+    if request.method == 'POST':
+        data = request.POST.dict()
+        board = Board.objects.get(board=data['board'])
+        grade = int(data['grade'])
+        try:
+            grade = Grade.objects.get(grade=grade, board=board)
+            return JsonResponse(dict(error=f'The grade is already included under the {board.board} board'), status=401)
+        except Grade.DoesNotExist:
+            Grade.objects.create(board=board, grade=grade)
+            return JsonResponse(dict(status='ok'))
+
+
 def get_grades(request):
     if request.method == 'GET':
         board = request.GET['board']

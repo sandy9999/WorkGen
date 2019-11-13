@@ -26,8 +26,9 @@ class Mentor(models.Model):
 
 
 class Board(models.Model):
-    board = models.CharField(
-        max_length=4,blank=False, null=False, default='CBSE', unique=True)
+    board = models.CharField(max_length=4, blank=False, null=False, default='CBSE', unique=True)
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.board
@@ -47,6 +48,8 @@ class MinMaxFloat(models.IntegerField):
 class Grade(models.Model):
     grade = MinMaxFloat(min_value=1, max_value=12, default=10)
     board = models.ForeignKey('Board', on_delete=models.CASCADE)
+
+    objects = models.Manager()
 
     def __str__(self):
         return str(self.grade)
