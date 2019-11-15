@@ -339,13 +339,13 @@ def delete_chapters(request):
 def get_test_paper(request):
     if request.method == 'GET':
         subject = request.GET['subject']
-        paper_breakup = request.GET['paper-breakup']
+        paper_breakup = request.GET['board'] # setting board as the deciding factor for subject breakup.
         chapters = request.GET.getlist('chapters[]')
         # filter returns a query set which is converted to a list and then the first element is picked up.
         subject_name = list(Subject.objects.filter(
             id=subject).values_list('subject_name', flat=True))[0]
         subject_breakup = SubjectSplit.objects.filter(
-            name=paper_breakup).values_list(
+            name=paper_breakup.upper()).values_list(
                 'question_weightage',
                 'question_type',
                 'total_questions',
