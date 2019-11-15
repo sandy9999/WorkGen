@@ -17,11 +17,12 @@
 #grid{
   grid-row-gap:70px;
 }
-.button{
+.typeInfo{
   outline:none;
 }/* Style the links inside the navigation bar */
-.button a {
+.typeInfo button{
     outline:0;
+    background-color: transparent;
     font-weight:800;
     color:black;
     text-align: center;
@@ -37,10 +38,11 @@
     white-space: -o-pre-wrap; /* Opera 7 */
     word-wrap: break-word;
 }
-.button a:hover {
+.typeInfo button:hover {
     color: black;
+    cursor: pointer;
 }
-.button a:active{
+.typeInfo button:active{
   outline:0;
   border:none;
   -moz-outline-style:none;

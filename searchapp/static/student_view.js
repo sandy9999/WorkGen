@@ -1,27 +1,27 @@
 $(document).ready(function(){
 
 	// on selecting type of worksheet
-	$('#worksheetType').dropdown({
-		onChange: function (value, text, $selectedItem) {
-			if(value == 'test') {
-				$("#test-div").show();
-				$("#generic-div").hide();
-				$("#customized-div").hide();
-			} else if(value == 'generic') {
-				$("#test-div").hide();
-				$("#generic-div").show();
-				$("#customized-div").hide();
-			} else if(value == 'customized') {
-				$("#test-div").hide();
-				$("#generic-div").hide();
-				$("#customized-div").show();
-			}
-		},
-	});
+	function display_form_sections (value) {
+		if(value == 'test') {
+			$('#worksheetType').text('Test Paper');
+			$("#test-div").show();
+			$("#generic-div").hide();
+			$("#customized-div").hide();
+		} else if(value == 'generic') {
+			$('#worksheetType').text('Generic Paper');
+			$("#test-div").hide();
+			$("#generic-div").show();
+			$("#customized-div").hide();
+		} else if(value == 'customized') {
+			$('#worksheetType').text('Customized Paper');
+			$("#test-div").hide();
+			$("#generic-div").hide();
+			$("#customized-div").show();
+		}
+	}
 
 	// function called when submit button clicked
 	function submit_click(e) {
-		let worksheetType = $("#worksheetType").dropdown('get value');
 		if (worksheetType == 'test') {
 			let subject = $("#test-subject").dropdown('get value');
 			let chapters = $('#test-chapter').dropdown('get values');
@@ -121,7 +121,6 @@ $(document).ready(function(){
 }
 
 function upload_click(e) {
-	let worksheetType = $("#worksheetType").dropdown('get value');
 	if (worksheetType == 'customized') {
 		let subject = $("#customized-subject").dropdown('get value');
 		let file_data = $('#realfile').prop("files")[0];
@@ -165,7 +164,6 @@ function upload_click(e) {
 }
 
 function populate_grades(value,text, $selectedItem) {
-	let worksheetType = document.getElementById("worksheetType") ? $("#worksheetType").dropdown('get value') : 'paper';
 	let boardData = {
 		"board": $(`#${worksheetType}-board`).dropdown('get value')
 	};
@@ -187,7 +185,6 @@ function populate_grades(value,text, $selectedItem) {
 }
 
 function populate_subjects(value,text, $selectedItem) {
-	let worksheetType = document.getElementById("worksheetType") ? $("#worksheetType").dropdown('get value') : 'paper';
 	let gradeData = {
 		"grade": $(`#${worksheetType}-grade`).dropdown('get value')
 	};
@@ -209,7 +206,6 @@ function populate_subjects(value,text, $selectedItem) {
 }
 
 	function populate_chapters(value, text, $selectedItem) {
-		let worksheetType = document.getElementById("worksheetType") ? $("#worksheetType").dropdown('get value') : 'paper';
 		let formData = {
 			"subject": $(`#${worksheetType}-subject`).dropdown('get value'),
 			"board": $(`#${worksheetType}-board`).dropdown('get value')
@@ -565,6 +561,15 @@ function populate_subjects(value,text, $selectedItem) {
 		onChange: function (value, text, $selectedItem) {
 		},
 	});
+
+	var worksheetType;
+	if(window.location.pathname == "/student_view"){
+		const urlParams = new URLSearchParams(window.location.search);
+		worksheetType = urlParams.get('type');
+		if(['test','generic','customized'].includes(worksheetType))
+			display_form_sections(worksheetType);
+		else window.location.href="/";
+	}
 
 	$('#upload').click(upload_click);
 	$("#submit").click(submit_click);

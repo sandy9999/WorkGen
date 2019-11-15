@@ -55,9 +55,10 @@ def contact(request):
 
 
 def student_view(request):
+    paper_type = request.GET.get('type')
     board_list = Board.objects.all().values_list('board', flat=True)
     board_list = list(board_list)
-    return render(request, 'student_view.html', {'data': board_list})
+    return render(request, 'student_view.html', {'data': board_list, 'type': paper_type})
 
 
 def login_view(request):
