@@ -25,11 +25,10 @@ $(document).ready(function(){
 		if (worksheetType == 'test') {
 			let subject = $("#test-subject").dropdown('get value');
 			let chapters = $('#test-chapter').dropdown('get values');
-			let paperBreakup = $('#test-breakup').dropdown('get value');
 			let board = $('#test-board').dropdown('get value');
 			let formData = {
 				"subject": subject,
-				"paper-breakup": paperBreakup,
+				"board": board,
 				"chapters[]": chapters
 			}
 
@@ -231,14 +230,6 @@ function populate_subjects(value,text, $selectedItem) {
 				chapters.forEach(function(chapter){
 					$(`#${worksheetType}-chapter-options-parent`).append(`<div class="item" data-value=${chapter['chapter_id']}>${chapter['chapter_name']}</div>`);
 				})
-				if(worksheetType == 'test'){
-					$(`#${worksheetType}-breakup-options-parent`).empty();
-					$(`#${worksheetType}-breakup`).removeClass('hide-display').addClass('show-display');
-					subject_breakup.forEach(function(breakup){
-						let paperElement = `<div class="item" data-value=${breakup}>${breakup}</div>`;
-						$(`#${worksheetType}-breakup-options-parent`).append(paperElement);
-					})
-				}
 
 				if(worksheetType == 'paper')
 				{
@@ -477,11 +468,6 @@ function populate_subjects(value,text, $selectedItem) {
 	});
 
 	$('#test-chapter').dropdown({
-		onChange: function (value, text, $selectedItem) {
-		},
-	});
-
-	$('#test-breakup').dropdown({
 		onChange: function (value, text, $selectedItem) {
 		},
 	});
