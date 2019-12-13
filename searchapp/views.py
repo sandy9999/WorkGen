@@ -25,6 +25,7 @@ from .utils.utils import (
     get_allowed_questions,
     get_customized_paper,
     generate_dummy_tracker,
+    generate_dummy_question_paper_format,
 )
 from .test_paper import (
     generate_test_or_generic_paper,
@@ -506,7 +507,7 @@ def generate_optional_inputs(request):
         return JsonResponse({"message": "success", "chapters": allowed_chapters, "stud_name": student_name_list,
                              "qtype": allowed_qtype})
 
-
+@login_required
 def get_dummy_tracker(request):
     if request.method == 'GET':
         split_name = request.GET['split_name']
@@ -518,8 +519,16 @@ def get_dummy_tracker(request):
             subject__id=subject, name__iexact=split_name)
         split_list = list(subject_split_list)
         import base64
-        dummy_workbook = generate_dummy_tracker(
-            subject_name, split_list, Questions.QUESTION_TYPE_CHOICES)
+        dummy_workbook = generate_dummy_question_paper_format()
+        base64_response = base64.b64encode(
+            save_virtual_workbook(dummy_workbook)).rstrip(b'\n=')
+        return HttpResponse(base64_response, content_type='multipart/form-data')
+
+@login_required
+def get_dummy_question_paper_format(request):
+    if request.method == 'GET':
+        import base64
+        dummy_workbook = generate_dummy_question_paper_format()
         base64_response = base64.b64encode(
             save_virtual_workbook(dummy_workbook)).rstrip(b'\n=')
         return HttpResponse(base64_response, content_type='multipart/form-data')
