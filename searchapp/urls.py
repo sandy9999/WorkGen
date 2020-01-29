@@ -28,4 +28,5 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('contact', views.contact),
     path('get_dummy_tracker', views.get_dummy_tracker),
+    path('get_dummy_question_paper_format',views.get_dummy_question_paper_format),
 ]

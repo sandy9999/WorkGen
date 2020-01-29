@@ -284,6 +284,39 @@ def generate_dummy_tracker(subject_name, subject_split, split_type_mapping):
     return dummy_workbook
 
 
+def generate_dummy_question_paper_format():
+    dummy_workbook = op.Workbook()
+    dummy_worksheet = dummy_workbook.active
+
+    dummy_worksheet.title = "Question Bank"
+    dummy_worksheet["A1"] = "Board"
+    dummy_worksheet["B1"] = "Grade"
+    dummy_worksheet["C1"] = "Subject"
+    dummy_worksheet["D1"] = "Chapter No."
+    dummy_worksheet["E1"] = "Chapter Name"
+    dummy_worksheet["F1"] = "Q Type"
+    dummy_worksheet["G1"] = "Question"
+    dummy_worksheet["H1"] = "Qs. Source (optional)"
+    dummy_worksheet["I1"] = "Question ID # (Unnecessary)"
+
+    cells = ['A1','B1','C1','D1','E1','F1','G1','H1','I1']
+
+    bold_style = op.styles.Font(size=10, bold=True)
+    styles_centerAlignment = op.styles.Alignment(horizontal='center')
+    styles_fillOrange = op.styles.PatternFill("solid", fgColor="faa61a")
+    thin = op.styles.Side(border_style="thin", color="000000")
+    styles_border = op.styles.Border(
+        top=thin, left=thin, right=thin, bottom=thin)
+
+    for style_counter in range(0,len(cells)):
+        dummy_worksheet[cells[style_counter]].font = bold_style
+        dummy_worksheet[cells[style_counter]].alignment = styles_centerAlignment
+        dummy_worksheet[cells[style_counter]].fill = styles_fillOrange
+        dummy_worksheet[cells[style_counter]].border = styles_border
+
+    return dummy_workbook
+
+
 if __name__ == "__main__":
     science_breakup = {
         '1A': [5, 5],
