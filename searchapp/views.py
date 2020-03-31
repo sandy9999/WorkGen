@@ -20,6 +20,7 @@ from docx import Document
 from .utils.utils import (
     convert_question_bank,
     get_type_and_weightage,
+    get_tables_from_data,
     default_to_regular,
     convert_marker_data,
     get_allowed_questions,
@@ -37,6 +38,7 @@ from .models import (
     Grade,
     Questions,
     MCQOptions,
+    Table,
     Subject,
     GeneratedCustomizedPaper,
     GeneratedTestAndGenericPaper,
@@ -233,6 +235,13 @@ def add_to_database(question_bank_dict, user):
                                         uploaded_by=mentor,
                                         source=questions_list[i][1])
                                     q.save()
+                                    if questions_list[i][2]:
+                                        tables = get_tables_from_data(questions_list[i][2])
+                                        for table in tables:
+                                            t = Table(
+                                            question_id=q,
+                                            table_data=table)
+                                            t.save()
                     except Chapter.DoesNotExist as e:
                         raise Exception(
                             "{} is not a valid chapter in the database for {} subject {} grade {} board. Please check for typos / entry in the database".format(chapter_name,subject_name,grade,board))

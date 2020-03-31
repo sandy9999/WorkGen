@@ -157,6 +157,23 @@ def get_type_and_weightage(question_type):
     return weightage, qtype
 
 
+def get_tables_from_data(table_data):
+    if table_data == None:
+        return None
+    table_data = table_data.replace('“','"')
+    table_data = table_data.replace('”','"')
+    table = table_data.split("] [")
+    if len(table) != 1:
+        for i in range(len(table)):
+            if i == 0:
+                table[0] = str(table[0]) + "]"
+            elif i == len(table)-1:
+                table[len(table)-1] = "[" + table[len(table)-1]
+            else:
+                table[i] = "[" + table[i] + "]"
+    return table
+
+
 def convert_question_bank(question_bank_path):
     """
         This function converts the excel file of the question bank to a mapping between chapter name to questions.
@@ -207,8 +224,9 @@ def convert_question_bank(question_bank_path):
                     1.0) or type(question_type) == type(1)) else question_type.lower()
                 question_text = row[6].value
                 question_source = row[7].value
+                question_tables = row[8].value
                 question_bank_dict[board][grade][subject][(
-                    chapter_no, chapter_name)][question_type].append((question_text, question_source))
+                    chapter_no, chapter_name)][question_type].append((question_text, question_source, question_tables))
             except Exception as e:
                 break
     return question_bank_dict
