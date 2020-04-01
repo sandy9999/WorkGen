@@ -1,4 +1,4 @@
-from .models import Questions, Chapter
+from .models import Questions, Chapter, Table
 from .utils.utils import get_type_and_weightage
 from .generate_doc import convert_customized_to_doc, convert_to_doc
 import random
@@ -12,16 +12,24 @@ def form_test_paper_dictionary(subject, chapters, subject_breakup):
         final_list = []
         total_question_no = subject_breakup[question_type][0]
         weightage, q_type = get_type_and_weightage(question_type)
-        total_list = Questions.objects.filter(question_type=q_type,
+        question_list = Questions.objects.filter(question_type=q_type,
                                               question_weightage=weightage,
-                                              chapter__in=Chapter.objects.filter(id__in=chapters)).values_list(
-            'text', flat=True)
+                                              chapter__in=Chapter.objects.filter(id__in=chapters))
+        total_list = question_list.values_list('pk', flat=True)
         total_list = list(total_list)
         total_question_no = min(total_question_no, len(total_list))
         final_list = random.sample(total_list, total_question_no)
+        final_table_data = []
+        final_question_data = []
+        for id in final_list:
+            q = Questions.objects.get(pk=id)
+            t = Table.objects.filter(question_id=q).values_list('table_data', flat=True)
+            final_table_data.append(list(t))
+            final_question_data.append(q.text)
         row = {
             'question_type': question_type,
-            'question': final_list,
+            'question': final_question_data,
+            'table': final_table_data,
             'attempt': subject_breakup.get(question_type, None)[1]
         }
         test_paper_dict.append(row)
