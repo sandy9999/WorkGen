@@ -1,0 +1,126 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %}
+Edit Questions
+{% endblock %}
+{% block li %}
+ {% if user.is_authenticated %}
+  <li><a href="/mentor_view">Mentor Dashboard</a></li>
+  {% else %}
+  <li><a href="/login">Login</a></li>
+	{% endif %}
+{% endblock %}
+{% block student_view %}
+<!-- Select worksheet type -->
+<br>
+
+<div id="div">
+	<div id="board" class="ui fluid multiple search selection dropdown chapter">
+		<input name="board" type="hidden">
+		<i class="dropdown icon"></i>
+		<div class="default text">Select board</div>
+		<div id="board-options-parent" class="menu">
+			{% for element in boards %}
+			<div class="item" data-value="{{element}}">{{element}}</div>
+			{% endfor %}
+		</div>
+	</div>
+	<br>
+	<div id="grade" class="ui fluid multiple search selection dropdown chapter">
+		<input name="grade" type="hidden">
+		<i class="dropdown icon"></i>
+		<div class="default text">Select Grade</div>
+		<div id="grade-options-parent" class="menu">
+			{% for element in grades %}
+			<div class="item" data-value="{{element}}">{{element}}</div>
+			{% endfor %}
+		</div>
+	</div>
+	<br>
+	<div id="subject" class="ui fluid multiple search selection dropdown chapter">
+		<input name="subject" type="hidden">
+		<i class="dropdown icon"></i>
+		<div class="default text">Select Subject</div>
+		<div id="board-options-parent" class="menu">
+			{% for element in subjects %}
+			<div class="item" data-value="{{element}}">{{element}}</div>
+			{% endfor %}
+		</div>
+	</div>
+	<br>
+	<div id="chapter" class="ui fluid multiple search selection dropdown chapter">
+		<input name="chapter" type="hidden">
+		<i class="dropdown icon"></i>
+		<div class="default text">Select Chapter</div>
+		<div id="chapter-options-parent" class="menu">
+			{% for element in chapters %}
+			<div class="item" data-value="{{element}}">{{element}}</div>
+			{% endfor %}
+		</div>
+	</div>
+  	<br>
+  	<div id="question_type" class="ui fluid multiple search selection dropdown chapter">
+		<input name="question_type" type="hidden">
+		<i class="dropdown icon"></i>
+		<div class="default text">Select Question Type</div>
+		<div id="question_type-options-parent" class="menu">
+			{% for element in question_types %}
+			<div class="item" data-value="{{element}}">{{element}}</div>
+			{% endfor %}
+		</div>
+	</div>
+	<br>
+	<div id="question_weightage" class="ui fluid multiple search selection dropdown chapter">
+		<input name="question_weightage" type="hidden">
+		<i class="dropdown icon"></i>
+		<div class="default text">Select Question Weightage</div>
+		<div id="question_weightage-options-parent" class="menu">
+			{% for element in question_weightage %}
+			<div class="item" data-value="{{element}}">{{element}}</div>
+			{% endfor %}
+		</div>
+	</div>
+	<br>
+	<div id="text" class="ui fluid search icon input chapter">
+		<i class="search icon"></i>
+		<input type="text" placeholder="Search by text">
+	</div>
+  	<br>
+</div>
+<br>
+<!-- <button id="submit">GET QUESTIONS</button> -->
+<table class="ui celled padded table">
+	<thead>
+		<tr>
+			<th>Board</th>
+			<th>Grade</th>
+			<th>Subject</th>
+			<th>Chapter</th>
+		  	<th>Question Type</th>
+			<th>Question Weightage</th>
+			<th>Text</th>
+		</tr>
+	</thead>
+	<tbody id="questions_table"></tbody>
+</table>
+<div class="ui modal">
+	{% csrf_token %}
+	<div class="header">Edit question</div>
+	<div class="ui input content">
+  		<input type="text" placeholder="Question here" style="width: 100%;">
+	</div>
+	<div class="actions">
+      	<div class="ui black deny button">Cancel</div>
+      	<div class="ui positive right button">Save</div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<link rel="stylesheet" type="text/css" href="{% static 'edit_questions.css' %}"/>
+<script type="application/json" id="questions">
+	{{questions|safe}}
+</script>
+
+<script type="text/javascript" src="{% static 'edit_questions.js' %}"></script>
+{% endblock %}
