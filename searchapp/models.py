@@ -100,6 +100,11 @@ class MCQOptions(models.Model):
     option_value = models.CharField(max_length=100)
 
 
+class Table(models.Model):
+    question_id = models.ForeignKey('Questions', on_delete=models.CASCADE)
+    table_data = models.TextField(null=False, blank=False)
+
+
 class SubjectSplit(models.Model):
     name = models.CharField(max_length=100)
     board = models.ForeignKey('Board', on_delete=models.CASCADE, null=True)

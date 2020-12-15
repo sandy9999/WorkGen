@@ -1,4 +1,5 @@
 from docx import Document
+import json
 import datetime
 import os
 
@@ -36,10 +37,26 @@ def add_questions(document, questions_mapping, question_type, question_no, no_of
             p = document.add_paragraph()
             p.add_run("Attempt only " + str(min(row['attempt'], no_of_questions)) + " questions").italic = True
             p.alignment = 1
-            for question in row['question']:
+            for index, question in enumerate(row['question']):
                 question_no = question_no + 1
                 p1 = document.add_paragraph(str(question_no) + ": ")
                 p1.add_run(question)
+                if row['table'][index]:
+                    for table_data in row['table'][index]:
+                        table_list = json.loads(table_data)
+                        row_no = len(table_list)
+                        column_no = len(max(table_list,key=len))
+                        table = document.add_table(rows=row_no, cols=column_no)
+                        for i in range(row_no):
+                            table_row = table.rows[i]
+                            for j in range(column_no):
+                                if j >= len(table_list[i]):
+                                    table_row.cells[j].text = ""
+                                else:
+                                    table_row.cells[j].text = table_list[i][j]
+                    
+                    
+
     para = document.add_paragraph()
     run = para.add_run()
     run.add_break()
