@@ -435,6 +435,91 @@ function populate_subjects(value,text, $selectedItem) {
 		});
 	}
 
+	const add_board = () => {
+		const data = {
+			board: $('input[name="add-board-input"]').val()
+		}
+		if (!data.board) {
+			new PNotify({
+				title: 'Error!',
+				text: 'No board was specified',
+				type: 'error'
+			});
+			return
+		}
+		$.ajax({
+			type: "POST",
+			url: "add_board",
+			data,
+			dataType: "json",
+			headers: { "X-CSRFToken": csrftoken,},
+			success: function (response) {
+				new PNotify({
+					title: 'Success!',
+					text: 'The board has been successfully added to the database.',
+					type: 'success'
+				});
+				$('#paper-board .menu').html($('#paper-board .menu').html() + `<div class="item" data-value="${data.board}">${data.board}</div>`)
+				$('input[name="add-board-input"]').val('');
+			},
+			error: err => {
+				new PNotify({
+					title: 'Error!',
+					text: err.responseJSON.error,
+					type: 'error'
+				});
+			}
+		});
+	}
+
+	const add_grade = () => {
+		const data = {
+			board: $('#board-for-grade input').val(),
+			grade: $('input[name="add-grade-input"]').val()
+		}
+		if (!data.board || !data.grade) {
+			new PNotify({
+				title: 'Error!',
+				text: 'Please specify board and grade',
+				type: 'error'
+			});
+			return
+		}
+		if (data.grade > 12) {
+			new PNotify({
+				title: 'Error!',
+				text: 'Grade should be less than 12',
+				type: 'error'
+			});
+			return
+		}
+		$.ajax({
+			type: "POST",
+			url: "add_grade",
+			data,
+			dataType: "json",
+			headers: { "X-CSRFToken": csrftoken,},
+			success: function (response) {
+				new PNotify({
+					title: 'Success!',
+					text: 'The grade has been successfully added to the database.',
+					type: 'success'
+				});
+				$('input[name="add-grade-input"]').val('');
+				if ($('#paper-board input').val() == data.board)
+					$('#paper-grade .menu').html($('#paper-grade .menu').html() + `<div class="item" data-value="${data.grade}">${data.grade}</div>`)
+				$('#board-for-grade').dropdown('clear');
+			},
+			error: err => {
+				new PNotify({
+					title: 'Error!',
+					text: err.responseJSON.error,
+					type: 'error'
+				});
+			}
+		});
+	}
+
 	$(document).on('click','.delete-subject-split', function()
 	{
 
@@ -482,6 +567,9 @@ function populate_subjects(value,text, $selectedItem) {
 
 
   //methods for SUBJECT SPLITS.
+	$('#add-board-button').click(add_board)
+	$('#add-grade-button').click(add_grade);
+	$('#board-for-grade').dropdown('clear');
 	$('#paper-board').dropdown('clear');
 	$('#paper-grade').dropdown('clear');
 	$('#paper-subject').dropdown('clear');

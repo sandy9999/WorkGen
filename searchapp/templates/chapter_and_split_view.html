@@ -12,6 +12,42 @@ Edit Chapters and Subject Splits
 {% endblock %}
 {% block student_view %}
 	<br>
+	<div class="ui grid">
+		<div class="four wide column"></div>
+		<div class="two wide column">
+			<div class="ui input fluid">
+				<input type="text" name="add-board-input" placeholder="Add Board">
+			</div>
+		</div>
+		<div class="four wide column">
+			<button id="add-board-button" class="ui button">+</button>
+		</div>
+	</div>
+	<br>
+	<div class="ui grid">
+		<div class="four wide column"></div>
+		<div class="two wide column">
+			<div class="ui input fluid">
+				<input type="number" name="add-grade-input" placeholder="Add Grade" max="12">
+			</div>
+		</div>
+		<div class="three wide column">
+			<div id="board-for-grade" class="ui selection dropdown board show-display">
+				<input name="board" type="hidden">
+				<i class="dropdown icon"></i>
+				<div class="default text">Select Board</div>
+				<div class="menu">
+					{% for element in data %}
+					<div class="item" data-value="{{element}}">{{element}}</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+		<div class="four wide column">
+			<button id="add-grade-button" class="ui button">+</button>
+		</div>
+	</div>
+	<br>
 	<div id="paper-board" class="ui selection dropdown board show-display">
 		<input name="board" type="hidden">
 		<i class="dropdown icon"></i>
