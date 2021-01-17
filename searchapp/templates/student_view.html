@@ -23,8 +23,49 @@ Student View
 	</div>
 </div>
 <br>
+<div id="format" class="ui selection dropdown format hide-display">
+        <input name="format" type="hidden">
+        <i class="dropdown icon"></i>
+        <div class="default text">Select test format</div>
+            <div class="menu">
+              <div class="item" data-value="phypaper">Physical paper</div>
+              {% if user.is_authenticated %}
+                  <div class="item" data-value="form">Google Form</div>
+              {% endif %}
+            </div>
+</div>
+<br>
+
+<div id="GoogleForm" style="display: none;">
+    <div id="formHeading" class="ui input format show-display">
+        <input id="heading" type="text" placeholder="Title of test">
+    </div>
+    <br>
+    <div id="fields">
+      <div id="required-field-1" class="ui selection dropdown format hide-display">
+          <input name="Type" type="hidden">
+          <i class="dropdown icon"></i>
+          <div class="default text">Select the type of field required</div>
+          <div class="menu">
+              <div class="item" data-value="text">Text</div>
+              <div class="item" data-value="email">Email</div>
+              <div class="item" data-value="number">Number</div>
+          </div>
+      </div>
+      <br>
+      <div id="required-field-desc-1" class="ui input format hide-display">
+          <input id="field-desc-1" type="text" placeholder="Description">
+      </div>
+      <br>
+    </div>
+    <div id="next-options" class="ui input format hide-display">
+        <button id="addMore">Add Another field</button> <button id="done">Done</button>
+    </div>
+    <br>
+</div>
 
 <div id="test-div" style="display: none;">
+    
 	<div id="test-board" class="ui selection dropdown board show-display">
 		<input name="board" type="hidden">
 		<i class="dropdown icon"></i>
@@ -258,5 +299,7 @@ Student View
 			<br>
 		</div>
 		<br>
+        <div id="link" class="ui input format hide-display">
+        </div>
 		<button id="submit">DOWNLOAD</button>
 			{% endblock %}

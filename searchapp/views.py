@@ -11,6 +11,7 @@ from collections import defaultdict
 from openpyxl.writer.excel import save_virtual_workbook
 from django.conf import settings
 
+import json
 import logging
 import datetime
 import hashlib
@@ -27,9 +28,11 @@ from .utils.utils import (
     generate_dummy_tracker,
     generate_dummy_question_paper_format,
 )
+
 from .test_paper import (
     generate_test_or_generic_paper,
     generate_customized_paper,
+    generate_test_or_generic_form,
 )
 from .models import (
     Mentor,
@@ -41,7 +44,8 @@ from .models import (
     GeneratedCustomizedPaper,
     GeneratedTestAndGenericPaper,
     SubjectSplit,
-    Chapter
+    Chapter,
+    FormAuth
 )
 
 logger = logging.getLogger(__name__)
@@ -54,6 +58,15 @@ def home(request):
 def contact(request):
     return render(request, 'contact.html')
 
+
+def form(request):
+    try:
+        response = request.GET
+        is_done = response['done']
+        return render(request, 'form_view.html', {'form_url': response['response[result][0][Published url]'], 'form_edit_url': response['response[result][0][Edit url]']})
+    except:
+        print('m')
+        return render(request, 'form_view.html', {'form_url': 'Something went wrong. Please try again'})
 
 def student_view(request):
     board_list = Board.objects.all().values_list('board', flat=True)
@@ -373,6 +386,34 @@ def get_test_paper(request):
             subject_name, chapters, breakup, token, 'random')
         return JsonResponse({"message": "success", "token": token})
 
+def get_test_form(request):
+    if request.method == 'GET':
+        subject = request.GET['subject']
+        paper_breakup = request.GET['board']
+        chapters = request.GET.getlist('chapters[]')
+        heading = request.GET['heading']
+        user = request.user
+        subject_name = list(Subject.objects.filter(
+            id=subject).values_list('subject_name', flat=True))[0]
+        subject_breakup = SubjectSplit.objects.filter(
+            name=paper_breakup.upper()).values_list(
+                'question_weightage',
+                'question_type',
+                'total_questions',
+                'questions_to_attempt')
+        breakup = {}
+        for qtype in subject_breakup:
+            if qtype[0] == 1:
+                if qtype[1] == 1:
+                    breakup['1A'] = [qtype[2], qtype[3]]
+                elif qtype[1] == 2:
+                    breakup['1B'] = [qtype[2], qtype[3]]
+            else:
+                breakup[str(qtype[0])] = [qtype[2], qtype[3]]
+        required = json.loads(request.GET['required'])
+        response = generate_test_or_generic_form(
+                required, heading, subject_name, chapters, breakup, 'random', user)
+        return JsonResponse(response)
 
 def get_generic_paper(request):
     if request.method == "GET":

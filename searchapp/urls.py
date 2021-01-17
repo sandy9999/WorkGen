@@ -29,4 +29,6 @@ urlpatterns = [
     path('contact', views.contact),
     path('get_dummy_tracker', views.get_dummy_tracker),
     path('get_dummy_question_paper_format',views.get_dummy_question_paper_format),
+    path('get_test_form', views.get_test_form, name='get_test_form'),
+    path('get_form_data', views.form, name='get_form_data'),
 ]

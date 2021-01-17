@@ -1,9 +1,21 @@
 from docx import Document
 import datetime
 import os
+from django.conf import settings
+from json import dumps, loads
+import pickle
+from .models import FormAuth
+import os.path
+from googleapiclient import errors
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
 
 qtype_to_section = {"1A": "A", "1B": "B", "2": "C", "3": "D", "5": "E"}
 
+
+SCOPES = ['https://www.googleapis.com/auth/forms']
+API_ID="MisrDt1oXa2FhUFiDHl9Yn5oDBuBhNfqu"
 
 def get_no_of_questions(questions_mapping, question_type):
     count = 0
@@ -77,3 +89,35 @@ def convert_to_doc(questions_mapping, subject):
     filepath = os.path.join('searchapp/static/docs', filename)
     document.save(filepath)
     return filepath
+
+def convert_to_form(questions_mapping, subject, required, heading, user):
+    creds = get_creds(user)
+    service = build('script', 'v1', credentials=creds) 
+    required = dumps(required)
+    questions_mapping = dumps(questions_mapping)
+    request = {"function": "create_form", "parameters": [{"required": required, "heading": heading, "question_mapping": questions_mapping, "subject": subject}], "devMode": "true"}
+    response = service.scripts().run(body=request, scriptId=API_ID).execute()
+    return response
+
+def get_creds(user):
+    creds = None
+    flag = 0
+    if FormAuth.objects.filter(user=user).exists():
+        data = FormAuth.objects.get(user=user).creds
+        creds = pickle.loads(data)
+        flag = 1
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                    'credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+            if(flag == 1):
+                token = FormAuth.objects.get(user=user)
+                token.creds = pickle.dumps(creds)
+                token.save()
+            else:
+                data = FormAuth(user=user, creds=pickle.dumps(creds))
+                data.save()
+    return creds

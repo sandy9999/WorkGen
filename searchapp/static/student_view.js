@@ -1,39 +1,50 @@
 $(document).ready(function(){
 
+    let flag = 1;
+    let num = 1;
 	// on selecting type of worksheet
 	$('#worksheetType').dropdown({
-		onChange: function (value, text, $selectedItem) {
-			if(value == 'test') {
-				$("#test-div").show();
-				$("#generic-div").hide();
-				$("#customized-div").hide();
-			} else if(value == 'generic') {
-				$("#test-div").hide();
-				$("#generic-div").show();
-				$("#customized-div").hide();
-			} else if(value == 'customized') {
-				$("#test-div").hide();
-				$("#generic-div").hide();
-				$("#customized-div").show();
-			}
+		onChange: () => {
+          if(flag == 1)
+            $('#format').removeClass('hide-display').addClass('show-display');
+          else {
+            let worksheetType = $("#worksheetType").dropdown('get value');
+            if(worksheetType == 'test') {
+              $('#test-div').show();
+              $('#generic-div').hide();
+              $('#customized-div').hide();
+            }
+            else if(worksheetType == 'generic') {
+              $('#test-div').hide();
+              $('#generic-div').show();
+              $('#customized-div').hide();
+            }
+            else if(worksheetType == 'customized') {
+              $('#test-div').hide();
+              $('#generic-div').hide();
+              $('#customized-div').show();
+            }
+          }
 		},
 	});
 
 	// function called when submit button clicked
 	function submit_click(e) {
 		let worksheetType = $("#worksheetType").dropdown('get value');
+        let format = $("#format").dropdown('get value');
 		if (worksheetType == 'test') {
 			let subject = $("#test-subject").dropdown('get value');
 			let chapters = $('#test-chapter').dropdown('get values');
 			let board = $('#test-board').dropdown('get value');
-			let formData = {
-				"subject": subject,
-				"board": board,
-				"chapters[]": chapters
-			}
-
-			$.ajax({
-				url: BASE_DIR + "/get_test_paper",
+            if(format == 'phypaper') {
+              let formData = {
+                  "subject": subject,
+                  "board": board,
+                  "chapters[]": chapters
+              }
+              let urlToGo = '/get_test_paper'
+              $.ajax({
+				url: BASE_DIR + urlToGo,
 				method : "get",
 				data: formData,
 				headers: { "X-CSRFToken": csrftoken,},
@@ -46,8 +57,39 @@ $(document).ready(function(){
 						});
 					});
 						download_token(response.token);
-				},
-			});
+                    },
+                });
+            }
+            else if(format == 'form') {
+              let heading = $('#heading').val();
+              let required = []
+              for(let i = 1; i <= num; i++) {
+                let type = $(`#required-field-${num}`).dropdown('get value');
+                let desc = $(`#field-desc-${num}`).val();
+                required.push({"type": type, "title": desc})
+              }
+              let formData = {
+                  "subject": subject,
+                  "board": board,
+                  "chapters[]": chapters,
+                  "required": JSON.stringify(required),
+                  "heading": heading,
+              }
+              let urlToGo = '/get_test_form';
+              $.ajax({
+                url: BASE_DIR + urlToGo,
+                method: "get",
+                data: formData,
+                headers: {"X-CSRFToken": csrftoken,},
+                success: (response) => {
+                  console.log(response);
+                  let thing = $.param(response);
+                  window.location = BASE_DIR + '/get_form_data?' + thing;
+                }
+              });
+            }
+
+			
 		} else if (worksheetType == 'generic') {
 			let subject = $("#generic-subject").dropdown('get value');
 			let chapters = $("#generic-chapter").dropdown('get values');
@@ -458,7 +500,91 @@ function populate_subjects(value,text, $selectedItem) {
 			}
 		});
 	});
+    
+    function get_required() {
+      let submit = document.getElementById('submit');
+      let worksheetType = document.getElementById("worksheetType") ? $("#worksheetType").dropdown('get value') : 'paper';
+      let format = $('#format').dropdown('get value');
+      if(format == 'phypaper') {
+          submit.innerHTML = 'DOWNLOAD'
+          $('#GoogleForm').hide();
+            if(worksheetType == 'test') {
+				$("#test-div").show();
+				$("#generic-div").hide();
+				$("#customized-div").hide();
+			} else if(worksheetType == 'generic') {
+				$("#test-div").hide();
+				$("#generic-div").show();
+				$("#customized-div").hide();
+			} else if(worksheetType == 'customized') {
+				$("#test-div").hide();
+				$("#generic-div").hide();
+				$("#customized-div").show();
+			}
+      }
+      else if(format == 'form') {
+          submit.innerHTML = "GENERATE";
+          $('#GoogleForm').show();
+          if(flag == 1)
+            $(`#${worksheetType}-div`).hide();
+          else
+            $(`#${worksheetType}-div`).show();
+      }
+    }
 
+    document.getElementById('heading').addEventListener('change', () => {
+      $('#required-field-1').removeClass('hide-display').addClass('show-display');
+      $('#required-field-desc-1').removeClass('hide-display').addClass('show-display');
+      $('#next-options').removeClass('hide-display').addClass('show-display');
+    }, false);
+    document.getElementById('addMore').addEventListener('click', create_fields, false);
+    document.getElementById('done').addEventListener('click', show_board, false);
+
+    function show_board() {
+      flag = 0;
+      let worksheetType = document.getElementById("worksheetType") ? $("#worksheetType").dropdown('get value') : 'paper';
+      $('#next-options').removeClass('show-display').addClass('hide-display');
+      $(`#${worksheetType}-div`).show();
+    }
+
+    function create_fields() {
+      let type = $(`#required-field-${num}`)
+      let desc = $(`#field-desc-${num}`)
+      if(type.dropdown('get value') === '') {
+        type.focus();
+        return;
+      }
+      if(desc.val() === '') {
+        desc.focus();
+        return;
+      }
+      let data = document.getElementById('fields');
+      num += 1;
+      data.insertAdjacentHTML('beforeend', `<div id="required-field-${num}" class="ui selection dropdown format show-display">
+          <input name="Type" type="hidden">
+          <i class="dropdown icon"></i>
+          <div class="default text">Select the type of field required</div>
+          <div class="menu">
+              <div class="item" data-value="text">Text</div>
+              <div class="item" data-value="email">Email</div>
+              <div class="item" data-value="number">Number</div>
+          </div>
+      </div>
+      <br>
+      <div id="required-field-desc-${num}" class="ui input format show-display">
+          <input id="field-desc-${num}" type="text" placeholder="Description">
+      </div>
+      <br>`);
+      $(`#required-field-${num}`).dropdown('clear');
+    }
+
+    $('#required-field-1').dropdown('clear');
+
+    $('#format').dropdown('clear');
+
+    $('#format').dropdown({
+      onChange: get_required,    
+      });
 
 	// methods for TEST worksheet
 	$('#test-board').dropdown('clear');
