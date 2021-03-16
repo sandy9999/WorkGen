@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Forms View
+{% endblock %}
+{% block li %}
+ {% if user.is_authenticated %}
+  <li><a href="/mentor_view">Mentor Dashboard</a></li>
+  {% else %}
+  <li><a href="/login">Login</a></li>
+	{% endif %}
+{% endblock %}
+
+{% block student_view %}
+<div id="forms" class="ui">
+  <a href={{ form_url }}>Form published url</a><br>
+  <a href={{ form_edit_url }}>Form editor url</a><br>
+</div>
+{% endblock %}

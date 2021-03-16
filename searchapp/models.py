@@ -60,6 +60,10 @@ class Subject(models.Model):
         return self.subject_name
 
 
+class FormAuth(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    creds = models.BinaryField(max_length=800)
+
 class Questions(models.Model):
     ONE = 1
     TWO = 2
@@ -108,7 +112,7 @@ class SubjectSplit(models.Model):
     question_type = models.IntegerField(
         choices=Questions.QUESTION_TYPE_CHOICES, null=True, default=Questions.TEXT)
     total_questions = models.IntegerField(default=0)
-    questions_to_attempt = models.IntegerField(default=0)
+    questions_to_attempt = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name

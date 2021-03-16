@@ -1,6 +1,6 @@
 from .models import Questions, Chapter
 from .utils.utils import get_type_and_weightage
-from .generate_doc import convert_customized_to_doc, convert_to_doc
+from .generate_doc import convert_customized_to_doc, convert_to_doc, convert_to_form
 import random
 from searchapp.models import GeneratedCustomizedPaper, GeneratedTestAndGenericPaper
 from celery import shared_task
@@ -45,6 +45,10 @@ def generate_test_or_generic_paper(subject, chapters, subject_breakup, token, so
     filepath = convert_to_doc(test_paper_dict, subject)
     GeneratedTestAndGenericPaper.objects.filter(token=token).update(file_path=filepath, is_ready=True)
 
+@shared_task
+def generate_test_or_generic_form(required, heading, subject, chapters, subject_breakup, sorted_type, user):
+    test_paper_dict = form_test_paper_dictionary(subject, chapters, subject_breakup)
+    return convert_to_form(test_paper_dict, subject, required, heading, user)
 
 @shared_task
 def generate_customized_paper(subject, chapters, subject_breakup, data, mentor, token):

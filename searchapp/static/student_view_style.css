@@ -43,6 +43,12 @@
 	display: none !important;
 }
 
+.format {
+	margin-left:auto !important;
+	margin-right:auto !important;
+	width:50% !important;
+}
+
 .board {
 	margin-left:auto !important;
 	margin-right:auto !important;
@@ -108,6 +114,34 @@
 	font-weight:bold;
 	margin-bottom:1%;
 	display: block;
+}
+
+#done{
+	margin-left:auto;
+	margin-right:auto;
+	background-color:#d5f6b9;
+	border:none;
+	color:black;
+	padding: 8px 12px;
+	text-decoration:none;
+	cursor:pointer;
+	border-radius:10px;
+	font-weight:bold;
+	margin-bottom:1%;
+}
+
+#addMore {
+    margin-left:auto;
+	margin-right:auto;
+	background-color:#d5f6b9;
+	border:none;
+	color:black;
+	padding: 8px 12px;
+	text-decoration:none;
+	cursor:pointer;
+	border-radius:10px;
+	font-weight:bold;
+	margin-bottom:1%;
 }
 
 #randomize{
