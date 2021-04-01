@@ -6,7 +6,7 @@
 3. Create a database called workgen in MySQL
 4. Set environment variables ```WORKGEN_USER``` and ```WORKGEN_PASSWORD``` as your MySql username and password
 5. ```python3 manage.py migrate```
-
+6. Run ```./git-hook.sh```
 
 ## Running the Web Server
 1. First run ```redis-server``` on a separate terminal
